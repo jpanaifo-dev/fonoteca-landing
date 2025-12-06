@@ -14,7 +14,6 @@ export const translations = {
         hero: {
             title: "Conoce la belleza de la naturaleza",
             titles_animate: [
-                "Instituto de Investigaciones de la Amazonía Peruana",
                 "Sonidos del Bosque",
                 "Susurros de la Vida"
             ],
@@ -74,7 +73,6 @@ export const translations = {
         hero: {
             title: "Experience nature's beauty",
             titles_animate: [
-                "Research Institute of the Peruvian Amazon",
                 "Sounds of the Forest",
                 "Whispers of Life"
             ],
@@ -134,7 +132,6 @@ export const translations = {
         hero: {
             title: "Conheça a beleza da natureza",
             titles_animate: [
-                "Instituto de Pesquisa da Amazônia Peruana",
                 "Sons da Floresta",
                 "Sussurros da Vida"
             ],
