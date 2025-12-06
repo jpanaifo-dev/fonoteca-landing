@@ -1,0 +1,36 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Header } from "../../components/react/Header";
+import { Hero } from "../../components/react/Hero";
+import { Intro } from "../../components/react/Intro";
+import { ServicesGrid } from "../../components/react/ServicesGrid";
+import { Stats } from "../../components/react/Stats";
+import { CTA } from "../../components/react/CTA";
+import { Footer } from "../../components/react/Footer";
+import { translations, LANGUAGES } from "../../i18n/data";
+import logoIiap from "../../assets/logo_iiap.png";
+
+export function getStaticPaths() {
+    return LANGUAGES.map((lang) => ({
+        params: { lang },
+    }));
+}
+
+const { lang } = Astro.params;
+const content = translations[lang as keyof typeof translations];
+---
+
+<Layout
+    title="Fonoteca - Instituto de Investigaciones de la Amazonía Peruana"
+    lang={lang}
+>
+    <Header client:load content={content.nav} logoSrc={logoIiap.src} />
+    <main>
+        <Hero client:load content={content.hero} />
+        <Intro content={content.intro} />
+        <ServicesGrid content={content.species} />
+        <Stats content={content.stats} />
+        <CTA content={content.cta} />
+    </main>
+    <Footer content={content.footer} logoSrc={logoIiap.src} />
+</Layout>

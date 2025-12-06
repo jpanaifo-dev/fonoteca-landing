@@ -1,13 +1,20 @@
+---
+export interface Props {
+	title: string;
+	lang?: string;
+}
+
+const { title, lang = "es" } = Astro.props;
+---
+
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>
-			Fonoteca - Instituto de Investigaciones de la Amazonía Peruana
-		</title>
+		<title>{title}</title>
 	</head>
 	<body class="bg-light-bg font-sans text-primary-dark antialiased">
 		<slot />
