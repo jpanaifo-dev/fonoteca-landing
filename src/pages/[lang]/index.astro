@@ -3,6 +3,7 @@ import Layout from "../../layouts/Layout.astro";
 import { Header } from "../../components/react/Header";
 import { Hero } from "../../components/react/Hero";
 import { Intro } from "../../components/react/Intro";
+import { FeatureGrid } from "../../components/react/FeatureGrid";
 import { ServicesGrid } from "../../components/react/ServicesGrid";
 import { Stats } from "../../components/react/Stats";
 import { CTA } from "../../components/react/CTA";
@@ -33,6 +34,7 @@ const content = translations[lang as keyof typeof translations];
     <main>
         <Hero client:load content={content.hero} />
         <Intro content={content.intro} />
+        <FeatureGrid client:visible data={content.features} />
         <ServicesGrid content={content.species} />
         <Stats content={content.stats} />
         <CTA content={content.cta} />

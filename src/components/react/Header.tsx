@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" })
             >
                 <div className="container mx-auto px-6 flex justify-between items-center h-full">
                     <a
-                        href="#"
+                        href={`/${lang}/`}
                         className={`group flex gap-3 items-center transition-colors duration-300 ${isScrolled ? "text-primary-dark" : "text-white"}`}
                     >
                         <img

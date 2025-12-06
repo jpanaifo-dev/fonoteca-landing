@@ -9,16 +9,13 @@ import { translations, LANGUAGES } from "../../../i18n/data";
 import logoIiap from "../../../assets/logo_iiap.png";
 
 export function getStaticPaths() {
-    const paths = [];
     const masterList = translations.es.species_page.list;
 
-    LANGUAGES.forEach((lang) => {
-        masterList.forEach((species) => {
-            paths.push({ params: { lang, id: species.id } });
-        });
-    });
-
-    return paths;
+    return LANGUAGES.flatMap((lang) =>
+        masterList.map((species) => ({
+            params: { lang, id: species.id },
+        })),
+    );
 }
 
 const { lang, id } = Astro.params;

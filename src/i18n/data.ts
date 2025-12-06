@@ -18,7 +18,7 @@ export const translations = {
                 "Susurros de la Vida"
             ],
             description: "Una colección sonora que conecta con la biodiversidad del mundo. Descubre la belleza de la naturaleza a través de nuestras grabaciones.",
-            cta: "Escuchar Ahora"
+            cta: "Explorar Ahora"
         },
         intro: {
             label: "Quiénes Somos",
@@ -55,93 +55,104 @@ export const translations = {
             banner: {
                 title: "Explora la Fonoteca",
                 subtitle: "Una inmersión sonora en la biodiversidad amazónica",
-                image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
+                image: "https://images.unsplash.com/photo-1501854140801-50d00698a7ee?q=80&w=2060&auto=format&fit=crop"
             },
             list: [
                 {
-                    id: "rana-dardo",
-                    name: "Rana Dardo",
-                    scientific: "Ranitomeya ventrimaculata",
-                    image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
+                    id: "rana-mono",
+                    name: "Rana Mono Gigante",
+                    scientific: "Phyllomedusa bicolor",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Phyllomedusa_bicolor.jpg/1200px-Phyllomedusa_bicolor.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1549498263-84b2383c2763?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1582697816664-96894c483af9?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Phyllomedusa_bicolor.jpg/1200px-Phyllomedusa_bicolor.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/56230495/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/103254922/large.jpg"
                     ],
                     audio: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
-                    description: "Esta pequeña rana venenosa es conocida por sus brillantes colores y patrones únicos. Habita en el sotobosque de la selva amazónica y es un indicador clave de la salud del ecosistema.",
-                    location: "Reserva Nacional Allpahuayo Mishana"
+                    description: "Conocida como 'Kambó' o 'Sapo', esta rana arbórea gigante secreta una sustancia cerosa utilizada en la medicina tradicional. Sus ojos plateados y vientre crema la hacen inconfundible.",
+                    location: "Cuenca del Amazonas"
                 },
                 {
-                    id: "guacamayo",
-                    name: "Guacamayo Rojo",
-                    scientific: "Ara macao",
-                    image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
+                    id: "caiman-anteojos",
+                    name: "Caimán de Anteojos",
+                    scientific: "Caiman crocodilus",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Spectacled_Caiman_%28Caiman_crocodilus%29.jpg/1200px-Spectacled_Caiman_%28Caiman_crocodilus%29.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1551092892-273644265158?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1522857476332-6bf59a1844b2?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Spectacled_Caiman_%28Caiman_crocodilus%29.jpg/1200px-Spectacled_Caiman_%28Caiman_crocodilus%29.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/357604/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/1826702/large.jpg"
                     ],
-                    audio: "https://actions.google.com/sounds/v1/animals/parrot.ogg",
-                    description: "Con su plumaje escarlata, amarillo y azul, el guacamayo rojo es una de las aves más emblemáticas de la Amazonía. Sus fuertes graznidos resuenan a través del dosel de la selva.",
-                    location: "Parque Nacional del Manu"
-                },
-                {
-                    id: "mono-ardilla",
-                    name: "Mono Ardilla",
-                    scientific: "Saimiri sciureus",
-                    image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
-                    images: [
-                        "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1565063073740-4107dc6ad521?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1535930749574-1399327ce78f?q=80&w=1000&auto=format&fit=crop"
-                    ],
-                    audio: "https://actions.google.com/sounds/v1/animals/monkey_screech.ogg",
-                    description: "Pequeños, ágiles y altamente sociables, los monos ardilla viajan en grandes tropas. Sus vocalizaciones son complejas y vitales para la cohesión del grupo.",
+                    audio: "https://actions.google.com/sounds/v1/animals/tiger_growl.ogg",
+                    description: "Pequeño cocodrilo caracterizado por una cresta ósea entre los ojos que parece un par de anteojos. Es común en caños y lagunas amazónicas.",
                     location: "Reserva Nacional Pacaya Samiria"
                 },
                 {
-                    id: "jaguar",
-                    name: "Jaguar",
-                    scientific: "Panthera onca",
-                    image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
+                    id: "boa-esmeralda",
+                    name: "Boa Esmeralda",
+                    scientific: "Corallus caninus",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Corallus_caninus_w_K%C3%B6ln.jpg/1200px-Corallus_caninus_w_K%C3%B6ln.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1629813296837-774900cb34b6?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1615963244664-5b845b2025ee?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Corallus_caninus_w_K%C3%B6ln.jpg/1200px-Corallus_caninus_w_K%C3%B6ln.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/6321473/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/11559850/large.jpg"
                     ],
-                    audio: "https://actions.google.com/sounds/v1/animals/tiger_growl.ogg", // Using tiger as proxy for Jaguar
-                    description: "El felino más grande de América. El jaguar es un depredador clave y un símbolo de poder en la cosmovisión amazónica. Su rugido es profundo y resonante.",
-                    location: "Parque Nacional Bahuaja Sonene"
+                    audio: "https://actions.google.com/sounds/v1/animals/snake_hiss.ogg",
+                    description: "Serpiente arborícola no venenosa de un verde brillante con manchas blancas. Pasa sus días enrollada en ramas sobre el agua.",
+                    location: "Parque Nacional del Manu"
                 },
                 {
-                    id: "tucan",
-                    name: "Tucán",
-                    scientific: "Ramphastos toco",
-                    image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
+                    id: "rana-dardo-fantasma",
+                    name: "Rana Venenosa Fantasma",
+                    scientific: "Epipedobates tricolor",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Epipedobates_tricolor.jpg/1200px-Epipedobates_tricolor.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1628045997232-a544b6f00114?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1623953530869-fa7166164d1f?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Epipedobates_tricolor.jpg/1200px-Epipedobates_tricolor.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/2592500/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/8912384/large.jpg"
                     ],
-                    audio: "https://actions.google.com/sounds/v1/animals/crow_caw.ogg", // Proxy
-                    description: "Famoso por su enorme pico colorido. El tucán es un importante dispersor de semillas en la selva. Su canto es un sonido característico del amanecer amazónico.",
-                    location: "Reserva Comunal Tamshiyacu Tahuayo"
+                    audio: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
+                    description: "Pequeña rana venenosa endémica de los Andes y Amazonía. Su canto es similar al de un canario.",
+                    location: "Bosques Premontanos"
                 },
                 {
-                    id: "delfin-rosado",
-                    name: "Delfín Rosado",
-                    scientific: "Inia geoffrensis",
-                    image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
+                    id: "tortuga-taricaya",
+                    name: "Taricaya",
+                    scientific: "Podocnemis unifilis",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Podocnemis_unifilis_%28Yellow-spotted_River_Turtle%29.jpg/1200px-Podocnemis_unifilis_%28Yellow-spotted_River_Turtle%29.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1606735584500-a63e8a39a263?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1544552866-d3ed42536de7?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Podocnemis_unifilis_%28Yellow-spotted_River_Turtle%29.jpg/1200px-Podocnemis_unifilis_%28Yellow-spotted_River_Turtle%29.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/1576757/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/5482390/large.jpg"
                     ],
-                    audio: "https://actions.google.com/sounds/v1/animals/dolphin_chatter.ogg",
-                    description: "El mítico delfín rosado habita los ríos de la Amazonas. Es una especie inteligente y curiosa, envuelta en leyendas locales.",
-                    location: "Río Amazonas, Iquitos"
+                    audio: "https://actions.google.com/sounds/v1/water/stream_water.ogg",
+                    description: "Tortuga de río de manchas amarillas. Es fundamental para el ecosistema acuático y sujeto de importantes programas de conservación.",
+                    location: "Ríos de la Amazonía"
                 },
+                {
+                    id: "shushupe",
+                    name: "Shushupe",
+                    scientific: "Lachesis muta",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Lachesis_muta.jpg/1200px-Lachesis_muta.jpg",
+                    images: [
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Lachesis_muta.jpg/1200px-Lachesis_muta.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/33284090/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/10385732/large.jpg"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/snake_hiss.ogg",
+                    description: "La víbora más grande del hemisferio occidental. Conocida por sus escamas en forma de piña y su veneno potente.",
+                    location: "Bosque Húmedo Tropical"
+                },
+            ]
+        },
+        features: {
+            title: "Soluciones Confiables, Resultados Reales",
+            items: [
+                { title: "Servicios de Grabación", description: "Como tus asesores de audio, proporcionamos equipos y técnicas de planificación proactiva para capturar los sonidos de la naturaleza." },
+                { title: "Archivo y Preservación", description: "La experiencia y eficiencia proporcionan a tu organización un archivo de audio único y disfrutable." },
+                { title: "Servicios de Taxonomía", description: "Obtén liderazgo científico experto sin el costo total. Nuestros servicios incluyen identificación taxonómica y guía estratégica." },
+                { title: "Análisis de Bioacústica", description: "Mantén tus datos limpios y actualizados con nuestra ayuda confiable. Manejamos las tareas de análisis para que tú te enfoques en la investigación." },
+                { title: "Servicios de Educación", description: "Desde informes mensuales hasta preparación anual, nuestro equipo mantiene tu conocimiento organizado. Hacemos que los números tengan sentido." },
+                { title: "Monitoreo Ambiental", description: "" }
             ]
         },
         footer: {
@@ -170,7 +181,7 @@ export const translations = {
                 "Whispers of Life"
             ],
             description: "A sound collection connecting you with the world's biodiversity. Discover the beauty of nature through our recordings.",
-            cta: "Listen Now"
+            cta: "Explore Now"
         },
         intro: {
             label: "Who We Are",
@@ -211,89 +222,100 @@ export const translations = {
             },
             list: [
                 {
-                    id: "rana-dardo",
-                    name: "Poison Dart Frog",
-                    scientific: "Ranitomeya ventrimaculata",
-                    image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
+                    id: "rana-mono",
+                    name: "Giant Monkey Frog",
+                    scientific: "Phyllomedusa bicolor",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Phyllomedusa_bicolor.jpg/1200px-Phyllomedusa_bicolor.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1549498263-84b2383c2763?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1582697816664-96894c483af9?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Phyllomedusa_bicolor.jpg/1200px-Phyllomedusa_bicolor.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/56230495/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/103254922/large.jpg"
                     ],
                     audio: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
-                    description: "This small poisonous frog is known for its bright colors and unique patterns. It inhabits the understory of the Amazon rainforest and is a key indicator of ecosystem health.",
-                    location: "Allpahuayo Mishana National Reserve"
+                    description: "Known as 'Kambó', this giant tree frog uses a waxy secretion used in traditional medicine. Its silver eyes and cream belly make it unmistakable.",
+                    location: "Amazon Basin"
                 },
                 {
-                    id: "guacamayo",
-                    name: "Scarlet Macaw",
-                    scientific: "Ara macao",
-                    image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
+                    id: "caiman-anteojos",
+                    name: "Spectacled Caiman",
+                    scientific: "Caiman crocodilus",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Spectacled_Caiman_%28Caiman_crocodilus%29.jpg/1200px-Spectacled_Caiman_%28Caiman_crocodilus%29.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1551092892-273644265158?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1522857476332-6bf59a1844b2?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Spectacled_Caiman_%28Caiman_crocodilus%29.jpg/1200px-Spectacled_Caiman_%28Caiman_crocodilus%29.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/357604/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/1826702/large.jpg"
                     ],
-                    audio: "https://actions.google.com/sounds/v1/animals/parrot.ogg",
-                    description: "With its scarlet, yellow, and blue plumage, the scarlet macaw is one of the most iconic birds of the Amazon. Its loud squawks echo through the forest canopy.",
-                    location: "Manu National Park"
-                },
-                {
-                    id: "mono-ardilla",
-                    name: "Squirrel Monkey",
-                    scientific: "Saimiri sciureus",
-                    image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
-                    images: [
-                        "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1565063073740-4107dc6ad521?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1535930749574-1399327ce78f?q=80&w=1000&auto=format&fit=crop"
-                    ],
-                    audio: "https://actions.google.com/sounds/v1/animals/monkey_screech.ogg",
-                    description: "Small, agile, and highly social, squirrel monkeys travel in large troops. Their vocalizations are complex and vital for group cohesion.",
+                    audio: "https://actions.google.com/sounds/v1/animals/tiger_growl.ogg",
+                    description: "Small crocodilian characterized by a bony ridge between the eyes that resembles spectacles. Common in Amazonian creeks.",
                     location: "Pacaya Samiria National Reserve"
                 },
                 {
-                    id: "jaguar",
-                    name: "Jaguar",
-                    scientific: "Panthera onca",
-                    image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
+                    id: "boa-esmeralda",
+                    name: "Emerald Tree Boa",
+                    scientific: "Corallus caninus",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Corallus_caninus_w_K%C3%B6ln.jpg/1200px-Corallus_caninus_w_K%C3%B6ln.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1629813296837-774900cb34b6?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1615963244664-5b845b2025ee?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Corallus_caninus_w_K%C3%B6ln.jpg/1200px-Corallus_caninus_w_K%C3%B6ln.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/6321473/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/11559850/large.jpg"
                     ],
-                    audio: "https://actions.google.com/sounds/v1/animals/tiger_growl.ogg",
-                    description: "The largest feline in the Americas. The jaguar is a keystone predator and a symbol of power in Amazonian worldview. Its roar is deep and resonant.",
-                    location: "Bahuaja Sonene National Park"
+                    audio: "https://actions.google.com/sounds/v1/animals/snake_hiss.ogg",
+                    description: "Non-venomous arboreal snake of bright green with white markings. Spends its days coiled on branches over water.",
+                    location: "Manu National Park"
                 },
                 {
-                    id: "tucan",
-                    name: "Toucan",
-                    scientific: "Ramphastos toco",
-                    image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
+                    id: "rana-dardo-fantasma",
+                    name: "Phantasmal Poison Frog",
+                    scientific: "Epipedobates tricolor",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Epipedobates_tricolor.jpg/1200px-Epipedobates_tricolor.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1628045997232-a544b6f00114?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1623953530869-fa7166164d1f?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Epipedobates_tricolor.jpg/1200px-Epipedobates_tricolor.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/2592500/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/8912384/large.jpg"
                     ],
-                    audio: "https://actions.google.com/sounds/v1/animals/crow_caw.ogg",
-                    description: "Famous for its enormous colorful beak. The toucan is an important seed disperser in the forest. Its song is a characteristic sound of the Amazonian dawn.",
-                    location: "Tamshiyacu Tahuayo Communal Reserve"
+                    audio: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
+                    description: "Small poison frog endemic to the Andes and Amazon. Its call is similar to a canary.",
+                    location: "Premontane Forests"
                 },
                 {
-                    id: "delfin-rosado",
-                    name: "Pink River Dolphin",
-                    scientific: "Inia geoffrensis",
-                    image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
+                    id: "tortuga-taricaya",
+                    name: "Yellow-spotted River Turtle",
+                    scientific: "Podocnemis unifilis",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Podocnemis_unifilis_%28Yellow-spotted_River_Turtle%29.jpg/1200px-Podocnemis_unifilis_%28Yellow-spotted_River_Turtle%29.jpg",
                     images: [
-                        "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1606735584500-a63e8a39a263?q=80&w=1000&auto=format&fit=crop",
-                        "https://images.unsplash.com/photo-1544552866-d3ed42536de7?q=80&w=1000&auto=format&fit=crop"
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Podocnemis_unifilis_%28Yellow-spotted_River_Turtle%29.jpg/1200px-Podocnemis_unifilis_%28Yellow-spotted_River_Turtle%29.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/1576757/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/5482390/large.jpg"
                     ],
-                    audio: "https://actions.google.com/sounds/v1/animals/dolphin_chatter.ogg",
-                    description: "The mythical pink dolphin inhabits the Amazon rivers. It is an intelligent and curious species, shrouded in local legends.",
-                    location: "Amazon River, Iquitos"
+                    audio: "https://actions.google.com/sounds/v1/water/stream_water.ogg",
+                    description: "River turtle with yellow spots. Essential for the aquatic ecosystem and subject of important conservation programs.",
+                    location: "Amazon Rivers"
                 },
+                {
+                    id: "shushupe",
+                    name: "Bushmaster",
+                    scientific: "Lachesis muta",
+                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Lachesis_muta.jpg/1200px-Lachesis_muta.jpg",
+                    images: [
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Lachesis_muta.jpg/1200px-Lachesis_muta.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/33284090/large.jpg",
+                        "https://inaturalist-open-data.s3.amazonaws.com/photos/10385732/large.jpg"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/snake_hiss.ogg",
+                    description: "The largest viper in the Western Hemisphere. Known for its pineapple-like scales and potent venom.",
+                    location: "Tropical Rainforest"
+                },
+            ]
+        },
+        features: {
+            title: "Reliable Solutions, Real Results",
+            items: [
+                { title: "Recording Services", description: "As your audio advisors we provide proactive planning and equipment to capture nature sounds." },
+                { title: "Audit & Assurance", description: "Experience and efficiency provides your organization with a uniquely enjoyable audio archive." },
+                { title: "Taxonomy Services", description: "Get expert scientific leadership without the full-time cost. Our services include taxonomic identification and strategic guidance." },
+                { title: "Bioacoustics Analysis", description: "Keep your data clean and up-to-date with our reliable help. We handle the analysis tasks so you can focus on research." },
+                { title: "Education Services", description: "From monthly reports to year-end prep, our team keeps your knowledge organized. We make your numbers make sense." },
+                { title: "Environmental Monitoring", description: "" }
             ]
         },
         footer: {
@@ -322,7 +344,7 @@ export const translations = {
                 "Sussurros da Vida"
             ],
             description: "Uma coleção sonora que conecta com a biodiversidade do mundo. Descubra a beleza da natureza através de nossas gravações.",
-            cta: "Ouvir Agora"
+            cta: "Explorar Agora"
         },
         intro: {
             label: "Quem Somos",
@@ -446,6 +468,17 @@ export const translations = {
                     description: "O mítico boto cor-de-rosa habita os rios da Amazônia. É uma espécie inteligente e curiosa, envolta em lendas locais.",
                     location: "Rio Amazonas, Iquitos"
                 },
+            ]
+        },
+        features: {
+            title: "Soluções Confiáveis, Resultados Reais",
+            items: [
+                { title: "Serviços de Gravação", description: "Como seus consultores de áudio, fornecemos planejamento proativo e equipamentos para capturar sons da natureza." },
+                { title: "Arquivo e Preservação", description: "Experiência e eficiência proporcionam à sua organização um arquivo de áudio único e agradável." },
+                { title: "Serviços de Taxonomia", description: "Obtenha liderança científica especializada sem o custo integral. Nossos serviços incluem identificação taxonômica e orientação estratégica." },
+                { title: "Análise Bioacústica", description: "Mantenha seus dados limpos e atualizados com nossa ajuda confiável. Cuidamos das tarefas de análise para que você possa focar na pesquisa." },
+                { title: "Serviços de Educação", description: "De relatórios mensais a preparação anual, nossa equipe mantém seu conhecimento organizado." },
+                { title: "Monitoramento Ambiental", description: "" }
             ]
         },
         footer: {
