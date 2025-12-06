@@ -24,7 +24,12 @@ const content = translations[lang as keyof typeof translations];
     title="Fonoteca - Instituto de Investigaciones de la Amazonía Peruana"
     lang={lang}
 >
-    <Header client:load content={content.nav} logoSrc={logoIiap.src} />
+    <Header
+        client:load
+        content={content.nav}
+        logoSrc={logoIiap.src}
+        lang={lang}
+    />
     <main>
         <Hero client:load content={content.hero} />
         <Intro content={content.intro} />

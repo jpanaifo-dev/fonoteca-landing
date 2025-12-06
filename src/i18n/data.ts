@@ -58,12 +58,90 @@ export const translations = {
                 image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
             },
             list: [
-                { id: "rana-dardo", name: "Rana Dardo", scientific: "Ranitomeya ventrimaculata", image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop" },
-                { id: "guacamayo", name: "Guacamayo Rojo", scientific: "Ara macao", image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop" },
-                { id: "mono-ardilla", name: "Mono Ardilla", scientific: "Saimiri sciureus", image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop" },
-                { id: "jaguar", name: "Jaguar", scientific: "Panthera onca", image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop" },
-                { id: "tucan", name: "Tucán", scientific: "Ramphastos toco", image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop" },
-                { id: "delfin-rosado", name: "Delfín Rosado", scientific: "Inia geoffrensis", image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop" },
+                {
+                    id: "rana-dardo",
+                    name: "Rana Dardo",
+                    scientific: "Ranitomeya ventrimaculata",
+                    image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1549498263-84b2383c2763?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1582697816664-96894c483af9?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
+                    description: "Esta pequeña rana venenosa es conocida por sus brillantes colores y patrones únicos. Habita en el sotobosque de la selva amazónica y es un indicador clave de la salud del ecosistema.",
+                    location: "Reserva Nacional Allpahuayo Mishana"
+                },
+                {
+                    id: "guacamayo",
+                    name: "Guacamayo Rojo",
+                    scientific: "Ara macao",
+                    image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1551092892-273644265158?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1522857476332-6bf59a1844b2?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/parrot.ogg",
+                    description: "Con su plumaje escarlata, amarillo y azul, el guacamayo rojo es una de las aves más emblemáticas de la Amazonía. Sus fuertes graznidos resuenan a través del dosel de la selva.",
+                    location: "Parque Nacional del Manu"
+                },
+                {
+                    id: "mono-ardilla",
+                    name: "Mono Ardilla",
+                    scientific: "Saimiri sciureus",
+                    image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1565063073740-4107dc6ad521?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1535930749574-1399327ce78f?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/monkey_screech.ogg",
+                    description: "Pequeños, ágiles y altamente sociables, los monos ardilla viajan en grandes tropas. Sus vocalizaciones son complejas y vitales para la cohesión del grupo.",
+                    location: "Reserva Nacional Pacaya Samiria"
+                },
+                {
+                    id: "jaguar",
+                    name: "Jaguar",
+                    scientific: "Panthera onca",
+                    image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1629813296837-774900cb34b6?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1615963244664-5b845b2025ee?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/tiger_growl.ogg", // Using tiger as proxy for Jaguar
+                    description: "El felino más grande de América. El jaguar es un depredador clave y un símbolo de poder en la cosmovisión amazónica. Su rugido es profundo y resonante.",
+                    location: "Parque Nacional Bahuaja Sonene"
+                },
+                {
+                    id: "tucan",
+                    name: "Tucán",
+                    scientific: "Ramphastos toco",
+                    image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1628045997232-a544b6f00114?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1623953530869-fa7166164d1f?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/crow_caw.ogg", // Proxy
+                    description: "Famoso por su enorme pico colorido. El tucán es un importante dispersor de semillas en la selva. Su canto es un sonido característico del amanecer amazónico.",
+                    location: "Reserva Comunal Tamshiyacu Tahuayo"
+                },
+                {
+                    id: "delfin-rosado",
+                    name: "Delfín Rosado",
+                    scientific: "Inia geoffrensis",
+                    image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1606735584500-a63e8a39a263?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1544552866-d3ed42536de7?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/dolphin_chatter.ogg",
+                    description: "El mítico delfín rosado habita los ríos de la Amazonas. Es una especie inteligente y curiosa, envuelta en leyendas locales.",
+                    location: "Río Amazonas, Iquitos"
+                },
             ]
         },
         footer: {
@@ -132,12 +210,90 @@ export const translations = {
                 image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
             },
             list: [
-                { id: "rana-dardo", name: "Poison Dart Frog", scientific: "Ranitomeya ventrimaculata", image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop" },
-                { id: "guacamayo", name: "Scarlet Macaw", scientific: "Ara macao", image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop" },
-                { id: "mono-ardilla", name: "Squirrel Monkey", scientific: "Saimiri sciureus", image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop" },
-                { id: "jaguar", name: "Jaguar", scientific: "Panthera onca", image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop" },
-                { id: "tucan", name: "Toucan", scientific: "Ramphastos toco", image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop" },
-                { id: "delfin-rosado", name: "Pink River Dolphin", scientific: "Inia geoffrensis", image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop" },
+                {
+                    id: "rana-dardo",
+                    name: "Poison Dart Frog",
+                    scientific: "Ranitomeya ventrimaculata",
+                    image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1549498263-84b2383c2763?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1582697816664-96894c483af9?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
+                    description: "This small poisonous frog is known for its bright colors and unique patterns. It inhabits the understory of the Amazon rainforest and is a key indicator of ecosystem health.",
+                    location: "Allpahuayo Mishana National Reserve"
+                },
+                {
+                    id: "guacamayo",
+                    name: "Scarlet Macaw",
+                    scientific: "Ara macao",
+                    image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1551092892-273644265158?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1522857476332-6bf59a1844b2?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/parrot.ogg",
+                    description: "With its scarlet, yellow, and blue plumage, the scarlet macaw is one of the most iconic birds of the Amazon. Its loud squawks echo through the forest canopy.",
+                    location: "Manu National Park"
+                },
+                {
+                    id: "mono-ardilla",
+                    name: "Squirrel Monkey",
+                    scientific: "Saimiri sciureus",
+                    image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1565063073740-4107dc6ad521?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1535930749574-1399327ce78f?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/monkey_screech.ogg",
+                    description: "Small, agile, and highly social, squirrel monkeys travel in large troops. Their vocalizations are complex and vital for group cohesion.",
+                    location: "Pacaya Samiria National Reserve"
+                },
+                {
+                    id: "jaguar",
+                    name: "Jaguar",
+                    scientific: "Panthera onca",
+                    image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1629813296837-774900cb34b6?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1615963244664-5b845b2025ee?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/tiger_growl.ogg",
+                    description: "The largest feline in the Americas. The jaguar is a keystone predator and a symbol of power in Amazonian worldview. Its roar is deep and resonant.",
+                    location: "Bahuaja Sonene National Park"
+                },
+                {
+                    id: "tucan",
+                    name: "Toucan",
+                    scientific: "Ramphastos toco",
+                    image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1628045997232-a544b6f00114?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1623953530869-fa7166164d1f?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/crow_caw.ogg",
+                    description: "Famous for its enormous colorful beak. The toucan is an important seed disperser in the forest. Its song is a characteristic sound of the Amazonian dawn.",
+                    location: "Tamshiyacu Tahuayo Communal Reserve"
+                },
+                {
+                    id: "delfin-rosado",
+                    name: "Pink River Dolphin",
+                    scientific: "Inia geoffrensis",
+                    image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1606735584500-a63e8a39a263?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1544552866-d3ed42536de7?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/dolphin_chatter.ogg",
+                    description: "The mythical pink dolphin inhabits the Amazon rivers. It is an intelligent and curious species, shrouded in local legends.",
+                    location: "Amazon River, Iquitos"
+                },
             ]
         },
         footer: {
@@ -206,12 +362,90 @@ export const translations = {
                 image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
             },
             list: [
-                { id: "rana-dardo", name: "Sapo Ponta-de-Flecha", scientific: "Ranitomeya ventrimaculata", image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop" },
-                { id: "guacamayo", name: "Arara Vermelha", scientific: "Ara macao", image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop" },
-                { id: "mono-ardilla", name: "Macaco-de-Cheiro", scientific: "Saimiri sciureus", image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop" },
-                { id: "jaguar", name: "Onça-Pintada", scientific: "Panthera onca", image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop" },
-                { id: "tucan", name: "Tucano", scientific: "Ramphastos toco", image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop" },
-                { id: "delfin-rosado", name: "Boto Cor-de-Rosa", scientific: "Inia geoffrensis", image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop" },
+                {
+                    id: "rana-dardo",
+                    name: "Sapo Ponta-de-Flecha",
+                    scientific: "Ranitomeya ventrimaculata",
+                    image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1549498263-84b2383c2763?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1582697816664-96894c483af9?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
+                    description: "Este pequeno sapo venenoso é conhecido por suas cores brilhantes e padrões únicos. Habita o sub-bosque da floresta amazônica e é um indicador chave da saúde do ecossistema.",
+                    location: "Reserva Nacional Allpahuayo Mishana"
+                },
+                {
+                    id: "guacamayo",
+                    name: "Arara Vermelha",
+                    scientific: "Ara macao",
+                    image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1551092892-273644265158?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1522857476332-6bf59a1844b2?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/parrot.ogg",
+                    description: "Com sua plumagem escarlate, amarela e azul, a arara vermelha é uma das aves mais emblemáticas da Amazônia. Seus grasnidos fortes ecoam pelo dossel da floresta.",
+                    location: "Parque Nacional do Manu"
+                },
+                {
+                    id: "mono-ardilla",
+                    name: "Macaco-de-Cheiro",
+                    scientific: "Saimiri sciureus",
+                    image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1565063073740-4107dc6ad521?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1535930749574-1399327ce78f?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/monkey_screech.ogg",
+                    description: "Pequenos, ágeis e altamente sociais, os macacos-de-cheiro viajam em grandes bandos. Suas vocalizações são complexas e vitais para a coesão do grupo.",
+                    location: "Reserva Nacional Pacaya Samiria"
+                },
+                {
+                    id: "jaguar",
+                    name: "Onça-Pintada",
+                    scientific: "Panthera onca",
+                    image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1629813296837-774900cb34b6?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1615963244664-5b845b2025ee?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/tiger_growl.ogg",
+                    description: "O maior felino das Américas. A onça-pintada é um predador chave e um símbolo de poder na cosmovisão amazônica. Seu rugido é profundo e ressonante.",
+                    location: "Parque Nacional Bahuaja Sonene"
+                },
+                {
+                    id: "tucan",
+                    name: "Tucano",
+                    scientific: "Ramphastos toco",
+                    image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1628045997232-a544b6f00114?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1623953530869-fa7166164d1f?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/crow_caw.ogg",
+                    description: "Famoso por seu enorme bico colorido. O tucano é um importante dispersor de sementes na floresta. Seu canto é um som característico do amanhecer amazônico.",
+                    location: "Reserva Comunal Tamshiyacu Tahuayo"
+                },
+                {
+                    id: "delfin-rosado",
+                    name: "Boto Cor-de-Rosa",
+                    scientific: "Inia geoffrensis",
+                    image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
+                    images: [
+                        "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1606735584500-a63e8a39a263?q=80&w=1000&auto=format&fit=crop",
+                        "https://images.unsplash.com/photo-1544552866-d3ed42536de7?q=80&w=1000&auto=format&fit=crop"
+                    ],
+                    audio: "https://actions.google.com/sounds/v1/animals/dolphin_chatter.ogg",
+                    description: "O mítico boto cor-de-rosa habita os rios da Amazônia. É uma espécie inteligente e curiosa, envolta em lendas locais.",
+                    location: "Rio Amazonas, Iquitos"
+                },
             ]
         },
         footer: {

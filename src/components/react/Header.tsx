@@ -4,9 +4,10 @@ import { type translations } from '../../i18n/data';
 interface HeaderProps {
     content: typeof translations.es.nav;
     logoSrc: string;
+    lang?: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({ content, logoSrc }) => {
+export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" }) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -22,6 +23,13 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc }) => {
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
         document.body.style.overflow = !isMenuOpen ? "hidden" : "";
+    };
+
+    const getHref = (key: string) => {
+        if (key === 'species') return `/${lang}/species`;
+        // For other links, if we are on the home page, scroll. If not, go to home#id
+        // Simple approach: Always go to /{lang}/#key. This works for both.
+        return `/${lang}/#${key === 'home' ? 'top' : key}`;
     };
 
     return (
@@ -108,8 +116,12 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc }) => {
                             {Object.entries(content).map(([key, label]) => (
                                 <a
                                     key={key}
-                                    href="#"
+                                    href={getHref(key)}
                                     className="block hover:text-accent-green hover:translate-x-2 transition-all"
+                                    onClick={() => {
+                                        setIsMenuOpen(false);
+                                        document.body.style.overflow = "";
+                                    }}
                                 >
                                     {label}
                                 </a>

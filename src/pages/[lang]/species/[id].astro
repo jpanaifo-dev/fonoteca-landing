@@ -3,14 +3,13 @@ import Layout from "../../../layouts/Layout.astro";
 import { Header } from "../../../components/react/Header";
 import { Footer } from "../../../components/react/Footer";
 import { PageBanner } from "../../../components/react/PageBanner";
+import { SpeciesGallery } from "../../../components/react/SpeciesGallery";
+import { AudioPlayer } from "../../../components/react/AudioPlayer";
 import { translations, LANGUAGES } from "../../../i18n/data";
 import logoIiap from "../../../assets/logo_iiap.png";
 
 export function getStaticPaths() {
     const paths = [];
-
-    // Generate paths for all species in all languages
-    // NOTE: Ideally we iterate over a master list of IDs, here we just use what's in 'es' as source of truth for IDs
     const masterList = translations.es.species_page.list;
 
     LANGUAGES.forEach((lang) => {
@@ -30,14 +29,23 @@ const species = speciesList.find((s) => s.id === id);
 if (!species) {
     return Astro.redirect(`/${lang}/species`);
 }
+
+// Fallback for images if not present in all languages yet (though we updated them)
+const galleryImages = species.images || [species.image];
 ---
 
 <Layout
     title={`${species.name} - ${content.nav.library}`}
     lang={lang}
     description={`Escucha el sonido de: ${species.name} (${species.scientific})`}
+    image={species.image}
 >
-    <Header client:load content={content.nav} logoSrc={logoIiap.src} />
+    <Header
+        client:load
+        content={content.nav}
+        logoSrc={logoIiap.src}
+        lang={lang}
+    />
     <main>
         <PageBanner
             title={species.name}
@@ -46,21 +54,112 @@ if (!species) {
         />
 
         <section class="py-24 bg-white">
-            <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl font-light text-primary-dark mb-8">
-                    Detalle de Especie
-                </h2>
-                <p class="text-xl text-gray-500 mb-12">
-                    Funcionalidad de detalle en desarrollo. <br />
-                    Aquí se mostrará el reproductor de audio, espectrograma y mapa
-                    de distribución.
-                </p>
-                <a
-                    href={`/${lang}/species`}
-                    class="inline-flex items-center text-accent-green hover:underline"
-                >
-                    &larr; Volver a la lista
-                </a>
+            <div class="container mx-auto px-6">
+                {/* Back Link */}
+                <div class="mb-12">
+                    <a
+                        href={`/${lang}/species`}
+                        class="inline-flex items-center text-accent-green hover:underline font-medium"
+                    >
+                        &larr; {
+                            lang === "es"
+                                ? "Volver a la lista"
+                                : lang === "pt"
+                                  ? "Voltar para lista"
+                                  : "Back to list"
+                        }
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                    {/* Left Column: Gallery */}
+                    <div>
+                        <SpeciesGallery client:load images={galleryImages} />
+
+                        {/* Location Badge */}
+                        <div
+                            class="mt-8 flex items-center gap-3 text-gray-500 bg-gray-50 p-4 rounded-xl border border-gray-100"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="w-6 h-6 text-accent-green"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                                ></path>
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                                ></path>
+                            </svg>
+                            <span class="font-medium">{species.location}</span>
+                        </div>
+                    </div>
+
+                    {/* Right Column: Info & Audio */}
+                    <div>
+                        <h1
+                            class="text-4xl md:text-5xl text-primary-dark font-light mb-2"
+                        >
+                            {species.name}
+                        </h1>
+                        <h2
+                            class="text-xl md:text-2xl text-accent-green font-serif italic mb-8"
+                        >
+                            {species.scientific}
+                        </h2>
+
+                        <div class="prose prose-lg text-gray-600 mb-12">
+                            <p>{species.description}</p>
+                        </div>
+
+                        {/* Audio Player */}
+                        <div class="mb-12">
+                            <h3
+                                class="text-lg font-bold text-primary-dark mb-4"
+                            >
+                                {
+                                    lang === "es"
+                                        ? "Escuchar Audio"
+                                        : lang === "pt"
+                                          ? "Ouvir Áudio"
+                                          : "Listen to Audio"
+                                }
+                            </h3>
+                            <AudioPlayer
+                                client:only="react"
+                                audioUrl={species.audio}
+                                description={lang === "es"
+                                    ? "Grabación de campo original"
+                                    : lang === "pt"
+                                      ? "Gravação de campo original"
+                                      : "Original field recording"}
+                            />
+                        </div>
+
+                        {/* Share / Extra Actions Placeholder */}
+                        <div class="flex gap-4">
+                            <button
+                                class="px-6 py-3 rounded-full border border-gray-200 text-gray-600 hover:border-accent-green hover:text-accent-green transition-colors font-medium"
+                            >
+                                {
+                                    lang === "es"
+                                        ? "Compartir Especie"
+                                        : lang === "pt"
+                                          ? "Compartilhar"
+                                          : "Share Species"
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

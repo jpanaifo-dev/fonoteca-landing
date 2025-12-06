@@ -23,7 +23,12 @@ const speciesData = content.species_page;
     lang={lang}
     description={speciesData.banner.subtitle}
 >
-    <Header client:load content={content.nav} logoSrc={logoIiap.src} />
+    <Header
+        client:load
+        content={content.nav}
+        logoSrc={logoIiap.src}
+        lang={lang}
+    />
     <main>
         <PageBanner
             title={speciesData.banner.title}
