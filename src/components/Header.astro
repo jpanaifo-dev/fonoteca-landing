@@ -1,22 +1,29 @@
 ---
-// No imports needed
+import logoIiap from "../assets/logo_iiap.png";
 ---
 
 <header
-    class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent"
+    class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent py-6"
     id="main-header"
 >
-    <div class="container mx-auto px-6 py-6 flex justify-between items-center">
+    <div
+        class="container mx-auto px-6 flex justify-between items-center h-full"
+    >
         <a
             href="#"
-            class="text-2xl font-bold tracking-tight text-white flex gap-2 items-center"
+            id="logo-link"
+            class="group text-white flex gap-3 items-center transition-colors duration-300"
         >
-            <!-- Logo placeholder -->
+            <img
+                src={logoIiap.src}
+                alt="Logo IIAP"
+                class="h-12 w-auto object-contain transition-transform group-hover:scale-105"
+            />
             <span
-                class="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center text-primary-dark font-bold"
-                >V</span
+                class="text-sm md:text-base font-medium max-w-[260px] leading-tight"
             >
-            Voces de la Naturaleza
+                Instituto de Investigaciones de la Amazonía Peruana
+            </span>
         </a>
 
         <button
@@ -126,6 +133,41 @@
     const menuOverlay = document.getElementById("menu-overlay");
     const menuPanel = document.getElementById("menu-panel");
     const menuBackdrop = document.getElementById("menu-backdrop");
+
+    // Navbar Scroll Effect
+    const header = document.getElementById("main-header");
+    const logoLink = document.getElementById("logo-link");
+    const menuSpans = document.querySelectorAll("#menu-btn span");
+
+    function handleScroll() {
+        if (window.scrollY > 50) {
+            header?.classList.remove("bg-transparent");
+            header?.classList.add("bg-white", "shadow-sm", "py-4");
+            header?.classList.remove("py-6"); // Reduce padding slightly on scroll
+
+            logoLink?.classList.remove("text-white");
+            logoLink?.classList.add("text-primary-dark");
+
+            menuSpans.forEach((span) => {
+                span.classList.remove("bg-white");
+                span.classList.add("bg-primary-dark");
+            });
+        } else {
+            header?.classList.add("bg-transparent");
+            header?.classList.remove("bg-white", "shadow-sm", "py-4");
+            header?.classList.add("py-6"); // Restore original padding
+
+            logoLink?.classList.add("text-white");
+            logoLink?.classList.remove("text-primary-dark");
+
+            menuSpans.forEach((span) => {
+                span.classList.add("bg-white");
+                span.classList.remove("bg-primary-dark");
+            });
+        }
+    }
+
+    window.addEventListener("scroll", handleScroll);
 
     function toggleMenu() {
         const isClosed = menuOverlay?.classList.contains("translate-x-full");

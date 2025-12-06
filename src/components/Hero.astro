@@ -13,30 +13,33 @@
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 container mx-auto px-6 text-center">
-        <h1
-            class="text-5xl md:text-7xl lg:text-8xl font-light text-white mb-6 tracking-wide opacity-0 animate-fade-up"
-            style="animation-delay: 0.2s; animation-fill-mode: forwards;"
-        >
-            Voces de la <span class="text-accent-green font-normal"
-                >Naturaleza</span
+    <div class="relative z-10 container mx-auto px-6 text-left">
+        <div class="max-w-4xl">
+            <h1
+                id="hero-title"
+                class="text-5xl md:text-6xl lg:text-8xl font-light text-white mb-6 tracking-wide opacity-0 animate-fade-up transition-all duration-500 min-h-[1.2em] text-accent-green"
+                style="animation-delay: 0.2s; animation-fill-mode: forwards;"
             >
-        </h1>
+                Voces de la Naturaleza
+            </h1>
 
-        <p
-            class="text-xl md:text-2xl text-gray-200 mb-10 max-w-2xl mx-auto font-light opacity-0 animate-fade-up"
-            style="animation-delay: 0.4s; animation-fill-mode: forwards;"
-        >
-            Una colección sonora que conecta con la biodiversidad del mundo.
-        </p>
+            <p
+                class="text-lg text-gray-200 mb-10 max-w-2xl font-light opacity-0 animate-fade-up pl-1"
+                style="animation-delay: 0.4s; animation-fill-mode: forwards;"
+            >
+                Una colección sonora que conecta con la biodiversidad del mundo.
+                Descubre la belleza de la naturaleza a través de nuestras
+                grabaciones.
+            </p>
 
-        <a
-            href="#species"
-            class="inline-block bg-accent-green text-primary-dark font-semibold py-4 px-10 rounded-full hover:bg-white hover:scale-105 transition-all duration-300 opacity-0 animate-fade-up shadow-lg shadow-accent-green/20"
-            style="animation-delay: 0.6s; animation-fill-mode: forwards;"
-        >
-            Escuchar Ahora
-        </a>
+            <a
+                href="#species"
+                class="inline-block bg-white -dark font-semibold py-4 px-10 rounded-full hover:bg-gray-100 hover:scale-105 transition-all duration-300 opacity-0 animate-fade-up shadow-lg text-accent-green uppercase"
+                style="animation-delay: 0.6s; animation-fill-mode: forwards;"
+            >
+                Escuchar Ahora
+            </a>
+        </div>
     </div>
 
     <!-- Scroll Indicator -->
@@ -58,6 +61,35 @@
         </svg>
     </div>
 </section>
+
+<script>
+    const titles = [
+        "<span class='text-accent-green dark:text-white'>Voces de la Naturaleza</span ",
+        "<span class='text-accent-green dark:text-white'>Sonidos del Bosque</span ",
+        "<span class='text-accent-green dark:text-white'>Susurros de la Vida</span ",
+    ];
+
+    const titleElement = document.getElementById("hero-title");
+    let currentIndex = 0;
+
+    if (titleElement) {
+        setInterval(() => {
+            // Fade out
+            titleElement.style.opacity = "0";
+            titleElement.style.transform = "translateY(20px)";
+
+            setTimeout(() => {
+                // Change text
+                currentIndex = (currentIndex + 1) % titles.length;
+                titleElement.innerHTML = titles[currentIndex];
+
+                // Fade in
+                titleElement.style.opacity = "1";
+                titleElement.style.transform = "translateY(0)";
+            }, 500); // Wait for fade out
+        }, 4000); // Change every 4 seconds
+    }
+</script>
 
 <style>
     @keyframes fade-up {
