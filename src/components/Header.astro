@@ -1,0 +1,152 @@
+---
+// No imports needed
+---
+
+<header
+    class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent"
+    id="main-header"
+>
+    <div class="container mx-auto px-6 py-6 flex justify-between items-center">
+        <a
+            href="#"
+            class="text-2xl font-bold tracking-tight text-white flex gap-2 items-center"
+        >
+            <!-- Logo placeholder -->
+            <span
+                class="w-8 h-8 bg-accent-green rounded-full flex items-center justify-center text-primary-dark font-bold"
+                >V</span
+            >
+            Voces de la Naturaleza
+        </a>
+
+        <button
+            id="menu-btn"
+            class="group flex flex-col gap-1.5 w-8 cursor-pointer z-50"
+        >
+            <span
+                class="block w-full h-0.5 bg-white transition-all group-hover:bg-accent-green"
+            ></span>
+            <span
+                class="block w-3/4 h-0.5 bg-white ml-auto transition-all group-hover:bg-accent-green group-hover:w-full"
+            ></span>
+            <span
+                class="block w-full h-0.5 bg-white transition-all group-hover:bg-accent-green"
+            ></span>
+        </button>
+    </div>
+</header>
+
+<!-- Overlay Menu -->
+<div
+    id="menu-overlay"
+    class="fixed inset-0 z-40 translate-x-full transition-transform duration-500 ease-in-out"
+>
+    <!-- Backdrop -->
+    <div
+        class="absolute inset-0 bg-primary-dark/90 backdrop-blur-sm"
+        id="menu-backdrop"
+    >
+    </div>
+
+    <!-- Menu Content -->
+    <div
+        class="absolute right-0 top-0 h-full w-full md:w-1/2 lg:w-1/3 bg-white text-primary-dark shadow-2xl transform transition-transform duration-500 delay-100 translate-x-full"
+        id="menu-panel"
+    >
+        <!-- Curved Shape (The Organic Edge) -->
+        <div
+            class="absolute top-0 left-0 w-24 h-full -translate-x-1/2 overflow-hidden pointer-events-none hidden md:block"
+        >
+            <div
+                class="w-[200%] h-full bg-white rounded-l-[100%] absolute right-0"
+            >
+            </div>
+        </div>
+
+        <div class="relative z-10 h-full flex flex-col p-12 justify-center">
+            <button
+                id="close-menu"
+                class="absolute top-8 right-8 text-primary-dark hover:text-accent-green transition-colors"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    class="w-8 h-8"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <nav class="space-y-6 text-3xl font-light">
+                <a
+                    href="#"
+                    class="block hover:text-accent-green hover:translate-x-2 transition-all"
+                    >Inicio</a
+                >
+                <a
+                    href="#"
+                    class="block hover:text-accent-green hover:translate-x-2 transition-all"
+                    >La Fonoteca</a
+                >
+                <a
+                    href="#"
+                    class="block hover:text-accent-green hover:translate-x-2 transition-all"
+                    >Especies</a
+                >
+                <a
+                    href="#"
+                    class="block hover:text-accent-green hover:translate-x-2 transition-all"
+                    >Estadísticas</a
+                >
+                <a
+                    href="#"
+                    class="block hover:text-accent-green hover:translate-x-2 transition-all"
+                    >Contacto</a
+                >
+            </nav>
+
+            <div class="mt-12 pt-12 border-t border-gray-100">
+                <p class="text-sm text-gray-500">
+                    © 2025 Voces de la Naturaleza
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const menuBtn = document.getElementById("menu-btn");
+    const closeMenu = document.getElementById("close-menu");
+    const menuOverlay = document.getElementById("menu-overlay");
+    const menuPanel = document.getElementById("menu-panel");
+    const menuBackdrop = document.getElementById("menu-backdrop");
+
+    function toggleMenu() {
+        const isClosed = menuOverlay?.classList.contains("translate-x-full");
+
+        if (isClosed) {
+            menuOverlay?.classList.remove("translate-x-full");
+            // Staggered animation
+            requestAnimationFrame(() => {
+                menuPanel?.classList.remove("translate-x-full");
+            });
+            document.body.style.overflow = "hidden";
+        } else {
+            menuPanel?.classList.add("translate-x-full");
+            setTimeout(() => {
+                menuOverlay?.classList.add("translate-x-full");
+                document.body.style.overflow = "";
+            }, 300); // Wait for panel to slide out
+        }
+    }
+
+    menuBtn?.addEventListener("click", toggleMenu);
+    closeMenu?.addEventListener("click", toggleMenu);
+    menuBackdrop?.addEventListener("click", toggleMenu);
+</script>

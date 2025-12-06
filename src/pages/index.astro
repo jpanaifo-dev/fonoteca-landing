@@ -1,11 +1,27 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Intro from "../components/Intro.astro";
+import ServicesGrid from "../components/ServicesGrid.astro";
+import Stats from "../components/Stats.astro";
+import CTA from "../components/CTA.astro";
 ---
 
 <Layout>
-	<Welcome />
+	<Header />
+	<main>
+		<Hero />
+		<Intro />
+		<ServicesGrid />
+		<Stats />
+		<CTA />
+	</main>
+	<footer
+		class="bg-primary-dark text-white/50 py-12 text-center border-t border-white/10"
+	>
+		<p>
+			&copy; 2025 Voces de la Naturaleza. Todos los derechos reservados.
+		</p>
+	</footer>
 </Layout>

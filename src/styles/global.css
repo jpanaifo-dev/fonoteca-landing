@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-dark: #0F2531;
+  --color-accent-green: #8DC63F;
+  --color-light-bg: #F3F4F6;
+  
+  --font-sans: 'Inter', sans-serif;
+
+  --radius-leaf: 80px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+.leaf-shape {
+  border-top-right-radius: var(--radius-leaf);
+  border-bottom-left-radius: var(--radius-leaf);
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.leaf-shape-reverse {
+  border-top-left-radius: var(--radius-leaf);
+  border-bottom-right-radius: var(--radius-leaf);
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
