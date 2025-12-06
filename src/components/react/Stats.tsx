@@ -21,11 +21,11 @@ export const Stats: React.FC<StatsProps> = ({ content }) => {
                             className="flex flex-col items-center reveal-on-scroll"
                             style={{ transitionDelay: `${i * 0.2}s` }}
                         >
-                            <div className="w-48 h-48 rounded-full border border-white/10 flex flex-col items-center justify-center hover:border-accent-green/50 transition-colors duration-500 bg-white/5 mb-6 group">
-                                <span className="text-5xl font-light text-accent-green mb-2 group-hover:scale-110 transition-transform duration-300">
+                            <div className="w-72 h-72 rounded-full border border-white/10 flex flex-col items-center justify-center hover:border-accent-green/50 transition-colors duration-500 bg-white/5 mb-6 group">
+                                <span className="text-7xl font-light text-accent-green mb-2 group-hover:scale-110 transition-transform duration-300">
                                     {stat.count}
                                 </span>
-                                <span className="text-sm text-gray-400 tracking-wider uppercase">
+                                <span className="text-base text-gray-400 tracking-wider uppercase">
                                     {stat.label}
                                 </span>
                             </div>
