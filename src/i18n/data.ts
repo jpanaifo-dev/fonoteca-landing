@@ -51,6 +51,21 @@ export const translations = {
             placeholder: "Tu correo electrónico",
             button: "Suscribirse"
         },
+        species_page: {
+            banner: {
+                title: "Explora la Fonoteca",
+                subtitle: "Una inmersión sonora en la biodiversidad amazónica",
+                image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
+            },
+            list: [
+                { id: "rana-dardo", name: "Rana Dardo", scientific: "Ranitomeya ventrimaculata", image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop" },
+                { id: "guacamayo", name: "Guacamayo Rojo", scientific: "Ara macao", image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop" },
+                { id: "mono-ardilla", name: "Mono Ardilla", scientific: "Saimiri sciureus", image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop" },
+                { id: "jaguar", name: "Jaguar", scientific: "Panthera onca", image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop" },
+                { id: "tucan", name: "Tucán", scientific: "Ramphastos toco", image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop" },
+                { id: "delfin-rosado", name: "Delfín Rosado", scientific: "Inia geoffrensis", image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop" },
+            ]
+        },
         footer: {
             description: "Investigación científica para el desarrollo sostenible de la Amazonía Peruana y la puesta en valor de su diversidad biológica y sociocultural.",
             links_title: "Enlaces",
@@ -110,6 +125,21 @@ export const translations = {
             placeholder: "Your email address",
             button: "Subscribe"
         },
+        species_page: {
+            banner: {
+                title: "Explore the Phonotheque",
+                subtitle: "A sonic immersion in the Amazonian biodiversity",
+                image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
+            },
+            list: [
+                { id: "rana-dardo", name: "Poison Dart Frog", scientific: "Ranitomeya ventrimaculata", image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop" },
+                { id: "guacamayo", name: "Scarlet Macaw", scientific: "Ara macao", image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop" },
+                { id: "mono-ardilla", name: "Squirrel Monkey", scientific: "Saimiri sciureus", image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop" },
+                { id: "jaguar", name: "Jaguar", scientific: "Panthera onca", image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop" },
+                { id: "tucan", name: "Toucan", scientific: "Ramphastos toco", image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop" },
+                { id: "delfin-rosado", name: "Pink River Dolphin", scientific: "Inia geoffrensis", image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop" },
+            ]
+        },
         footer: {
             description: "Scientific research for the sustainable development of the Peruvian Amazon and the enhancement of its biological and cultural diversity.",
             links_title: "Links",
@@ -168,6 +198,21 @@ export const translations = {
             desc: "Receba atualizações mensais sobre novas espécies catalogadas e relatórios de saúde dos ecossistemas.",
             placeholder: "Seu endereço de e-mail",
             button: "Inscrever-se"
+        },
+        species_page: {
+            banner: {
+                title: "Explore a Fonoteca",
+                subtitle: "Uma imersão sonora na biodiversidade amazônica",
+                image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
+            },
+            list: [
+                { id: "rana-dardo", name: "Sapo Ponta-de-Flecha", scientific: "Ranitomeya ventrimaculata", image: "https://images.unsplash.com/photo-1599488615731-7e5128091dd7?q=80&w=1000&auto=format&fit=crop" },
+                { id: "guacamayo", name: "Arara Vermelha", scientific: "Ara macao", image: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?q=80&w=1000&auto=format&fit=crop" },
+                { id: "mono-ardilla", name: "Macaco-de-Cheiro", scientific: "Saimiri sciureus", image: "https://images.unsplash.com/photo-1548685913-fe65780eb1d7?q=80&w=1000&auto=format&fit=crop" },
+                { id: "jaguar", name: "Onça-Pintada", scientific: "Panthera onca", image: "https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=1000&auto=format&fit=crop" },
+                { id: "tucan", name: "Tucano", scientific: "Ramphastos toco", image: "https://images.unsplash.com/photo-1550966871-3ed3c47e2ce2?q=80&w=1000&auto=format&fit=crop" },
+                { id: "delfin-rosado", name: "Boto Cor-de-Rosa", scientific: "Inia geoffrensis", image: "https://images.unsplash.com/photo-1568285984638-513d6a2dc907?q=80&w=1000&auto=format&fit=crop" },
+            ]
         },
         footer: {
             description: "Pesquisa científica para o desenvolvimento sustentável da Amazônia Peruana e a valorização de sua diversidade biológica e sociocultural.",

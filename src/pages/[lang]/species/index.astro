@@ -1,0 +1,55 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { Header } from "../../../components/react/Header";
+import { Footer } from "../../../components/react/Footer";
+import { PageBanner } from "../../../components/react/PageBanner";
+import { SpeciesCard } from "../../../components/react/SpeciesCard";
+import { translations, LANGUAGES } from "../../../i18n/data";
+import logoIiap from "../../../assets/logo_iiap.png";
+
+export function getStaticPaths() {
+    return LANGUAGES.map((lang) => ({
+        params: { lang },
+    }));
+}
+
+const { lang } = Astro.params;
+const content = translations[lang as keyof typeof translations];
+const speciesData = content.species_page;
+---
+
+<Layout
+    title={`${speciesData.banner.title} - ${content.nav.library}`}
+    lang={lang}
+    description={speciesData.banner.subtitle}
+>
+    <Header client:load content={content.nav} logoSrc={logoIiap.src} />
+    <main>
+        <PageBanner
+            title={speciesData.banner.title}
+            subtitle={speciesData.banner.subtitle}
+            image={speciesData.banner.image}
+        />
+
+        <section class="py-24 bg-light-bg">
+            <div class="container mx-auto px-6">
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
+                    {
+                        speciesData.list.map((species) => (
+                            <SpeciesCard
+                                id={species.id}
+                                name={species.name}
+                                scientific={species.scientific}
+                                image={species.image}
+                                lang={lang}
+                            />
+                        ))
+                    }
+                </div>
+            </div>
+        </section>
+    </main>
+    <Footer content={content.footer} logoSrc={logoIiap.src} />
+</Layout>
