@@ -36,7 +36,7 @@ export const translations = {
                 { title: "Anfibios", count: "117 Especies" },
                 { title: "Aves", count: "120 Especies" },
                 { title: "Murciélagos", count: "24 Especies" },
-                { title: "Insectos", count: "20 Especies" },
+                { title: "Grillos", count: "20 Especies" },
             ]
         },
         stats: {
@@ -198,7 +198,7 @@ export const translations = {
                 { title: "Amphibians", count: "117 Species" },
                 { title: "Birds", count: "120 Species" },
                 { title: "Bats", count: "24 Species" },
-                { title: "Insects", count: "20 Species" },
+                { title: "Crickets", count: "20 Species" },
             ]
         },
         stats: {
@@ -360,7 +360,7 @@ export const translations = {
                 { title: "Anfíbios", count: "117 Espécies" },
                 { title: "Aves", count: "120 Espécies" },
                 { title: "Morcegos", count: "24 Espécies" },
-                { title: "Insetos", count: "20 Espécies" },
+                { title: "Grilos", count: "20 Espécies" },
             ]
         },
         stats: {

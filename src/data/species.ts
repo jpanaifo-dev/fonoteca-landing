@@ -6,7 +6,7 @@ export interface SpeciesAudio {
     spectrogramImage?: string; // Optional static spectrogram image
 }
 
-export type SpeciesCategory = 'Amphibians' | 'Birds' | 'Mammals' | 'Insects' | 'Reptiles';
+export type SpeciesCategory = 'Amphibians' | 'Birds' | 'Mammals' | 'Crickets' | 'Reptiles';
 
 export interface Species {
     id: string; // Slug for URL
@@ -147,29 +147,7 @@ export const speciesData: Species[] = [
     },
 
     // Birds
-    {
-        id: "amazona-farinosa",
-        scientificName: "Amazona farinosa",
-        commonName_es: "Loro Real Amazónico",
-        commonName_en: "Mealy Amazon",
-        commonName_pt: "Papagaio-moleiro",
-        category: "Birds",
-        description: {
-            es: "Uno de los loros más grandes del género Amazona, llamado así por el tono harinoso en su espalda y nuca.",
-            en: "One of the largest parrots in the Amazona genus, named for the mealy prominence on its back and nape.",
-            pt: "Um dos maiores papagaios do gênero Amazona, nomeado pelo tom enfarinhado em suas costas e nuca."
-        },
-        mainImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Amazona_farinosa_-upper_Amazon_basin-8-4c.jpg/1200px-Amazona_farinosa_-upper_Amazon_basin-8-4c.jpg",
-        galleryImages: ["https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Amazona_farinosa_-upper_Amazon_basin-8-4c.jpg/1200px-Amazona_farinosa_-upper_Amazon_basin-8-4c.jpg"],
-        audios: [
-            {
-                title: "Llamada de vuelo",
-                url: "https://actions.google.com/sounds/v1/animals/parrot.ogg",
-                description: "Llamadas ruidosas durante el vuelo."
-            }
-        ],
-        location: "Central and South America"
-    },
+
     {
         id: "ammodramus-aurifrons",
         scientificName: "Ammodramus aurifrons",
@@ -178,68 +156,79 @@ export const speciesData: Species[] = [
         commonName_pt: "Tico-tico-de-sobrancelha-amarela",
         category: "Birds",
         description: {
-            es: "Un pequeño gorrión común en la cuenca del Amazonas, caracterizado por el amarillo brillante en su cara.",
-            en: "A small sparrow common in the Amazon basin, characterized by bright yellow on its face.",
-            pt: "Um pequeno pardal comum na bacia amazônica, caracterizado pelo amarelo brilhante em sua face."
+            es: "Un pequeño gorrión común en la cuenca del Amazonas, caracterizado por el amarillo brillante en su cara. Habita en pastizales y áreas abiertas cerca de ríos.",
+            en: "A small sparrow common in the Amazon basin, characterized by bright yellow on its face. Inhabits grasslands and open areas near rivers.",
+            pt: "Um pequeno pardal comum na bacia amazônica, caracterizado pelo amarelo brilhante em sua face. Habita pastagens e áreas abertas perto de rios."
         },
-        mainImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Yellow-browed_Sparrow_%28Ammodramus_aurifrons%29.jpg/1200px-Yellow-browed_Sparrow_%28Ammodramus_aurifrons%29.jpg",
-        galleryImages: ["https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Yellow-browed_Sparrow_%28Ammodramus_aurifrons%29.jpg/1200px-Yellow-browed_Sparrow_%28Ammodramus_aurifrons%29.jpg"],
+        mainImage: "/data/aves/ammodramus_aurifrons/Ammodramus aurifrons_image.jpg",
+        galleryImages: ["/data/aves/ammodramus_aurifrons/Ammodramus aurifrons_image.jpg"],
         audios: [
             {
-                title: "Canto",
-                url: "https://actions.google.com/sounds/v1/animals/sparrow_chirp.ogg",
-                description: "Canto agudo y zumbante."
+                title: "Canto Principal",
+                url: "/data/aves/ammodramus_aurifrons/Ammodramus aurifrons_CIN_SNMA0202_filt.wav",
+                description: "Canto característico registrado en su hábitat.",
+                spectrogramImage: "/data/aves/ammodramus_aurifrons/Ammodramus aurifrons_muestra.wav.256FFT.png"
             }
         ],
         location: "Amazon Basin"
     },
+    {
+        id: "attila-spadiceus",
+        scientificName: "Attila spadiceus",
+        commonName_es: "Atila de Rabadilla Brillante",
+        commonName_en: "Bright-rumped Attila",
+        commonName_pt: "Capitão-de-saíra",
+        category: "Birds",
+        description: {
+            es: "Un atrapamoscas grande y de cabeza grande con un pico fuerte y ganchudo. Es conocido por sus vocalizaciones fuertes y variadas.",
+            en: "A large, big-headed flycatcher with a strong, hooked bill. Known for its loud and varied vocalizations.",
+            pt: "Um papa-moscas grande e de cabeça grande com um bico forte e ganchudo. Conhecido por suas vocalizações altas e variadas."
+        },
+        mainImage: "/data/aves/attila_spadiceus/Attila spadiceus_CIA_VC_specie.jpg",
+        galleryImages: [
+            "/data/aves/attila_spadiceus/Attila spadiceus_CIA_VC_specie.jpg",
+            "/data/aves/attila_spadiceus/attila-spadiceus-3.webp"
+        ],
+        audios: [
+            {
+                title: "Canto Variado (VCL0308)",
+                url: "/data/aves/attila_spadiceus/audios/Attila spadiceus_CIA_VCL0308_filt.wav",
+                description: "Vocalización fuerte y clara.",
+                spectrogramImage: "/data/aves/attila_spadiceus/audios/Attila spadiceus_CIA_VCL0308_filt.wav.256FFT.png"
+            },
+            {
+                title: "Llamada (JMN020)",
+                url: "/data/aves/attila_spadiceus/audios/Attila spadiceus_CIA_JMN020_filt.wav",
+                description: "Otro tipo de llamada registrada."
+            }
+        ],
+        location: "Central and South America"
+    },
 
     // Insects (Crickets)
     {
-        id: "conocephalinae-sp1",
-        scientificName: "Conocephalinae sp. 1",
-        commonName_es: "Grillo de Matorral (sp. 1)",
-        commonName_en: "Conehead Katydid (sp. 1)",
-        commonName_pt: "Esperança-cone (sp. 1)",
-        category: "Insects",
+        id: "conocephalinae-sp-2",
+        scientificName: "Conocephalinae sp.",
+        commonName_es: "Grillo de Matorral",
+        commonName_en: "Conehead Katydid",
+        commonName_pt: "Esperança-cone",
+        category: "Crickets",
         description: {
-            es: "Una especie de grillo de la subfamilia Conocephalinae, conocidos por sus cabezas cónicas.",
-            en: "A species of katydid from the subfamily Conocephalinae, known for their cone-shaped heads.",
-            pt: "Uma espécie de esperança da subfamília Conocephalinae, conhecidos por suas cabeças cônicas."
+            es: "Grylloidea es una superfamilia de insectos del orden Orthoptera. Se les conoce comúnmente como grillos; están estrechamente relacionados con los grillos de matorral (Tettigoniidae). Tienen el cuerpo principalmente cilíndrico, la cabeza redonda y antenas largas y delgadas en forma de látigo.",
+            en: "Grylloidea is a superfamily of insects in the order Orthoptera. They are commonly known as crickets; closely related to bush crickets (Tettigoniidae). They have mainly cylindrical bodies, round heads, and long, thin whip-like antennae.",
+            pt: "Grylloidea é uma superfamília de insetos da ordem Orthoptera. Eles são comumente conhecidos como grilos; intimamente relacionados com as esperanças (Tettigoniidae). Têm corpos principalmente cilíndricos, cabeças redondas e antenas longas e finas em forma de chicote."
         },
-        mainImage: "https://inaturalist-open-data.s3.amazonaws.com/photos/168482470/large.jpg", // Placeholder generic katydid
-        galleryImages: ["https://inaturalist-open-data.s3.amazonaws.com/photos/168482470/large.jpg"],
+        mainImage: "/data/grillos/IMG_9766.JPG",
+        galleryImages: ["/data/grillos/IMG_9766.JPG"],
         audios: [
             {
-                title: "Estridulación",
-                url: "https://actions.google.com/sounds/v1/animals/crickets.ogg",
-                description: "Sonido de estridulación nocturna."
+                title: "Canto (CIA JMN 0052)",
+                url: "/data/grillos/Conocephalinae_sp2_CIA_JMN_0052.wav",
+                description: "Vocalización registrada.",
+                spectrogramImage: "/data/grillos/Conocephalinae_sp2_CIA_JMN_0052.png"
             }
         ],
-        location: "Amazon Rainforest"
-    },
-    {
-        id: "conocephalinae-sp2",
-        scientificName: "Conocephalinae sp. 2",
-        commonName_es: "Grillo de Matorral (sp. 2)",
-        commonName_en: "Conehead Katydid (sp. 2)",
-        commonName_pt: "Esperança-cone (sp. 2)",
-        category: "Insects",
-        description: {
-            es: "Otra variante de grillo Conocephalinae, con distintivos patrones de canto.",
-            en: "Another variant of Conocephalinae katydid, with distinctive calling patterns.",
-            pt: "Outra variante de esperança Conocephalinae, com padrões de canto distintos."
-        },
-        mainImage: "https://inaturalist-open-data.s3.amazonaws.com/photos/82071490/large.jpg", // Placeholder
-        galleryImages: ["https://inaturalist-open-data.s3.amazonaws.com/photos/82071490/large.jpg"],
-        audios: [
-            {
-                title: "Canto Nocturno",
-                url: "https://actions.google.com/sounds/v1/animals/crickets.ogg",
-                description: "Canto rítmico nocturno."
-            }
-        ],
-        location: "Amazon Rainforest"
+        location: "Amazon Basin"
     },
 
     // Bats

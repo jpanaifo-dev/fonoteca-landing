@@ -67,9 +67,12 @@ export const PersistentPlayer = () => {
             setPlaylist(newPlaylist);
             if (newPlaylist.length > 0) {
                 const startTrack = newPlaylist[startAtIndex];
-                playOnLoad.current = autoplay;
-                setTrack(startTrack);
-                setCurrentIndex(startAtIndex);
+                // Only update track if it changes to avoid WaveSurfer re-init loop if dispatched multiple times
+                if (track?.url !== startTrack.url) {
+                    playOnLoad.current = autoplay;
+                    setTrack(startTrack);
+                    setCurrentIndex(startAtIndex);
+                }
             }
         };
 
@@ -278,16 +281,7 @@ export const PersistentPlayer = () => {
                         </div>
                     </div>
 
-                    {/* Close Button */}
-                    <button onClick={() => {
-                        wavesurfer.current?.stop();
-                        setTrack(null);
-                        setIsPlaying(false);
-                    }} className="text-gray-400 hover:text-red-500 transition-colors p-3 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full flex-shrink-0 absolute top-2 right-2 xl:static xl:top-auto xl:right-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+
                 </div>
             </div>
 
