@@ -82,9 +82,9 @@ export const speciesData: Species[] = [
             en: ["Pale dorsolateral stripe", "Black throat in males", "Slightly granular skin"],
             pt: ["Listra dorsolateral pálida", "Garganta preta nos machos", "Pele levemente granular"]
         },
-        mainImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Allobates_femoralis.jpg/1200px-Allobates_femoralis.jpg",
+        mainImage: "https://inaturalist-open-data.s3.amazonaws.com/photos/33951/large.jpg",
         galleryImages: [
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Allobates_femoralis.jpg/1200px-Allobates_femoralis.jpg"
+            "https://inaturalist-open-data.s3.amazonaws.com/photos/33951/large.jpg"
         ],
         audios: [
             {
