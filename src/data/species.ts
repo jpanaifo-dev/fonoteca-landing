@@ -33,8 +33,9 @@ export interface Species {
 
 export const speciesData: Species[] = [
     // Amphibians
+    // Amphibians
     {
-        id: "adenomera-hylaedactyla",
+        id: "adenomera_hylaedactyla",
         scientificName: "Adenomera hylaedactyla",
         commonName_es: "Rana de dedos delgados de manchas oscuras",
         commonName_en: "Dark-spotted Thin-toed Frog",
@@ -53,7 +54,7 @@ export const speciesData: Species[] = [
         mainImage: "/data/anfibios/adenomera_hylaedactyla/IMG_0081.JPG",
         galleryImages: [
             "/data/anfibios/adenomera_hylaedactyla/IMG_0081.JPG",
-            "https://inaturalist-open-data.s3.amazonaws.com/photos/103254922/large.jpg"
+            "/data/anfibios/adenomera_hylaedactyla/IMG_0081_2.JPG"
         ],
         audios: [
             {
@@ -66,7 +67,7 @@ export const speciesData: Species[] = [
         location: "Amazon Basin"
     },
     {
-        id: "allobates-femoralis",
+        id: "allobates_femoralis",
         scientificName: "Allobates femoralis",
         commonName_es: "Rana Venenosa de Muslos Brillantes",
         commonName_en: "Brilliant-thighed Poison Frog",
@@ -82,9 +83,9 @@ export const speciesData: Species[] = [
             en: ["Pale dorsolateral stripe", "Black throat in males", "Slightly granular skin"],
             pt: ["Listra dorsolateral pálida", "Garganta preta nos machos", "Pele levemente granular"]
         },
-        mainImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Allobates_femoralis.jpg/1200px-Allobates_femoralis.jpg",
+        mainImage: "/data/anfibios/allobates_femoralis/Allobates_femoralis.jpg",
         galleryImages: [
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Allobates_femoralis.jpg/1200px-Allobates_femoralis.jpg"
+            "/data/anfibios/allobates_femoralis/Allobates_femoralis.jpg"
         ],
         audios: [
             {
@@ -97,7 +98,7 @@ export const speciesData: Species[] = [
         location: "Amazon Basin"
     },
     {
-        id: "allobates-trilineatus",
+        id: "allobates_trilineatus",
         scientificName: "Allobates trilineatus",
         commonName_es: "Rana Cohete de Tres Rayas",
         commonName_en: "Three-striped Rocket Frog",
@@ -108,8 +109,8 @@ export const speciesData: Species[] = [
             en: "A very small frog with distinctive dorsolateral and dorsoventral stripes.",
             pt: "Uma rã muito pequena com listras dorsolaterais e dorsoventrais distintas."
         },
-        mainImage: "https://inaturalist-open-data.s3.amazonaws.com/photos/22646274/large.jpg",
-        galleryImages: ["https://inaturalist-open-data.s3.amazonaws.com/photos/22646274/large.jpg"],
+        mainImage: "https://multimedia20stg.blob.core.windows.net/especies/CORBIDI%2001747%20Munichis-Yurimaguas.JPG",
+        galleryImages: ["https://multimedia20stg.blob.core.windows.net/especies/CORBIDI%2001747%20Munichis-Yurimaguas.JPG"],
         audios: [
             {
                 title: "Canto Muniches",
@@ -121,7 +122,7 @@ export const speciesData: Species[] = [
         location: "Peru, Bolivia, Brazil"
     },
     {
-        id: "boana-boans",
+        id: "boana_boans",
         scientificName: "Boana boans",
         commonName_es: "Rana Gladiadora",
         commonName_en: "Gladiator Tree Frog",

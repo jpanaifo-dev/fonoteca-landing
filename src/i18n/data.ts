@@ -62,7 +62,7 @@ export const translations = {
                     id: "rana-mono",
                     name: "Rana Mono Gigante",
                     scientific: "Phyllomedusa bicolor",
-                    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Phyllomedusa_bicolor.jpg/1200px-Phyllomedusa_bicolor.jpg",
+                    image: "/data/anfibios/adenomera_hylaedactyla/IMG_0081.JPG",
                     images: [
                         "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Phyllomedusa_bicolor.jpg/1200px-Phyllomedusa_bicolor.jpg",
                         "https://inaturalist-open-data.s3.amazonaws.com/photos/56230495/large.jpg",
