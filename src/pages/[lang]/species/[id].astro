@@ -5,37 +5,53 @@ import { Footer } from "../../../components/react/Footer";
 import { PageBanner } from "../../../components/react/PageBanner";
 import { SpeciesGallery } from "../../../components/react/SpeciesGallery";
 import { AudioPlayer } from "../../../components/react/AudioPlayer";
-import { translations, LANGUAGES } from "../../../i18n/data";
+import { translations, LANGUAGES, type Language } from "../../../i18n/data";
+import { getAllSpecies, type Species } from "../../../data/species";
 import logoIiap from "../../../assets/logo_iiap.png";
 
 export function getStaticPaths() {
-    const masterList = translations.es.species_page.list;
+    const speciesList = getAllSpecies();
 
     return LANGUAGES.flatMap((lang) =>
-        masterList.map((species) => ({
+        speciesList.map((species) => ({
             params: { lang, id: species.id },
+            props: { species },
         })),
     );
 }
 
-const { lang, id } = Astro.params;
+const { lang } = Astro.params;
+const { species } = Astro.props as { species: Species };
 const content = translations[lang as keyof typeof translations];
-const speciesList = content.species_page.list;
-const species = speciesList.find((s) => s.id === id);
+const currentLang = lang as Language;
 
 if (!species) {
     return Astro.redirect(`/${lang}/species`);
 }
 
-// Fallback for images if not present in all languages yet (though we updated them)
-const galleryImages = species.images || [species.image];
+// Localized data
+const commonName = species[
+    `commonName_${currentLang}` as keyof Species
+] as string;
+const description =
+    species.description[currentLang as keyof typeof species.description];
+const characteristics = species.characteristics
+    ? species.characteristics[
+          currentLang as keyof typeof species.characteristics
+      ]
+    : undefined;
+
+const galleryImages =
+    species.galleryImages.length > 0
+        ? species.galleryImages
+        : [species.mainImage];
 ---
 
 <Layout
-    title={`${species.name} - ${content.nav.library}`}
+    title={`${commonName} - ${content.nav.library}`}
     lang={lang}
-    description={`Escucha el sonido de: ${species.name} (${species.scientific})`}
-    image={species.image}
+    description={`Escucha el sonido de: ${commonName} (${species.scientificName})`}
+    image={species.mainImage}
 >
     <Header
         client:load
@@ -45,9 +61,9 @@ const galleryImages = species.images || [species.image];
     />
     <main>
         <PageBanner
-            title={species.name}
-            subtitle={species.scientific}
-            image={species.image}
+            title={commonName}
+            subtitle={species.scientificName}
+            image={species.mainImage}
         />
 
         <section class="py-24 bg-white">
@@ -69,7 +85,7 @@ const galleryImages = species.images || [species.image];
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                    {/* Left Column: Gallery */}
+                    {/* Left Column: Gallery & Characteristics */}
                     <div>
                         <SpeciesGallery client:load images={galleryImages} />
 
@@ -98,6 +114,26 @@ const galleryImages = species.images || [species.image];
                             </svg>
                             <span class="font-medium">{species.location}</span>
                         </div>
+
+                        {/* Characteristics */}
+                        {
+                            characteristics && characteristics.length > 0 && (
+                                <div class="mt-8">
+                                    <h3 class="text-xl font-bold text-primary-dark mb-4">
+                                        {lang === "es"
+                                            ? "Características"
+                                            : lang === "pt"
+                                              ? "Características"
+                                              : "Characteristics"}
+                                    </h3>
+                                    <ul class="list-disc pl-5 space-y-2 text-gray-600">
+                                        {characteristics.map((char) => (
+                                            <li>{char}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )
+                        }
                     </div>
 
                     {/* Right Column: Info & Audio */}
@@ -105,40 +141,64 @@ const galleryImages = species.images || [species.image];
                         <h1
                             class="text-4xl md:text-5xl text-primary-dark font-light mb-2"
                         >
-                            {species.name}
+                            {commonName}
                         </h1>
                         <h2
                             class="text-xl md:text-2xl text-accent-green font-serif italic mb-8"
                         >
-                            {species.scientific}
+                            {species.scientificName}
                         </h2>
 
                         <div class="prose prose-lg text-gray-600 mb-12">
-                            <p>{species.description}</p>
+                            <p>{description}</p>
                         </div>
 
-                        {/* Audio Player */}
+                        {/* Audios Section */}
                         <div class="mb-12">
                             <h3
                                 class="text-lg font-bold text-primary-dark mb-4"
                             >
                                 {
                                     lang === "es"
-                                        ? "Escuchar Audio"
+                                        ? "Audios y Espectrogramas"
                                         : lang === "pt"
-                                          ? "Ouvir Áudio"
-                                          : "Listen to Audio"
+                                          ? "Áudios e Espectrogramas"
+                                          : "Audios & Spectrograms"
                                 }
                             </h3>
-                            <AudioPlayer
-                                client:only="react"
-                                audioUrl={species.audio}
-                                description={lang === "es"
-                                    ? "Grabación de campo original"
-                                    : lang === "pt"
-                                      ? "Gravação de campo original"
-                                      : "Original field recording"}
-                            />
+
+                            <div class="space-y-8">
+                                {
+                                    species.audios.map((audio) => (
+                                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                                            <h4 class="font-medium text-gray-800 mb-2">
+                                                {audio.title}
+                                            </h4>
+                                            <AudioPlayer
+                                                client:only="react"
+                                                audioUrl={audio.url}
+                                                description={audio.description}
+                                            />
+                                            {audio.spectrogramImage && (
+                                                <div class="mt-4">
+                                                    <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide">
+                                                        {lang === "es"
+                                                            ? "Espectrograma Estático"
+                                                            : "Static Spectrogram"}
+                                                    </p>
+                                                    <img
+                                                        src={
+                                                            audio.spectrogramImage
+                                                        }
+                                                        alt={`Spectrogram of ${commonName} - ${audio.title}`}
+                                                        class="w-full h-auto rounded-lg border border-gray-200"
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))
+                                }
+                            </div>
                         </div>
 
                         {/* Share / Extra Actions Placeholder */}

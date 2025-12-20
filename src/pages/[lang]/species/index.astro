@@ -5,6 +5,11 @@ import { Footer } from "../../../components/react/Footer";
 import { PageBanner } from "../../../components/react/PageBanner";
 import { SpeciesCard } from "../../../components/react/SpeciesCard";
 import { translations, LANGUAGES } from "../../../i18n/data";
+import {
+    getAllSpecies,
+    type Species,
+    type SpeciesCategory,
+} from "../../../data/species";
 import logoIiap from "../../../assets/logo_iiap.png";
 
 export function getStaticPaths() {
@@ -16,6 +21,33 @@ export function getStaticPaths() {
 const { lang } = Astro.params;
 const content = translations[lang as keyof typeof translations];
 const speciesData = content.species_page;
+const allSpecies = getAllSpecies();
+
+// Group by category
+const groupedSpecies: Record<SpeciesCategory, Species[]> = {
+    Amphibians: [],
+    Birds: [],
+    Insects: [],
+    Mammals: [],
+    Reptiles: [],
+};
+
+allSpecies.forEach((s) => {
+    if (groupedSpecies[s.category]) {
+        groupedSpecies[s.category].push(s);
+    }
+});
+
+const categoryTitles: Record<
+    SpeciesCategory,
+    { es: string; en: string; pt: string }
+> = {
+    Amphibians: { es: "Anfibios", en: "Amphibians", pt: "Anfíbios" },
+    Birds: { es: "Aves", en: "Birds", pt: "Aves" },
+    Insects: { es: "Insectos", en: "Insects", pt: "Insetos" },
+    Mammals: { es: "Mamíferos", en: "Mammals", pt: "Mamíferos" },
+    Reptiles: { es: "Reptiles", en: "Reptiles", pt: "Répteis" },
+};
 ---
 
 <Layout
@@ -38,21 +70,39 @@ const speciesData = content.species_page;
 
         <section class="py-24 bg-light-bg">
             <div class="container mx-auto px-6">
-                <div
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                >
-                    {
-                        speciesData.list.map((species) => (
-                            <SpeciesCard
-                                id={species.id}
-                                name={species.name}
-                                scientific={species.scientific}
-                                image={species.image}
-                                lang={lang}
-                            />
-                        ))
-                    }
-                </div>
+                {
+                    Object.entries(groupedSpecies).map(
+                        ([category, speciesList]) =>
+                            speciesList.length > 0 && (
+                                <div class="mb-16">
+                                    <h2 class="text-3xl font-bold text-primary-dark mb-8 border-b border-gray-200 pb-4">
+                                        {
+                                            categoryTitles[
+                                                category as SpeciesCategory
+                                            ][lang as "es" | "en" | "pt"]
+                                        }
+                                    </h2>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                        {speciesList.map((species) => (
+                                            <SpeciesCard
+                                                id={species.id}
+                                                name={
+                                                    species[
+                                                        `commonName_${lang as "es" | "en" | "pt"}`
+                                                    ] as string
+                                                }
+                                                scientific={
+                                                    species.scientificName
+                                                }
+                                                image={species.mainImage}
+                                                lang={lang}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            ),
+                    )
+                }
             </div>
         </section>
     </main>
