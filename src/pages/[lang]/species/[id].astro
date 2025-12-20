@@ -84,14 +84,22 @@ const galleryImages =
                     </a>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                    {/* Left Column: Gallery & Characteristics */}
-                    <div>
-                        <SpeciesGallery client:load images={galleryImages} />
+                <div class="max-w-5xl mx-auto">
+                    {/* Header Section: Titles & Location */}
+                    <div class="text-center mb-12">
+                        <h1
+                            class="text-4xl md:text-6xl text-primary-dark font-light mb-4"
+                        >
+                            {commonName}
+                        </h1>
+                        <h2
+                            class="text-2xl md:text-3xl text-accent-green font-serif italic mb-6"
+                        >
+                            {species.scientificName}
+                        </h2>
 
-                        {/* Location Badge */}
                         <div
-                            class="mt-8 flex items-center gap-3 text-gray-500 bg-gray-50 p-4 rounded-xl border border-gray-100"
+                            class="inline-flex items-center gap-3 text-gray-500 bg-gray-50 px-6 py-3 rounded-full border border-gray-100"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +107,7 @@ const galleryImages =
                                 viewBox="0 0 24 24"
                                 stroke-width="1.5"
                                 stroke="currentColor"
-                                class="w-6 h-6 text-accent-green"
+                                class="w-5 h-5 text-accent-green"
                             >
                                 <path
                                     stroke-linecap="round"
@@ -114,93 +122,123 @@ const galleryImages =
                             </svg>
                             <span class="font-medium">{species.location}</span>
                         </div>
-
-                        {/* Characteristics */}
-                        {
-                            characteristics && characteristics.length > 0 && (
-                                <div class="mt-8">
-                                    <h3 class="text-xl font-bold text-primary-dark mb-4">
-                                        {lang === "es"
-                                            ? "Características"
-                                            : lang === "pt"
-                                              ? "Características"
-                                              : "Characteristics"}
-                                    </h3>
-                                    <ul class="list-disc pl-5 space-y-2 text-gray-600">
-                                        {characteristics.map((char) => (
-                                            <li>{char}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )
-                        }
                     </div>
 
-                    {/* Right Column: Info & Audio */}
-                    <div>
-                        <h1
-                            class="text-4xl md:text-5xl text-primary-dark font-light mb-2"
+                    {/* Gallery Section - Centered */}
+                    <div class="mb-16">
+                        <SpeciesGallery client:load images={galleryImages} />
+                    </div>
+
+                    {/* Audio Section - Prominent */}
+                    <div class="mb-16">
+                        <h3
+                            class="text-2xl font-bold text-primary-dark mb-6 text-center"
                         >
-                            {commonName}
-                        </h1>
-                        <h2
-                            class="text-xl md:text-2xl text-accent-green font-serif italic mb-8"
-                        >
-                            {species.scientificName}
-                        </h2>
-
-                        <div class="prose prose-lg text-gray-600 mb-12">
-                            <p>{description}</p>
-                        </div>
-
-                        {/* Audios Section */}
-                        <div class="mb-12">
-                            <h3
-                                class="text-lg font-bold text-primary-dark mb-4"
-                            >
-                                {
-                                    lang === "es"
-                                        ? "Audios y Espectrogramas"
-                                        : lang === "pt"
-                                          ? "Áudios e Espectrogramas"
-                                          : "Audios & Spectrograms"
-                                }
-                            </h3>
-
-                            <div class="space-y-8">
-                                {
-                                    species.audios.map((audio) => (
-                                        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                                            <h4 class="font-medium text-gray-800 mb-2">
-                                                {audio.title}
-                                            </h4>
+                            {
+                                lang === "es"
+                                    ? "Audios y Espectrogramas"
+                                    : lang === "pt"
+                                      ? "Áudios e Espectrogramas"
+                                      : "Audios & Spectrograms"
+                            }
+                        </h3>
+                        <div class="space-y-8">
+                            {
+                                species.audios.map((audio) => (
+                                    <div class="bg-gray-50 p-8 rounded-3xl border border-gray-100 shadow-sm">
+                                        <h4 class="text-xl font-medium text-gray-800 mb-4">
+                                            {audio.title}
+                                        </h4>
+                                        <div class="h-auto">
                                             <AudioPlayer
                                                 client:only="react"
                                                 audioUrl={audio.url}
+                                                title={audio.title}
+                                                artist={commonName}
                                                 description={audio.description}
                                                 spectrogramImage={
                                                     audio.spectrogramImage
                                                 }
                                             />
                                         </div>
-                                    ))
-                                }
-                            </div>
+                                    </div>
+                                ))
+                            }
                         </div>
+                    </div>
 
-                        {/* Share / Extra Actions Placeholder */}
-                        <div class="flex gap-4">
-                            <button
-                                class="px-6 py-3 rounded-full border border-gray-200 text-gray-600 hover:border-accent-green hover:text-accent-green transition-colors font-medium"
+                    {/* Info & Characteristics Section */}
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-gray-100 pt-12"
+                    >
+                        <div class="md:col-span-2 prose prose-lg text-gray-600">
+                            <h3
+                                class="text-xl font-bold text-primary-dark mb-4"
                             >
                                 {
                                     lang === "es"
-                                        ? "Compartir Especie"
+                                        ? "Descripción"
                                         : lang === "pt"
-                                          ? "Compartilhar"
-                                          : "Share Species"
+                                          ? "Descrição"
+                                          : "Description"
                                 }
-                            </button>
+                            </h3>
+                            <p>{description}</p>
+                        </div>
+
+                        <div>
+                            {
+                                characteristics &&
+                                    characteristics.length > 0 && (
+                                        <div>
+                                            <h3 class="text-xl font-bold text-primary-dark mb-4">
+                                                {lang === "es"
+                                                    ? "Características"
+                                                    : lang === "pt"
+                                                      ? "Características"
+                                                      : "Characteristics"}
+                                            </h3>
+                                            <ul class="space-y-3 text-gray-600">
+                                                {characteristics.map((char) => (
+                                                    <li class="flex items-start gap-2">
+                                                        <span class="text-accent-green mt-1">
+                                                            •
+                                                        </span>
+                                                        {char}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )
+                            }
+
+                            <div class="mt-8">
+                                <button
+                                    class="w-full px-6 py-3 rounded-xl border border-gray-200 text-gray-600 hover:border-accent-green hover:text-accent-green transition-colors font-medium flex items-center justify-center gap-2 bg-white shadow-sm hover:shadow-md"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke-width="1.5"
+                                        stroke="currentColor"
+                                        class="w-5 h-5"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
+                                        ></path>
+                                    </svg>
+                                    {
+                                        lang === "es"
+                                            ? "Compartir"
+                                            : lang === "pt"
+                                              ? "Compartilhar"
+                                              : "Share"
+                                    }
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -208,4 +246,28 @@ const galleryImages =
         </section>
     </main>
     <Footer content={content.footer} logoSrc={logoIiap.src} />
+
+    <script define:vars={{ species, commonName }}>
+        // Initialize PersistentPlayer with this species' audios
+        window.addEventListener("load", () => {
+            if (species.audios && species.audios.length > 0) {
+                const playlist = species.audios.map((audio) => ({
+                    title: audio.title,
+                    artist: commonName,
+                    url: audio.url,
+                    image: species.mainImage, // Or specific spectrogram if we want? using main image for now or we can use spectrogram
+                    spectrogram: audio.spectrogramImage,
+                }));
+
+                const event = new CustomEvent("set-playlist", {
+                    detail: {
+                        playlist: playlist,
+                        startAtIndex: 0,
+                        autoplay: false, // Load but don't play automatically, as requested "visible but selected"
+                    },
+                });
+                window.dispatchEvent(event);
+            }
+        });
+    </script>
 </Layout>

@@ -3,11 +3,13 @@ import WaveSurfer from 'wavesurfer.js';
 
 interface AudioPlayerProps {
     audioUrl: string;
+    title?: string;
+    artist?: string;
     description?: string;
     spectrogramImage?: string;
 }
 
-export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, description, spectrogramImage }) => {
+export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, title, artist, description, spectrogramImage }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -19,129 +21,104 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, description,
     const [currentTime, setCurrentTime] = useState('0:00');
     const [duration, setDuration] = useState('0:00');
 
+    // Sync with global PersistentPlayer
+    useEffect(() => {
+        const handleAudioStatus = (event: CustomEvent) => {
+            const { url, status, currentTime, isPlaying: globalIsPlaying } = event.detail;
+
+            // Only sync if this player's URL matches the global player's URL
+            if (url === audioUrl) {
+                if (status === 'play' || status === 'timeupdate') {
+                    setIsPlaying(globalIsPlaying);
+
+                    // Sync cursor position
+                    if (wavesurferRef.current) {
+                        // Avoid setting time if it's drift is minimal to prevent jitter
+                        // But precise sync is needed.
+                        const current = wavesurferRef.current.getCurrentTime();
+                        if (Math.abs(current - currentTime) > 0.1) {
+                            wavesurferRef.current.setTime(currentTime);
+                        }
+                    }
+
+                    setCurrentTime(formatTime(currentTime));
+                } else if (status === 'pause' || status === 'finish') {
+                    setIsPlaying(false);
+                }
+            } else {
+                // If another track started playing, stop this one
+                if (isPlaying) setIsPlaying(false);
+            }
+        };
+
+        window.addEventListener('audio-status-update' as any, handleAudioStatus);
+        return () => window.removeEventListener('audio-status-update' as any, handleAudioStatus);
+    }, [audioUrl, isPlaying]);
+
     useEffect(() => {
         if (!containerRef.current || !audioRef.current) return;
 
-        // Initialize WaveSurfer with explicit media element
+        // Initialize WaveSurfer
         wavesurferRef.current = WaveSurfer.create({
             container: containerRef.current,
-            media: audioRef.current,
+            // We use MediaElement for loading, but we won't play it directly if syncing
+            // Actually, for visualization we might need it, but to prevent double audio, we won't strictly bind it to play
+            // unless we want local visualization ONLY.
+            // Since we want to control PersistentPlayer, we just load for the waveform rendering.
+            height: 48,
             waveColor: spectrogramImage ? 'rgba(255, 255, 255, 0.2)' : '#4b5563',
             progressColor: spectrogramImage ? 'rgba(29, 185, 84, 0.8)' : '#1db954',
             cursorColor: '#1db954',
             barWidth: 2,
             barGap: 3,
             barRadius: 3,
-            height: 48,
             normalize: true,
+            interact: true, // Allow user to click timeline
         });
 
+        // Load audio to generate waveform
         wavesurferRef.current.load(audioUrl);
 
-        // Events
         wavesurferRef.current.on('ready', () => {
             const d = wavesurferRef.current?.getDuration() || 0;
             setDuration(formatTime(d));
-            // Initialize visualizer only after user interaction context is unlocked usually,
-            // but we can prep it here.
-            setupVisualizer();
         });
 
-        wavesurferRef.current.on('audioprocess', () => {
-            const c = wavesurferRef.current?.getCurrentTime() || 0;
-            setCurrentTime(formatTime(c));
+        // seek interaction
+        wavesurferRef.current.on('interaction', (newTime) => {
+            // If user scrubs locally, we should tell global player to seek?
+            // Not implemented in global player yet (seeking via event).
+            // For now, this just updates local view.
+            // Ideally we dispatch a 'seek' event.
         });
-
-        // Sync React state with WaveSurfer events
-        wavesurferRef.current.on('play', () => setIsPlaying(true));
-        wavesurferRef.current.on('pause', () => setIsPlaying(false));
-        wavesurferRef.current.on('finish', () => setIsPlaying(false));
 
         return () => {
-            if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
             wavesurferRef.current?.destroy();
         };
     }, [audioUrl]);
 
-    // Handle Visualizer Drawing Loop
-    useEffect(() => {
-        if (isPlaying) {
-            drawVisualizer();
-        } else {
-            if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-        }
-    }, [isPlaying]);
-
-    const setupVisualizer = () => {
-        if (!audioRef.current || analyserRef.current) return; // Prevent double setup
-
-        try {
-            const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-            const source = audioContext.createMediaElementSource(audioRef.current);
-            const analyser = audioContext.createAnalyser();
-            analyser.fftSize = 256;
-
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-
-            analyserRef.current = analyser;
-        } catch (e) {
-            console.error("Audio Context setup error:", e);
-        }
-    };
-
-    const drawVisualizer = () => {
-        if (!canvasRef.current || !analyserRef.current) return;
-
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        const bufferLength = analyserRef.current.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-
-        const draw = () => {
-            animationFrameRef.current = requestAnimationFrame(draw);
-
-            if (!analyserRef.current) return;
-            analyserRef.current.getByteFrequencyData(dataArray);
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            const barWidth = (canvas.width / bufferLength) * 2.5;
-            let barHeight;
-            let x = 0;
-
-            for (let i = 0; i < bufferLength; i++) {
-                barHeight = (dataArray[i] / 255) * canvas.height; // Scale to canvas height
-
-                // Styling
-                const gradient = ctx.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
-                gradient.addColorStop(0, 'rgba(29, 185, 84, 0.8)'); // Spotify green equivalent
-                gradient.addColorStop(1, 'rgba(29, 185, 84, 0.1)');
-
-                ctx.fillStyle = gradient;
-
-                // Draw rounded top bar
-                ctx.beginPath();
-                if (ctx.roundRect) {
-                    ctx.roundRect(x, canvas.height - barHeight, barWidth, barHeight, [4, 4, 0, 0]);
-                } else {
-                    ctx.rect(x, canvas.height - barHeight, barWidth, barHeight);
-                }
-                ctx.fill();
-
-                x += barWidth + 2;
-            }
-        };
-
-        draw();
-    };
-
+    // Handle Play/Pause
     const togglePlay = () => {
-        if (wavesurferRef.current) {
-            wavesurferRef.current.playPause();
+        if (isPlaying) {
+            const event = new CustomEvent('pause-audio');
+            window.dispatchEvent(event);
+        } else {
+            const event = new CustomEvent('play-audio', {
+                detail: {
+                    title: title || 'Unknown Title',
+                    artist: artist || 'Unknown Artist',
+                    url: audioUrl,
+                    image: spectrogramImage || '/images/default-audio.png',
+                    spectrogram: spectrogramImage
+                }
+            });
+            window.dispatchEvent(event);
         }
+    };
+
+    const rewind = () => {
+        const event = new CustomEvent('rewind-audio');
+        window.dispatchEvent(event);
     };
 
     const formatTime = (seconds: number) => {
@@ -159,18 +136,21 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, description,
                 </div>
             )}
 
-            {/* Hidden Audio Element for WaveSurfer Source */}
-            <audio ref={audioRef} crossOrigin="anonymous" />
-
-            {/* Visualizer Canvas Overlay */}
-            <canvas
-                ref={canvasRef}
-                width={600}
-                height={150}
-                className="absolute bottom-0 left-0 w-full h-full opacity-30 pointer-events-none z-0 mix-blend-screen"
-            />
+            {/* Hidden Audio Element for WaveSurfer Source - kept for potential visualizer reuse later, though visualizer logic removed to simplify sync */}
+            <audio ref={audioRef} crossOrigin="anonymous" src={audioUrl} />
 
             <div className="flex items-center gap-4 mb-4 z-10 relative">
+                {/* Rewind Button */}
+                <button
+                    onClick={rewind}
+                    className="flex-shrink-0 w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"
+                    title="Rebobinar 10s"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                    </svg>
+                </button>
+
                 <button
                     onClick={togglePlay}
                     className="flex-shrink-0 w-14 h-14 rounded-full bg-accent-green text-primary-dark flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-accent-green/20"
@@ -200,10 +180,24 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, description,
                 </div>
             </div>
 
-            <div className="flex justify-between text-xs font-mono text-gray-400 z-10 relative px-1">
+            <div className="flex justify-between text-xs font-mono text-gray-400 z-10 relative px-1 mt-2">
                 <span>{currentTime}</span>
                 <span>{duration}</span>
             </div>
+
+            {/* Spectrogram Expand Button */}
+            {spectrogramImage && (
+                <button
+                    onClick={() => window.open(spectrogramImage, '_blank')}
+                    className="absolute top-4 right-4 text-xs bg-black/40 hover:bg-black/60 text-white px-3 py-1 rounded-full backdrop-blur-sm transition-all z-20 flex items-center gap-2"
+                    title="Ver espectrograma en tamaño completo"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+                    </svg>
+                    Ampliar Espectrograma
+                </button>
+            )}
         </div>
     );
 };
