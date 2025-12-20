@@ -18,6 +18,7 @@ interface FlattenedAudio {
     format: string; // Placeholder
     url: string;
     mainImage: string;
+    spectrogramImage?: string;
 }
 
 export const AudioList: React.FC<AudioListProps> = ({ allSpecies, lang }) => {
@@ -35,7 +36,8 @@ export const AudioList: React.FC<AudioListProps> = ({ allSpecies, lang }) => {
                 date: "2024", // Placeholder
                 format: "MP3", // Placeholder
                 url: audio.url,
-                mainImage: species.mainImage
+                mainImage: species.mainImage,
+                spectrogramImage: audio.spectrogramImage
             }))
         );
     }, [allSpecies, lang]);
@@ -60,7 +62,8 @@ export const AudioList: React.FC<AudioListProps> = ({ allSpecies, lang }) => {
                 title: audio.title,
                 artist: `${audio.speciesName} (${audio.scientificName})`,
                 url: audio.url,
-                image: audio.mainImage
+                image: audio.mainImage,
+                spectrogram: audio.spectrogramImage
             }
         });
         window.dispatchEvent(event);

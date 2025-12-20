@@ -50,16 +50,17 @@ export const speciesData: Species[] = [
             en: ["Dorsal coloration gray to brown", "Well-defined glandular dorsolateral folds", "White belly"],
             pt: ["Coloração dorsal de cinza a marrom", "Dobras dorsolaterais glandulares bem definidas", "Ventre branco"]
         },
-        mainImage: "https://inaturalist-open-data.s3.amazonaws.com/photos/103254922/large.jpg",
+        mainImage: "/data/anfibios/adenomera_hylaedactyla/IMG_0081.JPG",
         galleryImages: [
-            "https://inaturalist-open-data.s3.amazonaws.com/photos/103254922/large.jpg",
-            "https://inaturalist-open-data.s3.amazonaws.com/photos/56230495/large.jpg"
+            "/data/anfibios/adenomera_hylaedactyla/IMG_0081.JPG",
+            "https://inaturalist-open-data.s3.amazonaws.com/photos/103254922/large.jpg"
         ],
         audios: [
             {
                 title: "Canto Principal",
-                url: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
-                description: "Llamada de anuncio del macho desde el suelo."
+                url: "/data/anfibios/adenomera_hylaedactyla/Adenomera_hylaedactyla_CIA_NRT_0023.wav",
+                description: "Llamada registrada.",
+                spectrogramImage: "/data/anfibios/adenomera_hylaedactyla/Adenomera_hylaedactyla_CIA_NRT_0023_.wav.256FFT.png"
             }
         ],
         location: "Amazon Basin"
@@ -72,9 +73,9 @@ export const speciesData: Species[] = [
         commonName_pt: "Rã-venenosa-de-coxas-brilhantes",
         category: "Amphibians",
         description: {
-            es: "Conocida por el parche de color naranja brillante o amarillo en sus muslos. Es diurna y terrestre, habitando la hojarasca de los bosques tropicales.",
-            en: "Known for the bright orange or yellow patch on its thighs. It is diurnal and terrestrial, inhabiting the leaf litter of tropical forests.",
-            pt: "Conhecida pela mancha laranja brilhante ou amarela em suas coxas. É diurna e terrestre, habitando a serapilheira das florestas tropicais."
+            es: "Conocida por el parche de color naranja brillante o amarillo en sus muslos. Es diurna y terrestre.",
+            en: "Known for the bright orange or yellow patch on its thighs. It is diurnal and terrestrial.",
+            pt: "Conhecida pela mancha laranja brilhante ou amarela em suas coxas. É diurna e terrestre."
         },
         characteristics: {
             es: ["Raya dorsolateral pálida", "Garganta negra en machos", "Piel ligeramente granular"],
@@ -88,8 +89,9 @@ export const speciesData: Species[] = [
         audios: [
             {
                 title: "Llamada Territorial",
-                url: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg", // Placeholder
-                description: "Canto territorial del macho."
+                url: "/data/anfibios/allobates_femoralis/Allobates_femoralis-Yurimaguas_GGU_A_0284.wav",
+                description: "Canto territorial de Yurimaguas.",
+                spectrogramImage: "/data/anfibios/allobates_femoralis/Allobates_femoralis-Yurimaguas_GGU_A_0284_MUESTRA.wav.256FFT.png"
             }
         ],
         location: "Amazon Basin"
@@ -102,40 +104,42 @@ export const speciesData: Species[] = [
         commonName_pt: "Rã-foguete-de-três-listras",
         category: "Amphibians",
         description: {
-            es: "Una rana muy pequeña con rayas dorsolaterales y dorsoventrales distintivas. Se encuentra en la hojarasca del bosque.",
-            en: "A very small frog with distinctive dorsolateral and dorsoventral stripes. Found on the forest leaf litter.",
-            pt: "Uma rã muito pequena com listras dorsolaterais e dorsoventrais distintas. En encontrada na serapilheira da floresta."
+            es: "Una rana muy pequeña con rayas dorsolaterales y dorsoventrales distintivas.",
+            en: "A very small frog with distinctive dorsolateral and dorsoventral stripes.",
+            pt: "Uma rã muito pequena com listras dorsolaterais e dorsoventrais distintas."
         },
         mainImage: "https://inaturalist-open-data.s3.amazonaws.com/photos/22646274/large.jpg",
         galleryImages: ["https://inaturalist-open-data.s3.amazonaws.com/photos/22646274/large.jpg"],
         audios: [
             {
-                title: "Canto",
-                url: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg", // Placeholder
-                description: "Vocalización típica."
+                title: "Canto Muniches",
+                url: "/data/anfibios/allobates_trilineatus/Allobates_trilineatus_Muniches_Yurimaguas_GGU_A_0305.wav",
+                description: "Vocalización registrada en Muniches.",
+                spectrogramImage: "/data/anfibios/allobates_trilineatus/Allobates_trilineatus_Muniches_Yurimaguas_GGU_A_0305_MUESTRA.wav.256FFT.png"
             }
         ],
         location: "Peru, Bolivia, Brazil"
     },
     {
-        id: "ameerega-hahneli",
-        scientificName: "Ameerega hahneli",
-        commonName_es: "Rana Venenosa de Hahnel",
-        commonName_en: "Hahnel's Poison Dart Frog",
-        commonName_pt: "Rã-venenosa-de-Hahnel",
+        id: "boana-boans",
+        scientificName: "Boana boans",
+        commonName_es: "Rana Gladiadora",
+        commonName_en: "Gladiator Tree Frog",
+        commonName_pt: "Perereca-gladiadora",
         category: "Amphibians",
         description: {
-            es: "Pequeña rana venenosa con una línea dorsolateral blanca o crema y vientre azul con reticulaciones negras.",
-            en: "Small poison frog with a white or cream dorsolateral line and blue belly with black reticulations.",
-            pt: "Pequena rã venenosa com uma linha dorsolateral branca ou creme e ventre azul com reticulações pretas."
+            es: "Una rana arbórea grande, con machos que construyen nidos de barro.",
+            en: "A large tree frog, with males that build mud nests.",
+            pt: "Uma grande perereca, com machos que constroem ninhos de lama."
         },
-        mainImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ameerega_hahneli.jpg/1200px-Ameerega_hahneli.jpg",
-        galleryImages: ["https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ameerega_hahneli.jpg/1200px-Ameerega_hahneli.jpg"],
+        mainImage: "/data/anfibios/boana_boans/Boana_boans.JPG",
+        galleryImages: ["/data/anfibios/boana_boans/Boana_boans.JPG"],
         audios: [
             {
                 title: "Canto",
-                url: "https://actions.google.com/sounds/v1/animals/frogs_croaking.ogg",
-                description: "Serie de notas rápidas."
+                url: "/data/anfibios/boana_boans/Boana_boans_CIA_EBJAA _0116.wav",
+                description: "Canto característico.",
+                spectrogramImage: "/data/anfibios/boana_boans/Boana_boans_CIA_NRT_0011.wav.256FFT.png"
             }
         ],
         location: "Amazon Basin"

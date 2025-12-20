@@ -6,6 +6,7 @@ interface AudioTrack {
     artist: string;
     url: string;
     image?: string;
+    spectrogram?: string;
 }
 
 export const PersistentPlayer = () => {
@@ -34,8 +35,8 @@ export const PersistentPlayer = () => {
 
             wavesurfer.current = WaveSurfer.create({
                 container: containerRef.current,
-                waveColor: '#4B5563',
-                progressColor: '#8DC63F',
+                waveColor: track.spectrogram ? 'rgba(75, 85, 99, 0.2)' : '#4B5563',
+                progressColor: track.spectrogram ? 'rgba(141, 198, 63, 0.8)' : '#8DC63F',
                 cursorColor: '#8DC63F',
                 barWidth: 2,
                 barGap: 3,
@@ -105,7 +106,17 @@ export const PersistentPlayer = () => {
                 </button>
 
                 {/* Waveform */}
-                <div className="flex-1" ref={containerRef}></div>
+                <div
+                    className="flex-1 relative h-10"
+                >
+                    {track.spectrogram && (
+                        <div
+                            className="absolute inset-0 bg-cover bg-center opacity-50 pointer-events-none"
+                            style={{ backgroundImage: `url(${track.spectrogram})` }}
+                        ></div>
+                    )}
+                    <div ref={containerRef} className="absolute inset-0"></div>
+                </div>
 
                 {/* Close/Minimize (Optional, for now just hidden if no track) */}
                 <button onClick={() => setTrack(null)} className="text-gray-400 hover:text-red-500">

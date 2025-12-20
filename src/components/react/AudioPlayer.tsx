@@ -4,9 +4,10 @@ import WaveSurfer from 'wavesurfer.js';
 interface AudioPlayerProps {
     audioUrl: string;
     description?: string;
+    spectrogramImage?: string;
 }
 
-export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, description }) => {
+export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, description, spectrogramImage }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const audioRef = useRef<HTMLAudioElement>(null);
@@ -25,8 +26,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, description 
         wavesurferRef.current = WaveSurfer.create({
             container: containerRef.current,
             media: audioRef.current,
-            waveColor: '#4b5563',
-            progressColor: '#1db954',
+            waveColor: spectrogramImage ? 'rgba(255, 255, 255, 0.2)' : '#4b5563',
+            progressColor: spectrogramImage ? 'rgba(29, 185, 84, 0.8)' : '#1db954',
             cursorColor: '#1db954',
             barWidth: 2,
             barGap: 3,
@@ -185,9 +186,17 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, description 
                     )}
                 </button>
 
-                <div className="flex-grow relative">
+                <div className="flex-grow relative h-12">
+                    {/* Spectrogram Background */}
+                    {spectrogramImage && (
+                        <div
+                            className="absolute inset-0 bg-cover bg-center opacity-60 rounded-lg pointer-events-none"
+                            style={{ backgroundImage: `url(${spectrogramImage})` }}
+                        ></div>
+                    )}
+
                     {/* WaveSurfer Container */}
-                    <div ref={containerRef} className="w-full cursor-pointer opacity-80 hover:opacity-100 transition-opacity" />
+                    <div ref={containerRef} className="w-full h-full cursor-pointer relative z-10" />
                 </div>
             </div>
 

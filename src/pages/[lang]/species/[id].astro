@@ -178,23 +178,9 @@ const galleryImages =
                                                 client:only="react"
                                                 audioUrl={audio.url}
                                                 description={audio.description}
+                                                spectrogramImage={audio.spectrogramImage}
                                             />
-                                            {audio.spectrogramImage && (
-                                                <div class="mt-4">
-                                                    <p class="text-xs text-gray-500 mb-2 uppercase tracking-wide">
-                                                        {lang === "es"
-                                                            ? "Espectrograma Estático"
-                                                            : "Static Spectrogram"}
-                                                    </p>
-                                                    <img
-                                                        src={
-                                                            audio.spectrogramImage
-                                                        }
-                                                        alt={`Spectrogram of ${commonName} - ${audio.title}`}
-                                                        class="w-full h-auto rounded-lg border border-gray-200"
-                                                    />
-                                                </div>
-                                            )}
+                                        </div>
                                         </div>
                                     ))
                                 }
