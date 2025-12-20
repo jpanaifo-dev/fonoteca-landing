@@ -7,6 +7,7 @@ import { Intro } from "../../components/react/Intro";
 import { FeatureGrid } from "../../components/react/FeatureGrid";
 import { ServicesGrid } from "../../components/react/ServicesGrid";
 import { Stats } from "../../components/react/Stats";
+import { StatsChart } from "../../components/react/StatsChart";
 import { CTA } from "../../components/react/CTA";
 import { AudioList } from "../../components/react/AudioList";
 import { getAllSpecies } from "../../data/species";
@@ -59,6 +60,10 @@ const allSpecies = getAllSpecies();
                 </div>
                 <AudioList client:load allSpecies={allSpecies} lang={lang} />
             </div>
+        </section>
+
+        <section class="py-12 bg-gray-50 dark:bg-gray-900">
+            <StatsChart client:visible />
         </section>
 
         <Stats content={content.stats} />
