@@ -98,6 +98,21 @@ export const PersistentPlayer = () => {
         }
     }, [track, playlist]);
 
+    // Check for global playlist on mount (Fix for race conditions)
+    useEffect(() => {
+        const globalPlaylist = (window as any).FONOTECA_PLAYLIST;
+        if (globalPlaylist && !track) {
+            const { playlist: newPlaylist, startAtIndex = 0, autoplay = false } = globalPlaylist;
+            setPlaylist(newPlaylist);
+            if (newPlaylist.length > 0) {
+                const startTrack = newPlaylist[startAtIndex];
+                playOnLoad.current = autoplay;
+                setTrack(startTrack);
+                setCurrentIndex(startAtIndex);
+            }
+        }
+    }, []);
+
     useEffect(() => {
         if (track && containerRef.current) {
             if (wavesurfer.current) {

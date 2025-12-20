@@ -259,12 +259,17 @@ const galleryImages =
                     spectrogram: audio.spectrogramImage,
                 }));
 
+                const playlistData = {
+                    playlist: playlist,
+                    startAtIndex: 0,
+                    autoplay: false, // Load but don't play automatically, as requested "visible but selected"
+                };
+
+                // Backup for React hydration race conditions
+                window.FONOTECA_PLAYLIST = playlistData;
+
                 const event = new CustomEvent("set-playlist", {
-                    detail: {
-                        playlist: playlist,
-                        startAtIndex: 0,
-                        autoplay: false, // Load but don't play automatically, as requested "visible but selected"
-                    },
+                    detail: playlistData,
                 });
                 window.dispatchEvent(event);
             }
