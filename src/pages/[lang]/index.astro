@@ -2,6 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import { Header } from "../../components/react/Header";
 import { Footer } from "../../components/react/Footer";
+import { Hero } from "../../components/react/Hero";
+import { Intro } from "../../components/react/Intro";
+import { FeatureGrid } from "../../components/react/FeatureGrid";
+import { ServicesGrid } from "../../components/react/ServicesGrid";
+import { Stats } from "../../components/react/Stats";
+import { CTA } from "../../components/react/CTA";
 import { AudioList } from "../../components/react/AudioList";
 import { getAllSpecies } from "../../data/species";
 import { translations, LANGUAGES } from "../../i18n/data";
@@ -29,22 +35,37 @@ const allSpecies = getAllSpecies();
         lang={lang}
     />
     <main>
-        <div class="pt-24 pb-8 bg-primary-dark text-white">
-            <div class="container mx-auto px-6">
-                <h1 class="text-4xl md:text-5xl font-light mb-4">
-                    {content.nav.library}
-                </h1>
-                <p class="text-lg text-gray-300 max-w-2xl">
-                    {content.hero.description}
-                </p>
-            </div>
-        </div>
+        <Hero client:load content={content.hero} />
+        <Intro content={content.intro} />
 
-        <section class="py-12 bg-light-bg min-h-screen">
+        {/* Audio Archive Section */}
+        <section
+            id="library"
+            class="py-12 bg-white dark:bg-gray-800 scroll-mt-20"
+        >
             <div class="container mx-auto px-6">
+                <div class="mb-12 text-center">
+                    <h2
+                        class="text-3xl md:text-4xl font-light text-primary-dark dark:text-white mb-4"
+                    >
+                        {content.nav.library}
+                    </h2>
+                    <p
+                        class="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
+                    >
+                        Explora nuestra colección completa de grabaciones de
+                        alta fidelidad.
+                    </p>
+                </div>
                 <AudioList client:load allSpecies={allSpecies} lang={lang} />
             </div>
         </section>
+
+        <Stats content={content.stats} />
+        <FeatureGrid client:visible data={content.features} />
+        <ServicesGrid content={content.species} />
+        <CTA content={content.cta} />
     </main>
     <Footer content={content.footer} logoSrc={logoIiap.src} />
 </Layout>
+```

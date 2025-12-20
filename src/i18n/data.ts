@@ -33,16 +33,16 @@ export const translations = {
             title: "Explora por",
             title_strong: "Especies",
             items: [
-                { title: "Anfibios", count: "120+ Especies" },
-                { title: "Aves", count: "450+ Especies" },
-                { title: "Mamíferos", count: "85+ Especies" },
-                { title: "Insectos", count: "200+ Especies" },
+                { title: "Anfibios", count: "117 Especies" },
+                { title: "Aves", count: "120 Especies" },
+                { title: "Murciélagos", count: "24 Especies" },
+                { title: "Insectos", count: "20 Especies" },
             ]
         },
         stats: {
-            s1: { count: "54", label: "Especies", desc: "Registradas en el último año" },
-            s2: { count: "120", label: "Horas", desc: "De audio de alta fidelidad" },
-            s3: { count: "12", label: "Regiones", desc: "Protegidas monitoreadas" }
+            s1: { count: "773", label: "Grabaciones", desc: "Total de registros de audio" },
+            s2: { count: "281", label: "Especies", desc: "Catalogadas en la colección" },
+            s3: { count: "48", label: "Familias", desc: "Grupos taxonómicos representados" }
         },
         cta: {
             title_start: "Suscríbete para",
@@ -195,16 +195,16 @@ export const translations = {
             title: "Explore by",
             title_strong: "Species",
             items: [
-                { title: "Amphibians", count: "120+ Species" },
-                { title: "Birds", count: "450+ Species" },
-                { title: "Mammals", count: "85+ Species" },
-                { title: "Insects", count: "200+ Species" },
+                { title: "Amphibians", count: "117 Species" },
+                { title: "Birds", count: "120 Species" },
+                { title: "Bats", count: "24 Species" },
+                { title: "Insects", count: "20 Species" },
             ]
         },
         stats: {
-            s1: { count: "54", label: "Species", desc: "Registered last year" },
-            s2: { count: "120", label: "Hours", desc: "High fidelity audio" },
-            s3: { count: "12", label: "Regions", desc: "Protected monitored" }
+            s1: { count: "773", label: "Recordings", desc: "Total audio records" },
+            s2: { count: "281", label: "Species", desc: "Cataloged in the collection" },
+            s3: { count: "48", label: "Families", desc: "Taxonomic groups represented" }
         },
         cta: {
             title_start: "Subscribe for",
@@ -357,16 +357,16 @@ export const translations = {
             title: "Explore por",
             title_strong: "Espécies",
             items: [
-                { title: "Anfíbios", count: "120+ Espécies" },
-                { title: "Aves", count: "450+ Espécies" },
-                { title: "Mamíferos", count: "85+ Espécies" },
-                { title: "Insetos", count: "200+ Espécies" },
+                { title: "Anfíbios", count: "117 Espécies" },
+                { title: "Aves", count: "120 Espécies" },
+                { title: "Morcegos", count: "24 Espécies" },
+                { title: "Insetos", count: "20 Espécies" },
             ]
         },
         stats: {
-            s1: { count: "54", label: "Espécies", desc: "Registradas no último ano" },
-            s2: { count: "120", label: "Horas", desc: "Áudio de alta fidelidade" },
-            s3: { count: "12", label: "Regiões", desc: "Protegidas monitoradas" }
+            s1: { count: "773", label: "Gravações", desc: "Total de registros de áudio" },
+            s2: { count: "281", label: "Espécies", desc: "Catalogadas na coleção" },
+            s3: { count: "48", label: "Famílias", desc: "Grupos taxonômicos representados" }
         },
         cta: {
             title_start: "Inscreva-se para",

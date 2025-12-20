@@ -1,5 +1,6 @@
 import React from 'react';
 import { type translations } from '../../i18n/data';
+import { StatsChart } from './StatsChart';
 
 interface StatsProps {
     content: typeof translations.es.stats;
@@ -32,6 +33,10 @@ export const Stats: React.FC<StatsProps> = ({ content }) => {
                             <p className="text-xl font-light">{stat.desc}</p>
                         </div>
                     ))}
+                </div>
+
+                <div className="reveal-on-scroll delay-300">
+                    <StatsChart />
                 </div>
             </div>
         </section>
