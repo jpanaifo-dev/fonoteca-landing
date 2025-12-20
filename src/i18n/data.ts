@@ -1,11 +1,11 @@
 export type Language = 'es' | 'en' | 'pt';
+import { landingImages } from '../config/landingImages';
 
 export const LANGUAGES: Language[] = ['es', 'en', 'pt'];
 
 export const translations = {
     es: {
         nav: {
-            home: "Inicio",
             library: "La Fonoteca",
             species: "Especies",
             stats: "Estadísticas",
@@ -55,7 +55,7 @@ export const translations = {
             banner: {
                 title: "Explora la Fonoteca",
                 subtitle: "Una inmersión sonora en la biodiversidad amazónica",
-                image: "https://images.unsplash.com/photo-1501854140801-50d00698a7ee?q=80&w=2060&auto=format&fit=crop"
+                image: landingImages.pageBanner.species_es
             },
             list: [
                 {
@@ -168,7 +168,6 @@ export const translations = {
     },
     en: {
         nav: {
-            home: "Home",
             library: "The Phonotheque",
             species: "Species",
             stats: "Statistics",
@@ -218,7 +217,7 @@ export const translations = {
             banner: {
                 title: "Explore the Phonotheque",
                 subtitle: "A sonic immersion in the Amazonian biodiversity",
-                image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
+                image: landingImages.pageBanner.species_en
             },
             list: [
                 {
@@ -331,7 +330,6 @@ export const translations = {
     },
     pt: {
         nav: {
-            home: "Início",
             library: "A Fonoteca",
             species: "Espécies",
             stats: "Estatísticas",
@@ -381,7 +379,7 @@ export const translations = {
             banner: {
                 title: "Explore a Fonoteca",
                 subtitle: "Uma imersão sonora na biodiversidade amazônica",
-                image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
+                image: landingImages.pageBanner.species_en
             },
             list: [
                 {

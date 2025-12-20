@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { type translations } from '../../i18n/data';
+import { landingImages } from '../../config/landingImages';
 
 interface HeroProps {
     content: typeof translations.es.hero;
@@ -20,8 +21,8 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <img
-                    src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop"
-                    alt="Forest Background"
+                    src={landingImages.hero.src}
+                    alt={landingImages.hero.alt}
                     className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-primary-dark/60 mix-blend-multiply"></div>

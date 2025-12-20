@@ -1,17 +1,15 @@
 export const landingImages = {
     hero: {
-        src: "/hero-bg.jpg", // Placeholder - user should update with real paths
-        alt: "Fondo de la selva amazónica",
+        src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop",
+        alt: "Forest Background",
     },
-    features: [
-        {
-            src: "/feature1.jpg",
-            alt: "Grabación en campo",
-        },
-        {
-            src: "/feature2.jpg",
-            alt: "Análisis de espectrogramas",
-        },
-    ],
-    // Add other sections as needed based on analysis
+    intro: {
+        src: "https://images.unsplash.com/photo-1550686041-366ad85a1355?q=80&w=1000&auto=format&fit=crop",
+        alt: "Scientist recording nature sounds",
+    },
+    pageBanner: {
+        default: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop",
+        species_es: "https://images.unsplash.com/photo-1501854140801-50d00698a7ee?q=80&w=2060&auto=format&fit=crop",
+        species_en: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop"
+    }
 };

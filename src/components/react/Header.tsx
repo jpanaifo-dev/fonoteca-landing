@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { type translations } from '../../i18n/data';
 import { LanguageSelector } from './LanguageSelector';
+import { ThemeToggle } from './ThemeToggle';
 
 interface HeaderProps {
     content: typeof translations.es.nav;
@@ -27,10 +28,18 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" })
     };
 
     const getHref = (key: string) => {
-        if (key === 'species') return `/${lang}/species`;
-        // For other links, if we are on the home page, scroll. If not, go to home#id
-        // Simple approach: Always go to /{lang}/#key. This works for both.
-        return `/${lang}/#${key === 'home' ? 'top' : key}`;
+        switch (key) {
+            case 'library':
+                return `/${lang}/`;
+            case 'species':
+                return `/${lang}/species`;
+            case 'stats':
+                return `/${lang}/stats`;
+            case 'contact':
+                return `/${lang}/contact`;
+            default:
+                return `/${lang}/#${key}`;
+        }
     };
 
     return (
@@ -56,6 +65,7 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" })
 
                     <div className="flex items-center gap-4">
                         <LanguageSelector currentLang={lang} />
+                        <ThemeToggle />
                         <button
                             onClick={toggleMenu}
                             className="group flex flex-col gap-1.5 w-8 cursor-pointer z-50"

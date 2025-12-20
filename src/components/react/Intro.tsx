@@ -1,5 +1,6 @@
 import React from 'react';
 import { type translations } from '../../i18n/data';
+import { landingImages } from '../../config/landingImages';
 
 interface IntroProps {
     content: typeof translations.es.intro;
@@ -53,8 +54,8 @@ export const Intro: React.FC<IntroProps> = ({ content }) => {
                         <div className="relative">
                             <div className="absolute inset-0 bg-accent-green/10 rounded-tr-[80px] rounded-bl-[80px] transform translate-x-4 translate-y-4"></div>
                             <img
-                                src="https://images.unsplash.com/photo-1550686041-366ad85a1355?q=80&w=1000&auto=format&fit=crop"
-                                alt="Scientist recording nature sounds"
+                                src={landingImages.intro.src}
+                                alt={landingImages.intro.alt}
                                 className="relative z-10 w-full h-[500px] object-cover rounded-tr-[80px] rounded-bl-[80px] shadow-xl"
                             />
                         </div>
