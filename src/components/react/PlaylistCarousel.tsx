@@ -12,8 +12,11 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
     const [emblaRef, emblaApi] = useEmblaCarousel({
         align: 'start',
         containScroll: 'trimSnaps',
-        dragFree: true
+        dragFree: false, // Better snapping for sliders with autoplay
+        loop: true // Continuous endless looping
     });
+
+    const [autoplayEnabled, setAutoplayEnabled] = React.useState(true);
 
     const scrollPrev = React.useCallback(() => {
         if (emblaApi) emblaApi.scrollPrev();
@@ -22,6 +25,17 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
     const scrollNext = React.useCallback(() => {
         if (emblaApi) emblaApi.scrollNext();
     }, [emblaApi]);
+
+    // Auto-Slider interval
+    React.useEffect(() => {
+        if (!emblaApi || !autoplayEnabled) return;
+
+        const intervalId = setInterval(() => {
+            emblaApi.scrollNext();
+        }, 5000); // Advances every 5 seconds
+
+        return () => clearInterval(intervalId);
+    }, [emblaApi, autoplayEnabled]);
 
     const playAudio = (species: Species) => {
         if (species.audios.length === 0) return;
@@ -39,7 +53,11 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
     };
 
     return (
-        <div className="relative group/carousel w-full">
+        <div 
+            className="relative group/carousel w-full"
+            onMouseEnter={() => setAutoplayEnabled(false)}
+            onMouseLeave={() => setAutoplayEnabled(true)}
+        >
             {/* Scroll Container */}
             <div className="overflow-hidden w-full cursor-grab active:cursor-grabbing" ref={emblaRef}>
                 <div className="flex pb-6 pt-2 px-2 items-stretch">
