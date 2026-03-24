@@ -32,41 +32,19 @@ export interface Species {
 }
 
 import { supabase } from "../lib/supabase";
-import fs from 'fs';
-import path from 'path';
+import fallbacks from "./species_fallbacks.json";
 
-const categoryMapSlug: Record<string, string> = {
-    Amphibians: "anfibios",
-    Birds: "aves",
-    Mammals: "mamiferos",
-    Crickets: "grillos",
-    Reptiles: "reptiles",
-};
-
-// Fallback search to read physical files on local public/ folder node builds
-function getFallbackPublicMedia(category: string, slug: string) {
+// Fallback search using explicit local maps from json
+function getFallbackPublicMedia(slug: string) {
     const slugLower = slug.toLowerCase();
-    const catSlug = categoryMapSlug[category] || "anfibios";
-    const dirPath = path.join(process.cwd(), 'public', 'data', catSlug, slugLower);
+    const fallback = (fallbacks as Record<string, any>)[slugLower];
 
-    try {
-        if (fs.existsSync(dirPath)) {
-            const files = fs.readdirSync(dirPath);
-            const image = files.find(f => {
-                const fLower = f.toLowerCase();
-                return fLower.endsWith('.jpg') || fLower.endsWith('.jpeg') || fLower.endsWith('.png') || fLower.endsWith('.webp');
-            });
-            const audio = files.find(f => f.toLowerCase().endsWith('.wav') || f.toLowerCase().endsWith('.ogg') || f.toLowerCase().endsWith('.mp3'));
-            const spectrogram = files.find(f => f.toLowerCase().includes('fft') && f.toLowerCase().endsWith('.png'));
-
-            return {
-                image: image ? `/data/${catSlug}/${slugLower}/${image}` : null,
-                audio: audio ? `/data/${catSlug}/${slugLower}/${audio}` : null,
-                spectrogram: spectrogram ? `/data/${catSlug}/${slugLower}/${spectrogram}` : null
-            };
-        }
-    } catch (e) {
-        // Fallback or permission fail securely
+    if (fallback) {
+        return {
+            image: fallback.mainImage || null,
+            audio: fallback.audios && fallback.audios.length > 0 ? fallback.audios[0].url : null,
+            spectrogram: fallback.audios && fallback.audios.length > 0 ? fallback.audios[0].spectrogramImage : null
+        };
     }
     return { image: null, audio: null, spectrogram: null };
 }
@@ -178,22 +156,20 @@ export async function getAllSpecies(): Promise<Species[]> {
             .replace(/\s+/g, '_'); 
 
         // Physical Local Fallback Loader 
-        const publicFallbacks = getFallbackPublicMedia(category, scientificNameSlug);
+        const publicFallbacks = getFallbackPublicMedia(scientificNameSlug);
 
-        // Apply physical fallbacks if DB returned nothing
-        let resolvedMainImage = mainImage;
-        if (mainImage === "/placeholder.jpg" && publicFallbacks.image) {
-            resolvedMainImage = publicFallbacks.image;
-        }
+        // Apply physical fallbacks prioritizing them over DB to avoid list view misses
+        const resolvedMainImage = publicFallbacks.image || mainImage;
 
+        // If fallback audio exists, prepend it to the beginning of the list, keeping DB items
         let resolvedAudios = audios;
-        if (audios.length === 0 && publicFallbacks.audio) {
+        if (publicFallbacks.audio) {
             resolvedAudios = [{
                 title: "Canto Local",
                 url: publicFallbacks.audio,
                 description: "Registro de respaldo local.",
                 spectrogramImage: publicFallbacks.spectrogram || undefined
-            }];
+            }, ...audios];
         }
 
         // Extract ID slug
