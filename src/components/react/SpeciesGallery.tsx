@@ -13,17 +13,40 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
             {/* Main Image */}
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl bg-gray-100 shadow-xl">
                 <AnimatePresence mode="wait">
-                    <motion.img
-                        key={currentIndex}
-                        src={images[currentIndex]}
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.5 }}
-                        className="h-full w-full object-cover"
-                        alt={`Species gallery ${currentIndex + 1}`}
-                    />
+                    {images[currentIndex]?.includes('docs.google.com') ? (
+                        <motion.div
+                            key={currentIndex}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="h-full w-full bg-black/20"
+                        >
+                            <iframe 
+                                src={`https://drive.google.com/file/d/${images[currentIndex].match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`} 
+                                className="w-full h-full border-0" 
+                                allow="autoplay"
+                            />
+                        </motion.div>
+                    ) : (
+                        <motion.img
+                            key={currentIndex}
+                            src={images[currentIndex]}
+                            initial={{ opacity: 0, scale: 1.1 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="h-full w-full object-cover"
+                            alt={`Species gallery ${currentIndex + 1}`}
+                        />
+                    )}
                 </AnimatePresence>
+                
+                {images[currentIndex]?.includes('docs.google.com') && (
+                    <div className="absolute top-4 left-4 bg-blue-600 text-white text-xs px-2.5 py-1 rounded-full shadow-sm">
+                        Drive Preview
+                    </div>
+                )}
 
                 {/* Navigation Arrows */}
                 {images.length > 1 && (

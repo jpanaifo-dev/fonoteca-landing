@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Species, SpeciesCategory } from '../../data/species';
 
@@ -16,6 +16,38 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     const [showFilters, setShowFilters] = useState(false);
 
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+    
+    // Pagination State
+    const [page, setPage] = useState(1);
+    const ITEMS_PER_PAGE = 20;
+
+    useEffect(() => {
+        const handleLocationChange = () => {
+            const params = new URLSearchParams(window.location.search);
+            const p = parseInt(params.get('page') || '1');
+            setPage(p);
+        };
+        
+        // Listen to pushState/popstate
+        window.addEventListener('popstate', handleLocationChange);
+        handleLocationChange(); // Initial load
+
+        return () => window.removeEventListener('popstate', handleLocationChange);
+    }, []);
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+        const params = new URLSearchParams(window.location.search);
+        if (newPage === 1) {
+            params.delete('page');
+        } else {
+            params.set('page', newPage.toString());
+        }
+        const query = params.toString() ? `?${params.toString()}` : '';
+        const newUrl = `${window.location.pathname}${query}`;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+    };
 
     // Dynamic Lists for filters
     const categories = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.category)))], [allSpecies]);
@@ -34,6 +66,22 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
             return matchesSearch && matchesCategory && matchesLocation && matchesAudio;
         });
     }, [allSpecies, searchTerm, selectedCategory, selectedLocation, onlyWithAudio]);
+
+    const paginatedSpecies = useMemo(() => {
+        return filteredSpecies.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+    }, [filteredSpecies, page]);
+
+    const totalPages = Math.ceil(filteredSpecies.length / ITEMS_PER_PAGE);
+
+    // Reset page to 1 on filter changes to avoid empty screens
+    useEffect(() => {
+        setPage(1);
+        const params = new URLSearchParams(window.location.search);
+        params.delete('page');
+        const query = params.toString() ? `?${params.toString()}` : '';
+        const newUrl = `${window.location.pathname}${query}`;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+    }, [searchTerm, selectedCategory, selectedLocation, onlyWithAudio]);
 
     const playAudio = (species: Species) => {
         if (species.audios.length === 0) return;
@@ -192,7 +240,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             animate={{ opacity: 1 }}
                             className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${isSidebarCollapsed ? 'xl:grid-cols-5 lg:grid-cols-4' : 'lg:grid-cols-4'} gap-5`}
                         >
-                            {filteredSpecies.map(species => {
+                            {paginatedSpecies.map(species => {
                                 const coverImage = (onlyWithAudio && species.audios.length > 0 && species.audios[0].spectrogramImage)
                                     ? species.audios[0].spectrogramImage
                                     : (species.mainImage || '/placeholder.jpg');
@@ -203,13 +251,29 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         key={species.id}
                                         className="bg-white dark:bg-[#121b28] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden group hover:shadow-lg hover:border-accent-green/30 transition-all duration-300 flex flex-col"
                                     >
-                                        <div className="aspect-[4/3] overflow-hidden relative">
-                                            <img
-                                                src={coverImage}
-                                                alt={species.scientificName}
-                                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-                                                loading="lazy"
-                                            />
+                                        <div className="aspect-[4/3] overflow-hidden relative bg-gray-100 dark:bg-gray-800">
+                                            {coverImage.includes('docs.google.com') ? (
+                                                <iframe 
+                                                    src={`https://drive.google.com/file/d/${coverImage.match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`} 
+                                                    className="w-full h-full border-0 pointer-events-none" 
+                                                    scrolling="no"
+                                                />
+                                            ) : (
+                                                <>
+                                                    {!loadedImages[species.id] && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <div className="w-5 h-5 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                                        </div>
+                                                    )}
+                                                    <img
+                                                        src={coverImage}
+                                                        alt={species.scientificName}
+                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
+                                                        className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
+                                                        loading="lazy"
+                                                    />
+                                                </>
+                                            )}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                                                 <button
                                                     onClick={() => playAudio(species)}
@@ -239,7 +303,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             animate={{ opacity: 1 }}
                             className="flex flex-col gap-3"
                         >
-                            {filteredSpecies.map(species => {
+                            {paginatedSpecies.map(species => {
                                 const coverImage = (onlyWithAudio && species.audios.length > 0 && species.audios[0].spectrogramImage)
                                     ? species.audios[0].spectrogramImage
                                     : (species.mainImage || '/placeholder.jpg');
@@ -250,7 +314,29 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         key={species.id}
                                         className="flex items-center gap-4 bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow group flex-wrap md:flex-nowrap"
                                     >
-                                        <img src={coverImage} alt="" className="w-12 h-12 rounded-lg object-cover" />
+                                        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                                            {coverImage.includes('docs.google.com') ? (
+                                                <iframe 
+                                                    src={`https://drive.google.com/file/d/${coverImage.match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`} 
+                                                    className="w-full h-full border-0 pointer-events-none" 
+                                                    scrolling="no"
+                                                />
+                                            ) : (
+                                                <>
+                                                    {!loadedImages['list-' + species.id] && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                                        </div>
+                                                    )}
+                                                    <img 
+                                                        src={coverImage} 
+                                                        alt="" 
+                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
+                                                        className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`} 
+                                                    />
+                                                </>
+                                            )}
+                                        </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">{species.commonName_es}</h4>
                                             <p className="text-xs text-gray-400 italic truncate">{species.scientificName}</p>
@@ -274,6 +360,41 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-1.5 mt-10 mb-4">
+                        <button 
+                            onClick={() => handlePageChange(Math.max(1, page - 1))}
+                            disabled={page === 1}
+                            className="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium transition-colors"
+                        >
+                            &larr; Anterior
+                        </button>
+                        
+                        <div className="flex items-center gap-1">
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                                <button
+                                    key={p}
+                                    onClick={() => handlePageChange(p)}
+                                    className={`w-7 h-7 rounded-lg text-xs font-medium transition-all ${page === p 
+                                        ? 'bg-accent-green text-white shadow-sm shadow-accent-green/20' 
+                                        : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
+                                >
+                                    {p}
+                                </button>
+                            ))}
+                        </div>
+
+                        <button 
+                            onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
+                            disabled={page === totalPages}
+                            className="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium transition-colors"
+                        >
+                            Siguiente &rarr;
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
