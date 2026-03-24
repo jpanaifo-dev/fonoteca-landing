@@ -171,11 +171,14 @@ export async function getAllSpecies(): Promise<Species[]> {
         const category = classToCategory[taxon?.class || ""] || "Amphibians";
         const commonName = taxon?.vernacularName || "Sin Nombre";
         
-        // Extract slug
-        const occSlug = occurrenceID.split("_")[0] || "unknown";
+        // Extract slug based on scientificName to guarantee folders match (e.g. 'adenomera_hylaedactyla')
+        const scientificNameSlug = (taxon?.scientificName || "unknown")
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, '_'); 
 
         // Physical Local Fallback Loader 
-        const publicFallbacks = getFallbackPublicMedia(category, occSlug);
+        const publicFallbacks = getFallbackPublicMedia(category, scientificNameSlug);
 
         // Apply physical fallbacks if DB returned nothing
         let resolvedMainImage = mainImage;
@@ -192,6 +195,9 @@ export async function getAllSpecies(): Promise<Species[]> {
                 spectrogramImage: publicFallbacks.spectrogram || undefined
             }];
         }
+
+        // Extract ID slug
+        const occSlug = occurrenceID.split("_")[0] || "unknown";
 
         return {
             id: occSlug,

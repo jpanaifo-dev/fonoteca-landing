@@ -199,11 +199,11 @@ export const PersistentPlayer = () => {
 
     return (
         <>
-            <div className={`fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-[100] backdrop-blur-md transition-all duration-500 ${isPlaying ? 'p-5' : 'p-2 py-2 md:py-3 h-16'}`}>
-                <div className="container mx-auto flex items-center justify-between xl:justify-start gap-4 lg:gap-8 h-full">
+            <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-[100] backdrop-blur-md transition-all duration-300">
+                <div className="container mx-auto flex items-center justify-between xl:justify-start gap-4 lg:gap-8">
                     {/* Track Info */}
-                    <div className="flex items-center gap-3 w-48 md:w-60 lg:w-80 flex-shrink-0 cursor-pointer h-full" onClick={() => setIsModalOpen(true)}>
-                        <div className="relative group/img bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700 h-full aspect-square">
+                    <div className="flex items-center gap-3 w-48 md:w-60 lg:w-80 flex-shrink-0 cursor-pointer" onClick={() => setIsModalOpen(true)}>
+                        <div className="relative group/img bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700 w-16 h-16 flex-shrink-0">
                             {(track.spectrogram || track.image) && (
                                 <img
                                     src={track.spectrogram || track.image}
@@ -220,7 +220,7 @@ export const PersistentPlayer = () => {
                     </div>
 
                     {/* Controls */}
-                    <div className="flex items-center gap-2 flex-shrink-0 order-2 xl:order-none h-full">
+                    <div className="flex items-center gap-2 flex-shrink-0 order-2 xl:order-none">
                         {/* Prev Button */}
                         <button
                             onClick={playPrev}
@@ -236,7 +236,7 @@ export const PersistentPlayer = () => {
                         {/* Play/Pause */}
                         <button
                             onClick={togglePlay}
-                            className={`flex items-center justify-center rounded-full bg-accent-green text-white hover:brightness-110 hover:scale-105 transition-all shadow-md ${isPlaying ? 'w-12 h-12' : 'w-10 h-10'}`}
+                            className="w-12 h-12 flex items-center justify-center rounded-full bg-accent-green text-white hover:brightness-110 hover:scale-105 transition-all shadow-md"
                         >
                             {isPlaying ? (
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 fill-current">
@@ -263,7 +263,7 @@ export const PersistentPlayer = () => {
                     </div>
 
                     {/* Waveform */}
-                    <div className={`flex-1 relative h-12 flex items-center group min-w-0 order-1 xl:order-none w-full xl:w-auto mt-0 transition-opacity duration-300 ${isPlaying ? 'opacity-100 flex' : 'opacity-0 hidden'}`}>
+                    <div className={`flex-1 relative h-12 flex items-center group min-w-0 order-1 xl:order-none w-full xl:w-auto mt-0 transition-opacity duration-300 ${isPlaying ? 'opacity-100 flex' : 'opacity-0 hidden xl:flex'}`}>
                         {/* Time Indicator - Floating */}
                         <div className="absolute -top-6 left-0 text-xs font-mono text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
                             {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60).toString().padStart(2, '0')}
