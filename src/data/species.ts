@@ -51,76 +51,38 @@ export async function getAllSpecies(): Promise<Species[]> {
         return [];
     }
 
-    // Group occurrences by Taxon (Scientific Name) to avoid duplicates in the list
-    const speciesMap = new Map<string, { taxon: any; location: any; media: any[]; occurrenceID: string }>();
+    if (error) {
+        console.error("Error fetching species from Supabase:", error);
+        return [];
+    }
 
-    (occurrences as any[] || []).forEach((occ) => {
+    return (occurrences as any[] || []).map((occ) => {
         const taxon = occ.taxa;
-        if (!taxon) return;
+        const location = occ.locations;
+        const media = occ.multimedia || [];
 
-        const key = taxon.scientificName;
-        if (!speciesMap.has(key)) {
-            speciesMap.set(key, {
-                taxon: taxon,
-                location: occ.locations, // Uses the first encountered location
-                media: [],
-                occurrenceID: occ.occurrenceID
-            });
-        }
-
-        const group = speciesMap.get(key)!;
-        if (occ.multimedia && Array.isArray(occ.multimedia)) {
-            group.media.push(...occ.multimedia);
-        }
-    });
-
-    return Array.from(speciesMap.values()).map(({ taxon, location, media, occurrenceID }) => {
-        // Case-insensitive media matching with extension check to avoid garbage paths (like 'Dashboard')
         const isImage = (m: any) => {
             if (!m.identifier) return false;
-            const idLower = m.identifier.toLowerCase();
-            const hasImageExtension = idLower.endsWith('.jpg') ||
-                idLower.endsWith('.jpeg') ||
-                idLower.endsWith('.png') ||
-                idLower.endsWith('.webp') ||
-                idLower.startsWith('http');
-
             const typeMatch = m.type && (
-                m.type.toLowerCase().includes('image') ||
+                m.type.toLowerCase().includes('image') || 
                 m.type.toLowerCase().includes('still')
             );
-            return typeMatch && hasImageExtension;
+            return typeMatch;
         };
-
+        
         const isAudio = (m: any) => m.type && (m.type.toLowerCase().includes('sound') || m.type.toLowerCase().includes('audio'));
 
-        const formatMediaUrl = (identifier: string) => {
-            if (!identifier) return "/placeholder.jpg";
-            return identifier;
-            // if (identifier.startsWith('http://') || identifier.startsWith('https://')) {
-            //     return identifier;
-            // }
-            // const supabaseUrl = import.meta.env.SUPABASE_URL || '';
-            // const publicUrlPath = `${supabaseUrl}/storage/v1/object/public/multimedia/${identifier}`;
-            // return publicUrlPath;
-        };
+        const formatMediaUrl = (identifier: string) => identifier;
 
-        // Main Image - Prioritise title "Main Image" or grab the first image found
-        const mainImageMedia = media.find((m) => m.title === "Main Image") || media.find(isImage);
-        const mainImage = mainImageMedia ? formatMediaUrl(mainImageMedia.identifier) : "/placeholder.jpg";
-
-        // Gallery Images - Exclude main to avoid duplicates
         const galleryImages = media
             .filter(isImage)
-            .filter((m) => m.identifier !== mainImageMedia?.identifier)
-            .map((m) => formatMediaUrl(m.identifier));
+            .map((m: any) => formatMediaUrl(m.identifier));
 
-        // Audios - Match spectrograms by parent_multimedia_id
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
-            .map((m) => {
+            .map((m: any) => {
                 const spectrogram = media.find(
-                    (other) => other.parent_multimedia_id === m.id && isImage(other)
+                    (other: any) => other.parent_multimedia_id === m.id && isImage(other)
                 );
 
                 return {
@@ -131,7 +93,6 @@ export async function getAllSpecies(): Promise<Species[]> {
                 };
             });
 
-        // Category Map
         const classToCategory: Record<string, SpeciesCategory> = {
             Amphibia: "Amphibians",
             Aves: "Birds",
@@ -144,23 +105,23 @@ export async function getAllSpecies(): Promise<Species[]> {
         const commonName = taxon?.vernacularName || "Sin Nombre";
 
         return {
-            id: taxon?.id || "unknown", // Use absolute UUID from taxa table instead of string slug
+            id: occ.id || "unknown", // Absolute occurrence UUID to keep duplicates discrete
             scientificName: taxon?.scientificName || "Unknown",
             commonName_es: commonName,
             commonName_en: commonName,
             commonName_pt: commonName,
             category: category,
             description: {
-                es: "Descripción del registro cargado desde Base de Datos.",
-                en: "Record description loaded from Database.",
-                pt: "Descrição do registro cargado do Banco de Datos.",
+                es: "Descripción del registro.",
+                en: "Record description.",
+                pt: "Descrição do registro.",
             },
             characteristics: {
                 es: ["Disponible en Base de Datos"],
                 en: ["Available in Database"],
                 pt: ["Disponível no Banco de Datos"],
             },
-            mainImage: mainImage,
+            mainImage: galleryImages.length > 0 ? galleryImages[0] : "https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png",
             galleryImages: galleryImages,
             audios: audios,
             location: location?.locality || "Unknown Location",
