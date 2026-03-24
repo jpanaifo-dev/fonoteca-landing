@@ -36,7 +36,7 @@ const allSpecies = await getAllSpecies();
         lang={lang}
     />
     <main>
-        <Hero client:load content={content.hero} />
+        <Hero client:load content={content.hero} lang={lang as string} />
         <Intro content={content.intro} />
 
         {/* Audio Archive Section */}

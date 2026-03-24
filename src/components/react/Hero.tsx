@@ -3,9 +3,10 @@ import { type translations } from '../../i18n/data';
 
 interface HeroProps {
     content: typeof translations.es.hero;
+    lang: string;
 }
 
-export const Hero: React.FC<HeroProps> = ({ content }) => {
+export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
     const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
 
             {/* Content centered */}
             <div className="relative z-10 container mx-auto px-6 text-center mt-[-40px]">
-                <div className="max-w-8xl mx-auto flex flex-col items-center">
+                <div className="max-w-9xl mx-auto flex flex-col items-center">
                     <div className="min-h-[160px] md:min-h-[120px] mb-4 flex items-center justify-center">
                         <h1
                             key={currentTitleIndex}
@@ -50,7 +51,7 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
                     </p>
 
                     <a
-                        href="#library"
+                        href={`/${lang}/species`}
                         className="inline-flex items-center gap-2 border border-white/20 hover:border-white/50 bg-white/5 backdrop-blur-md text-white font-light py-3 px-10 rounded-full hover:bg-white hover:text-[#04070a] transition-all duration-500 animate-fade-in delay-300 shadow-2xl group"
                     >
                         <span>{content.cta}</span>

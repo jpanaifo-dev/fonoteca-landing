@@ -14,6 +14,8 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [showFilters, setShowFilters] = useState(false);
 
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
     // Dynamic Lists for filters
     const categories = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.category)))], [allSpecies]);
     const locations = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.location)))], [allSpecies]);
@@ -56,7 +58,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     };
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8 min-h-[700px] text-gray-800 dark:text-gray-200">
+        <div className="flex flex-col lg:flex-row gap-6 min-h-[700px] text-gray-800 dark:text-gray-200">
             {/* Dark Overlay for mobile aside */}
             {showFilters && (
                 <div 
@@ -66,25 +68,25 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
             )}
 
             {/* Sidebar Filters */}
-            <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-72 max-w-[80vw] lg:w-1/4 bg-white dark:bg-[#121b28] p-6 rounded-r-2xl lg:rounded-2xl shadow-lg border border-gray-100 dark:border-gray-800 h-screen lg:h-fit overflow-y-auto transform transition-transform duration-300 ease-in-out ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-                <div className="flex items-center justify-between mb-6 lg:hidden">
-                    <h2 className="font-bold text-lg">Filtros</h2>
-                    <button onClick={() => setShowFilters(false)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+            <aside className={`fixed lg:static inset-y-0 left-0 z-50 bg-white dark:bg-[#121b28] rounded-r-2xl lg:rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 h-screen lg:h-fit overflow-y-auto transform transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'w-0 lg:w-0 p-0 overflow-hidden opacity-0 border-0' : 'w-72 lg:w-[220px] p-4'} ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+                <div className="flex items-center justify-between mb-4 lg:hidden">
+                    <h2 className="font-bold text-sm">Filtros</h2>
+                    <button onClick={() => setShowFilters(false)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                         ✖
                     </button>
                 </div>
 
-                <div className="space-y-8">
+                <div className="space-y-6">
                     {/* Category Filter */}
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-800 pb-2">Familia / Categoría</h3>
-                        <div className="space-y-2 flex flex-col">
+                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Grupo</h3>
+                        <div className="space-y-1 flex flex-col">
                             {categories.map(cat => (
                                 <button
                                     key={cat}
                                     onClick={() => setSelectedCategory(cat)}
-                                    className={`px-3 py-2 rounded-xl text-left transition-all ${selectedCategory === cat 
-                                        ? 'bg-accent-green text-white font-medium shadow-md shadow-accent-green/20' 
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-light text-left transition-all ${selectedCategory === cat 
+                                        ? 'bg-accent-green text-white font-normal shadow-sm shadow-accent-green/10' 
                                         : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
                                 >
                                     {cat === 'All' ? (lang === 'es' ? 'Todas' : 'All') : (categoryTitles[cat] || cat)}
@@ -95,17 +97,17 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
                     {/* Location Filter */}
                     <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-800 pb-2">Ubicación</h3>
-                        <div className="space-y-2 flex flex-col">
+                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Ubicación</h3>
+                        <div className="space-y-1 flex flex-col">
                             {locations.map(loc => (
                                 <button
                                     key={loc}
                                     onClick={() => setSelectedLocation(loc)}
-                                    className={`px-3 py-2 rounded-xl text-left transition-all ${selectedLocation === loc 
-                                        ? 'bg-accent-green text-white font-medium shadow-md shadow-accent-green/20' 
-                                        : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
+                                    className={`px-3 py-1.5 rounded-xl text-xs font-light text-left transition-all ${selectedLocation === loc 
+                                        ? 'bg-accent-green text-white font-normal shadow-sm shadow-accent-green/10' 
+                                        : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
                                 >
-                                    {loc === 'All' ? (lang === 'es' ? 'Todas las ubicaciones' : 'All Locations') : loc}
+                                    {loc === 'All' ? (lang === 'es' ? 'Todas' : 'All') : loc}
                                 </button>
                             ))}
                         </div>
@@ -116,44 +118,52 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
             {/* Main Section */}
             <div className="flex-1">
                 {/* Top Control Bar */}
-                <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center mb-8 bg-white dark:bg-[#121b28] p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
+                <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center mb-6 bg-white dark:bg-[#121b28] p-3 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
                     <div className="flex items-center gap-3 flex-1">
                         {/* Mobile Aside Trigger */}
                         <button 
                             onClick={() => setShowFilters(true)}
-                            className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm"
+                            className="lg:hidden flex items-center gap-2 px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 18H7.5m9.75-6H21m-3 0a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 12h7.5" /></svg>
                             Filtros
                         </button>
 
+                        {/* Desktop Aside Collapse Trigger */}
+                        <button 
+                            onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-xs font-medium"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d={`${isSidebarCollapsed ? 'M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5' : 'M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5'}`} /></svg>
+                            {isSidebarCollapsed ? 'Mostrar Filtros' : 'Ocultar Filtros'}
+                        </button>
+
                         {/* Search Input */}
-                        <div className="relative flex-1 max-w-md">
+                        <div className="relative flex-1 max-w-sm">
                             <input
                                 type="text"
-                                placeholder={lang === 'es' ? 'Buscar especie...' : 'Search species...'}
-                                className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-accent-green transition-shadow"
+                                placeholder={lang === 'es' ? 'Buscar...' : 'Search...'}
+                                className="w-full pl-9 pr-4 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-accent-green text-sm transition-shadow"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-gray-400 absolute left-4 top-3"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-gray-400 absolute left-3 top-2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
                         </div>
                     </div>
 
                     {/* View Modes */}
                     <div className="flex items-center gap-2 border-l border-gray-100 dark:border-gray-800 pl-4">
-                        <span className="text-sm text-gray-500 mr-2">{filteredSpecies.length} resultados</span>
+                        <span className="text-xs text-gray-500 mr-2">{filteredSpecies.length} resultados</span>
                         <button 
                             onClick={() => setViewMode('grid')}
-                            className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-accent-green text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                            className={`p-1.5 rounded-lg ${viewMode === 'grid' ? 'bg-accent-green text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 8.25V6zm0 9.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zm0 9.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 8.25V6zm0 9.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zm0 9.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
                         </button>
                         <button 
                             onClick={() => setViewMode('list')}
-                            className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-accent-green text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                            className={`p-1.5 rounded-lg ${viewMode === 'list' ? 'bg-accent-green text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 5.25h16.5m-16.5-10.5h16.5" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 5.25h16.5m-16.5-10.5h16.5" /></svg>
                         </button>
                     </div>
                 </div>
@@ -164,8 +174,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                         <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                            className={`grid grid-cols-1 sm:grid-cols-2 ${isSidebarCollapsed ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6`}
                         >
                             {filteredSpecies.map(species => (
                                 <motion.div 
@@ -190,12 +199,12 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                             </button>
                                         </div>
                                     </div>
-                                    <div className="p-5 flex-1 flex flex-col">
+                                    <div className="p-4 flex-1 flex flex-col">
                                         <span className="text-xs text-accent-green font-medium mb-1">{categoryTitles[species.category] || species.category}</span>
-                                        <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-accent-green transition-colors">{species.commonName_es}</h4>
-                                        <p className="text-sm text-gray-400 italic mb-2">{species.scientificName}</p>
-                                        <div className="mt-auto pt-3 border-t border-gray-50 dark:border-gray-800 flex items-center justify-between">
-                                            <span className="text-xs text-gray-500">{species.location}</span>
+                                        <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-accent-green transition-colors text-sm">{species.commonName_es}</h4>
+                                        <p className="text-xs text-gray-400 italic mb-2">{species.scientificName}</p>
+                                        <div className="mt-auto pt-2 border-t border-gray-50 dark:border-gray-800 flex items-center justify-between">
+                                            <span className="text-[10px] text-gray-500">{species.location}</span>
                                             <a href={`/${lang}/species/${species.id}`} className="text-xs text-accent-green hover:underline">Ver más &rarr;</a>
                                         </div>
                                     </div>
@@ -206,30 +215,29 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                         <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="flex flex-col gap-4"
+                            className="flex flex-col gap-3"
                         >
                             {filteredSpecies.map(species => (
                                 <motion.div 
                                     layout
                                     key={species.id}
-                                    className="flex items-center gap-4 bg-white dark:bg-[#121b28] p-4 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow group flex-wrap md:flex-nowrap"
+                                    className="flex items-center gap-4 bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow group flex-wrap md:flex-nowrap"
                                 >
-                                    <img src={species.mainImage} alt="" className="w-16 h-16 rounded-lg object-cover" />
+                                    <img src={species.mainImage} alt="" className="w-12 h-12 rounded-lg object-cover" />
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="font-bold text-gray-900 dark:text-white text-lg truncate">{species.commonName_es}</h4>
-                                        <p className="text-sm text-gray-400 italic truncate">{species.scientificName}</p>
+                                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">{species.commonName_es}</h4>
+                                        <p className="text-xs text-gray-400 italic truncate">{species.scientificName}</p>
                                     </div>
-                                    <div className="text-sm text-gray-500">{species.location}</div>
+                                    <div className="text-xs text-gray-500">{species.location}</div>
                                     <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
                                         <button 
                                             onClick={() => playAudio(species)}
-                                            className="px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm hover:bg-accent-green hover:text-white transition-colors"
+                                            className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs hover:bg-accent-green hover:text-white transition-colors"
                                             disabled={species.audios.length === 0}
                                         >
                                             Play
                                         </button>
-                                        <a href={`/${lang}/species/${species.id}`} className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-sm hover:border-accent-green hover:text-accent-green transition-colors">
+                                        <a href={`/${lang}/species/${species.id}`} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 text-xs hover:border-accent-green hover:text-accent-green transition-colors">
                                             Detalles
                                         </a>
                                     </div>
