@@ -34,10 +34,10 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
                     <div className="min-h-[160px] md:min-h-[120px] mb-4 flex items-center justify-center">
                         <h1
                             key={currentTitleIndex}
-                            className="text-4xl md:text-6xl lg:text-[112px] font-light text-white tracking-wide animate-fade-up leading-none flex flex-col gap-1"
+                            className="text-4xl md:text-6xl lg:text-[112px] font-light text-gray-300/90 tracking-wide animate-fade-up leading-none flex flex-col gap-1"
                         >
                             {content.titles_animate[currentTitleIndex].split('|').map((part, i) => (
-                                <span key={i} className="block mt-1 font-extralight tracking-tight opacity-95">
+                                <span key={i} className="block mt-1 font-extralight tracking-tight">
                                     {part.trim()}
                                 </span>
                             ))}
