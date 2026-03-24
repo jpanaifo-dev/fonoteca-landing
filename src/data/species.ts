@@ -32,6 +32,44 @@ export interface Species {
 }
 
 import { supabase } from "../lib/supabase";
+import fs from 'fs';
+import path from 'path';
+
+const categoryMapSlug: Record<string, string> = {
+    Amphibians: "anfibios",
+    Birds: "aves",
+    Mammals: "mamiferos",
+    Crickets: "grillos",
+    Reptiles: "reptiles",
+};
+
+// Fallback search to read physical files on local public/ folder node builds
+function getFallbackPublicMedia(category: string, slug: string) {
+    const slugLower = slug.toLowerCase();
+    const catSlug = categoryMapSlug[category] || "anfibios";
+    const dirPath = path.join(process.cwd(), 'public', 'data', catSlug, slugLower);
+
+    try {
+        if (fs.existsSync(dirPath)) {
+            const files = fs.readdirSync(dirPath);
+            const image = files.find(f => {
+                const fLower = f.toLowerCase();
+                return fLower.endsWith('.jpg') || fLower.endsWith('.jpeg') || fLower.endsWith('.png') || fLower.endsWith('.webp');
+            });
+            const audio = files.find(f => f.toLowerCase().endsWith('.wav') || f.toLowerCase().endsWith('.ogg') || f.toLowerCase().endsWith('.mp3'));
+            const spectrogram = files.find(f => f.toLowerCase().includes('fft') && f.toLowerCase().endsWith('.png'));
+
+            return {
+                image: image ? `/data/${catSlug}/${slugLower}/${image}` : null,
+                audio: audio ? `/data/${catSlug}/${slugLower}/${audio}` : null,
+                spectrogram: spectrogram ? `/data/${catSlug}/${slugLower}/${spectrogram}` : null
+            };
+        }
+    } catch (e) {
+        // Fallback or permission fail securely
+    }
+    return { image: null, audio: null, spectrogram: null };
+}
 
 export async function getAllSpecies(): Promise<Species[]> {
     const { data: occurrences, error } = await supabase
@@ -136,6 +174,25 @@ export async function getAllSpecies(): Promise<Species[]> {
         // Extract slug
         const occSlug = occurrenceID.split("_")[0] || "unknown";
 
+        // Physical Local Fallback Loader 
+        const publicFallbacks = getFallbackPublicMedia(category, occSlug);
+
+        // Apply physical fallbacks if DB returned nothing
+        let resolvedMainImage = mainImage;
+        if (mainImage === "/placeholder.jpg" && publicFallbacks.image) {
+            resolvedMainImage = publicFallbacks.image;
+        }
+
+        let resolvedAudios = audios;
+        if (audios.length === 0 && publicFallbacks.audio) {
+            resolvedAudios = [{
+                title: "Canto Local",
+                url: publicFallbacks.audio,
+                description: "Registro de respaldo local.",
+                spectrogramImage: publicFallbacks.spectrogram || undefined
+            }];
+        }
+
         return {
             id: occSlug,
             scientificName: taxon?.scientificName || "Unknown",
@@ -153,9 +210,9 @@ export async function getAllSpecies(): Promise<Species[]> {
                 en: ["Available in Database"],
                 pt: ["Disponível no Banco de Datos"],
             },
-            mainImage: mainImage,
+            mainImage: resolvedMainImage,
             galleryImages: galleryImages,
-            audios: audios,
+            audios: resolvedAudios,
             location: location?.locality || "Unknown Location",
         };
     });

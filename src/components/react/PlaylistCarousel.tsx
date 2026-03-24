@@ -8,12 +8,12 @@ interface PlaylistCarouselProps {
 }
 
 export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, lang }) => {
-    // Correct Embla alignment and structure support
+    // Configuración de Embla con bucle infinito y snappers para autoplay
     const [emblaRef, emblaApi] = useEmblaCarousel({
         align: 'start',
         containScroll: 'trimSnaps',
-        dragFree: false, // Better snapping for sliders with autoplay
-        loop: true // Continuous endless looping
+        dragFree: false, 
+        loop: true 
     });
 
     const [autoplayEnabled, setAutoplayEnabled] = React.useState(true);
@@ -26,13 +26,13 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
         if (emblaApi) emblaApi.scrollNext();
     }, [emblaApi]);
 
-    // Auto-Slider interval
+    // Intervalo de Auto-Slider
     React.useEffect(() => {
         if (!emblaApi || !autoplayEnabled) return;
 
         const intervalId = setInterval(() => {
             emblaApi.scrollNext();
-        }, 5000); // Advances every 5 seconds
+        }, 4000); // 4 segundos
 
         return () => clearInterval(intervalId);
     }, [emblaApi, autoplayEnabled]);
@@ -58,7 +58,7 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
             onMouseEnter={() => setAutoplayEnabled(false)}
             onMouseLeave={() => setAutoplayEnabled(true)}
         >
-            {/* Scroll Container */}
+            {/* Scroll Container (Viewport) */}
             <div className="overflow-hidden w-full cursor-grab active:cursor-grabbing" ref={emblaRef}>
                 <div className="flex pb-6 pt-2 px-2 items-stretch">
                     {allSpecies.map((species) => (
@@ -66,21 +66,19 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
                             key={species.id}
                             className="flex-none w-[272px] lg:w-[320px] pr-6 select-none"
                         >
-                            <div className="bg-white dark:bg-[#121b28] p-4 rounded-2xl shadow-sm border border-gray-100/80 dark:border-gray-800 group hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 h-full flex flex-col"
-                            >
-                                {/* Card Image Wrapper */}
+                            <div className="bg-white dark:bg-[#121b28] p-4 rounded-2xl shadow-sm border border-gray-100/80 dark:border-gray-800 group/card hover:shadow-xl hover:translate-y-[-4px] transition-all duration-300 h-full flex flex-col">
+                                {/* Card Image */}
                                 <div className="relative aspect-square rounded-xl overflow-hidden mb-3 shadow-sm">
                                     <img
                                         src={species.mainImage}
                                         alt={species[`commonName_${lang}`] as string}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 pointer-events-none"
+                                        className="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500 pointer-events-none"
                                     />
-
-                                    {/* Overlay icon trigger background layout */}
-                                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                    {/* Play Overlay Hover */}
+                                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                                         <button
                                             onClick={() => playAudio(species)}
-                                            className="w-12 h-12 rounded-full bg-accent-green text-white flex items-center justify-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-lg hover:bg-accent-green/90"
+                                            className="w-12 h-12 rounded-full bg-accent-green text-white flex items-center justify-center transform translate-y-4 group-hover/card:translate-y-0 transition-transform duration-300 shadow-lg hover:bg-accent-green/90"
                                             disabled={species.audios.length === 0}
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 fill-current"><path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" /></svg>
@@ -97,7 +95,7 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
                                         {species.scientificName}
                                     </p>
                                     <div className="mt-auto flex items-center justify-between text-[11px] text-gray-400">
-                                        <span className="bg-gray-50 dark:bg-gray-800/80 px-1.5 py-0.5 rounded-md border border-gray-100 dark:border-gray-800">
+                                        <span className="bg-gray-50 dark:bg-gray-800/80 px-1.5 py-0.5 rounded-md border border-gray-100 dark:border-gray-800 font-medium">
                                             {species.category}
                                         </span>
                                         <span>
@@ -105,7 +103,7 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
                                         </span>
                                     </div>
 
-                                    {/* Actions footer triggers */}
+                                    {/* Actions */}
                                     <div className="mt-3 flex items-center gap-2 w-full">
                                         <button
                                             onClick={() => playAudio(species)}
@@ -129,7 +127,7 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
                 </div>
             </div>
 
-            {/* Navigation Buttons (Always visible on Desktop to ensure UX works) */}
+            {/* Navigation Arrows */}
             <div className="hidden md:flex gap-2 absolute top-[-50px] right-2 z-10">
                 <button onClick={scrollPrev} className="p-1.5 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:border-accent-green hover:text-accent-green transition-all shadow-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
