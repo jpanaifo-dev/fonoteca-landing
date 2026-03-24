@@ -18,7 +18,7 @@ export const StatsChart: React.FC = () => {
 
     return (
         <div className="w-full mx-auto container">
-            <div className="bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl transition-colors duration-300">
+            <div className="p-8 md:p-12 rounded-3xl transition-colors duration-300">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
                     <div>
                         <h3 className="text-4xl md:text-5xl lg:text-6xl text-primary-dark dark:text-white font-light leading-tight mb-2">

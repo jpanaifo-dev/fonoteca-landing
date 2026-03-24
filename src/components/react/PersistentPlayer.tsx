@@ -18,6 +18,7 @@ export const PersistentPlayer = () => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
 
     // Valid ref to manage autoplay intent
     const playOnLoad = useRef(false);
@@ -42,6 +43,7 @@ export const PersistentPlayer = () => {
         // Listen for custom events to play audio
         const handlePlayAudio = (event: CustomEvent<AudioTrack>) => {
             const newTrack = event.detail;
+            setIsVisible(true); // Reset visibility when playing new track
             if (track?.url === newTrack.url) {
                 // If same track, just play
                 wavesurfer.current?.play();
@@ -195,11 +197,25 @@ export const PersistentPlayer = () => {
         }
     };
 
-    if (!track) return null;
+    if (!track || !isVisible) return null;
 
     return (
         <>
-            <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-[100] backdrop-blur-md transition-all duration-300">
+            <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-[#0c1424] border-t border-gray-200 dark:border-gray-800 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-[100] backdrop-blur-md transition-all duration-300 group">
+                {/* Close Button */}
+                <button 
+                    onClick={() => {
+                        wavesurfer.current?.pause();
+                        setIsVisible(false);
+                    }}
+                    className="absolute top-2 right-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-1 bg-gray-100 dark:bg-gray-800 rounded-full opacity-0 group-hover:opacity-100 shadow-sm z-10"
+                    title="Cerrar Reproductor"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
                 <div className="container mx-auto flex items-center justify-between xl:justify-start gap-4 lg:gap-8">
                     {/* Track Info */}
                     <div className="flex items-center gap-3 w-48 md:w-60 lg:w-80 flex-shrink-0 cursor-pointer" onClick={() => setIsModalOpen(true)}>

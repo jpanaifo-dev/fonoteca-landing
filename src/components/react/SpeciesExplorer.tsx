@@ -213,10 +213,10 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                                                 <button 
                                                     onClick={() => playAudio(species)}
-                                                    className="bg-accent-green text-white p-3 rounded-full hover:scale-110 active:scale-95 transition-transform"
+                                                    className="bg-accent-green text-white p-3 rounded-full hover:scale-110 active:scale-95 transition-transform disabled:opacity-50 disabled:bg-gray-700 disabled:cursor-not-allowed disabled:hover:scale-100"
                                                     disabled={species.audios.length === 0}
                                                 >
-                                                    ▶ Play
+                                                    {species.audios.length === 0 ? '🚫 Sin Audio' : '▶ Play'}
                                                 </button>
                                             </div>
                                         </div>
@@ -259,10 +259,10 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
                                             <button 
                                                 onClick={() => playAudio(species)}
-                                                className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs hover:bg-accent-green hover:text-white transition-colors"
+                                                className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs hover:bg-accent-green hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:text-gray-400 dark:disabled:text-gray-500"
                                                 disabled={species.audios.length === 0}
                                             >
-                                                Play
+                                                {species.audios.length === 0 ? 'Sin Audio' : 'Play'}
                                             </button>
                                             <a href={`/${lang}/species/${species.id}`} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 text-xs hover:border-accent-green hover:text-accent-green transition-colors">
                                                 Detalles
