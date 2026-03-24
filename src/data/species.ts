@@ -75,8 +75,20 @@ export async function getAllSpecies(): Promise<Species[]> {
     });
 
     return Array.from(speciesMap.values()).map(({ taxon, location, media, occurrenceID }) => {
-        // Case-insensitive media matching
-        const isImage = (m: any) => m.type && m.type.toLowerCase().includes('image');
+        // Case-insensitive media matching with extension check to avoid garbage paths (like 'Dashboard')
+        const isImage = (m: any) => {
+            if (!m.identifier) return false;
+            const idLower = m.identifier.toLowerCase();
+            const hasImageExtension = idLower.endsWith('.jpg') || 
+                                     idLower.endsWith('.jpeg') || 
+                                     idLower.endsWith('.png') || 
+                                     idLower.endsWith('.webp') ||
+                                     idLower.startsWith('http');
+            
+            const typeMatch = m.type && m.type.toLowerCase().includes('image');
+            return typeMatch && hasImageExtension;
+        };
+        
         const isAudio = (m: any) => m.type && (m.type.toLowerCase().includes('sound') || m.type.toLowerCase().includes('audio'));
 
         const formatMediaUrl = (identifier: string) => {
@@ -89,10 +101,8 @@ export async function getAllSpecies(): Promise<Species[]> {
             return publicUrlPath;
         };
 
-        // Main Image
-        const mainImageMedia = media.find(
-            (m) => m.title === "Main Image" || isImage(m)
-        );
+        // Main Image - Prioritise title "Main Image" or grab the first image found
+        const mainImageMedia = media.find((m) => m.title === "Main Image") || media.find(isImage);
         const mainImage = mainImageMedia ? formatMediaUrl(mainImageMedia.identifier) : "/placeholder.jpg";
 
         // Gallery Images - Exclude main to avoid duplicates
