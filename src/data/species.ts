@@ -56,20 +56,24 @@ export async function getAllSpecies(): Promise<Species[]> {
         const location = occ.locations;
         const media = (occ.multimedia as any[]) || [];
 
+        // Case-insensitive media matching
+        const isImage = (m: any) => m.type && m.type.toLowerCase().includes('image');
+        const isAudio = (m: any) => m.type && (m.type.toLowerCase().includes('sound') || m.type.toLowerCase().includes('audio'));
+
         // Main Image
         const mainImageMedia = media.find(
-            (m) => m.title === "Main Image" || m.type === "StillImage"
+            (m) => m.title === "Main Image" || isImage(m)
         );
         const mainImage = mainImageMedia ? mainImageMedia.identifier : "/placeholder.jpg";
 
         // Gallery Images
         const galleryImages = media
-            .filter((m) => m.type === "StillImage")
+            .filter(isImage)
             .map((m) => m.identifier);
 
         // Audios
         const audios: SpeciesAudio[] = media
-            .filter((m) => m.type === "Sound")
+            .filter(isAudio)
             .map((m) => ({
                 title: m.title || "Audio",
                 url: m.identifier,
