@@ -127,6 +127,15 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, title, artis
         return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
     };
 
+    const isDriveFile = audioUrl.includes('docs.google.com') || audioUrl.includes('drive.google.com');
+    let drivePreviewUrl = '';
+    if (isDriveFile) {
+        const idMatch = audioUrl.match(/id=([a-zA-Z0-9_-]+)/) || audioUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        if (idMatch && idMatch[1]) {
+            drivePreviewUrl = `https://drive.google.com/file/d/${idMatch[1]}/preview`;
+        }
+    }
+
     return (
         <div className="bg-primary-dark text-white rounded-3xl p-6 shadow-2xl border border-white/10 relative overflow-hidden group">
             {description && (
@@ -197,6 +206,22 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, title, artis
                     </svg>
                     Ampliar Espectrograma
                 </button>
+            )}
+
+            {/* Iframe Fallback for Testing / Curiosity */}
+            {drivePreviewUrl && (
+                <div className="mt-6 pt-4 border-t border-white/10 z-10 relative">
+                    <p className="text-gray-400 text-xs mb-2">Visor Alternativo (Google Drive Iframe):</p>
+                    <div className="rounded-xl overflow-hidden bg-white/5 border border-white/5 h-[80px]">
+                        <iframe 
+                            src={drivePreviewUrl}
+                            width="100%" 
+                            height="100%"
+                            className="border-0"
+                            allow="autoplay"
+                        />
+                    </div>
+                </div>
             )}
         </div>
     );
