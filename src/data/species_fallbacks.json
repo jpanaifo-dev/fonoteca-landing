@@ -1,6 +1,7 @@
 {
     "adenomera_hylaedactyla": {
         "mainImage": "/data/anfibios/adenomera_hylaedactyla/IMG_0081.JPG",
+        "galleryImages": ["/data/anfibios/adenomera_hylaedactyla/IMG_0081.JPG"],
         "audios": [{
             "title": "Canto Local",
             "url": "/data/anfibios/adenomera_hylaedactyla/Adenomera_hylaedactyla_CIA_NRT_0023.wav",
@@ -9,6 +10,7 @@
     },
     "allobates_femoralis": {
         "mainImage": "/data/anfibios/allobates_femoralis/Allobates_femoralis.jpg",
+        "galleryImages": ["/data/anfibios/allobates_femoralis/Allobates_femoralis.jpg"],
         "audios": [{
             "title": "Canto Local",
             "url": "/data/anfibios/allobates_femoralis/Allobates_femoralis-Yurimaguas_GGU_A_0284.wav",
@@ -17,6 +19,7 @@
     },
     "allobates_trilineatus": {
         "mainImage": "/data/anfibios/allobates_trilineatus/Allobates_trilineatus.jpg",
+        "galleryImages": ["/data/anfibios/allobates_trilineatus/Allobates_trilineatus.jpg"],
         "audios": [{
             "title": "Canto Local",
             "url": "/data/anfibios/allobates_trilineatus/Allobates_trilineatus_Muniches_Yurimaguas_GGU_A_0305.wav",
@@ -25,6 +28,7 @@
     },
     "boana_boans": {
         "mainImage": "/data/anfibios/boana_boans/Boana_boans.JPG",
+        "galleryImages": ["/data/anfibios/boana_boans/Boana_boans.JPG"],
         "audios": [{
             "title": "Canto Local",
             "url": "/data/anfibios/boana_boans/Boana_boans_CIA_EBJAA _0116.wav",
@@ -33,6 +37,7 @@
     },
     "ammodramus_aurifrons": {
         "mainImage": "/data/aves/ammodramus_aurifrons/Ammodramus aurifrons_image.jpg",
+        "galleryImages": ["/data/aves/ammodramus_aurifrons/Ammodramus aurifrons_image.jpg"],
         "audios": [{
             "title": "Canto Local",
             "url": "/data/aves/ammodramus_aurifrons/Ammodramus aurifrons_CIN_SNMA0202_filt.wav",
@@ -41,6 +46,7 @@
     },
     "attila_spadiceus": {
         "mainImage": "/data/aves/attila_spadiceus/Attila spadiceus_CIA_VC_specie.jpg",
+        "galleryImages": ["/data/aves/attila_spadiceus/Attila spadiceus_CIA_VC_specie.jpg", "/data/aves/attila_spadiceus/attila-spadiceus-3.webp"],
         "audios": [{
             "title": "Canto Local",
             "url": "/data/aves/attila_spadiceus/audios/Attila spadiceus_CIA_JMN020_filt.wav",
@@ -49,6 +55,7 @@
     },
     "conocephalinae_sp": {
         "mainImage": "/data/grillos/IMG_9766.JPG",
+        "galleryImages": ["/data/grillos/IMG_9766.JPG"],
         "audios": [{
             "title": "Canto Local",
             "url": "/data/grillos/Conocephalinae_sp2_CIA_JMN_0052.wav",

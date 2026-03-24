@@ -43,10 +43,11 @@ function getFallbackPublicMedia(slug: string) {
         return {
             image: fallback.mainImage || null,
             audio: fallback.audios && fallback.audios.length > 0 ? fallback.audios[0].url : null,
-            spectrogram: fallback.audios && fallback.audios.length > 0 ? fallback.audios[0].spectrogramImage : null
+            spectrogram: fallback.audios && fallback.audios.length > 0 ? fallback.audios[0].spectrogramImage : null,
+            gallery: fallback.galleryImages || []
         };
     }
-    return { image: null, audio: null, spectrogram: null };
+    return { image: null, audio: null, spectrogram: null, gallery: [] };
 }
 
 export async function getAllSpecies(): Promise<Species[]> {
@@ -161,6 +162,11 @@ export async function getAllSpecies(): Promise<Species[]> {
         // Apply physical fallbacks prioritizing them over DB to avoid list view misses
         const resolvedMainImage = publicFallbacks.image || mainImage;
 
+        // Merge gallery images with fallbacks prioritizing local
+        const resolvedGalleryImages = publicFallbacks.gallery && publicFallbacks.gallery.length > 0 
+            ? [...publicFallbacks.gallery, ...galleryImages] 
+            : galleryImages;
+
         // If fallback audio exists, prepend it to the beginning of the list, keeping DB items
         let resolvedAudios = audios;
         if (publicFallbacks.audio) {
@@ -193,7 +199,7 @@ export async function getAllSpecies(): Promise<Species[]> {
                 pt: ["Disponível no Banco de Datos"],
             },
             mainImage: resolvedMainImage,
-            galleryImages: galleryImages,
+            galleryImages: resolvedGalleryImages,
             audios: resolvedAudios,
             location: location?.locality || "Unknown Location",
         };
