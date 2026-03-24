@@ -72,7 +72,16 @@ export async function getAllSpecies(): Promise<Species[]> {
         
         const isAudio = (m: any) => m.type && (m.type.toLowerCase().includes('sound') || m.type.toLowerCase().includes('audio'));
 
-        const formatMediaUrl = (identifier: string) => identifier;
+        const formatMediaUrl = (identifier: string) => {
+            if (!identifier) return "";
+            if (identifier.includes('drive.google.com/file/d/')) {
+                const idMatch = identifier.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+                if (idMatch && idMatch[1]) {
+                    return `https://docs.google.com/uc?export=download&id=${idMatch[1]}`;
+                }
+            }
+            return identifier;
+        };
 
         const galleryImages = media
             .filter(isImage)
