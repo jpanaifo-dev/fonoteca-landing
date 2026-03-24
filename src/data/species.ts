@@ -102,7 +102,10 @@ export async function getAllSpecies(): Promise<Species[]> {
                                      idLower.endsWith('.webp') ||
                                      idLower.startsWith('http');
             
-            const typeMatch = m.type && m.type.toLowerCase().includes('image');
+            const typeMatch = m.type && (
+                m.type.toLowerCase().includes('image') || 
+                m.type.toLowerCase().includes('still')
+            );
             return typeMatch && hasImageExtension;
         };
         
@@ -128,15 +131,21 @@ export async function getAllSpecies(): Promise<Species[]> {
             .filter((m) => m.identifier !== mainImageMedia?.identifier)
             .map((m) => formatMediaUrl(m.identifier));
 
-        // Audios
+        // Audios - Match spectrograms by parent_multimedia_id
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
-            .map((m) => ({
-                title: m.title || "Audio",
-                url: formatMediaUrl(m.identifier),
-                description: m.description || "",
-                spectrogramImage: undefined,
-            }));
+            .map((m) => {
+                const spectrogram = media.find(
+                    (other) => other.parent_multimedia_id === m.id && isImage(other)
+                );
+
+                return {
+                    title: m.title || "Audio",
+                    url: formatMediaUrl(m.identifier),
+                    description: m.description || "",
+                    spectrogramImage: spectrogram ? formatMediaUrl(spectrogram.identifier) : undefined,
+                };
+            });
 
         // Category Map
         const classToCategory: Record<string, SpeciesCategory> = {
