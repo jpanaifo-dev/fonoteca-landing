@@ -9,7 +9,7 @@ import { ServicesGrid } from "../../components/react/ServicesGrid";
 import { Stats } from "../../components/react/Stats";
 import { StatsChart } from "../../components/react/StatsChart";
 import { CTA } from "../../components/react/CTA";
-import { AudioList } from "../../components/react/AudioList";
+import { PlaylistCarousel } from "../../components/react/PlaylistCarousel";
 import { getAllSpecies } from "../../data/species";
 import { translations, LANGUAGES } from "../../i18n/data";
 import logoIiap from "../../assets/logo_iiap.png";
@@ -58,7 +58,7 @@ const allSpecies = await getAllSpecies();
                         alta fidelidad.
                     </p>
                 </div>
-                <AudioList client:load allSpecies={allSpecies.slice(0, 4)} lang={lang} />
+                <PlaylistCarousel client:load allSpecies={allSpecies.slice(0, 5)} lang={lang as 'es' | 'en' | 'pt'} />
                 <div class="mt-8 text-center">
                     <a href={`/${lang}/species`} class="inline-flex items-center gap-2 border border-gray-200 dark:border-gray-700 hover:border-accent-green bg-white dark:bg-[#121b28] text-primary-dark dark:text-white font-medium py-3 px-8 rounded-full transition-all shadow-sm hover:shadow-md">
                         Ver Más Grabaciones &rarr;

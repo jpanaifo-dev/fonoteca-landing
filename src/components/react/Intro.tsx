@@ -52,11 +52,11 @@ export const Intro: React.FC<IntroProps> = ({ content }) => {
                     {/* Image with Leaf Shape */}
                     <div className="w-full md:w-1/2 order-1 md:order-2 reveal-on-scroll delay-200">
                         <div className="relative">
-                            <div className="absolute inset-0 bg-accent-green/10 rounded-tr-[80px] rounded-bl-[80px] transform translate-x-4 translate-y-4"></div>
+                            <div className="absolute inset-0 bg-accent-green/5 dark:bg-accent-green/10 rounded-tr-[80px] rounded-bl-[80px] transform translate-x-4 translate-y-4 transition-colors"></div>
                             <img
                                 src={landingImages.intro.src}
                                 alt={landingImages.intro.alt}
-                                className="relative z-10 w-full h-[500px] object-cover rounded-tr-[80px] rounded-bl-[80px] shadow-xl"
+                                className="relative z-10 w-full h-[500px] object-cover rounded-tr-[80px] rounded-bl-[80px] shadow-xl border border-gray-100 dark:border-gray-800 transition-colors"
                             />
                         </div>
                     </div>
