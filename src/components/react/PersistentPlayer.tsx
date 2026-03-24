@@ -199,67 +199,51 @@ export const PersistentPlayer = () => {
 
     return (
         <>
-            <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 p-5 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-[100] backdrop-blur-md transition-all duration-300">
-                <div className="container mx-auto flex items-center justify-between xl:justify-start gap-4 lg:gap-8">
+            <div className={`fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 border-t border-gray-200 dark:border-gray-800 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-[100] backdrop-blur-md transition-all duration-500 ${isPlaying ? 'p-5' : 'p-2 py-2 md:py-3 h-16'}`}>
+                <div className="container mx-auto flex items-center justify-between xl:justify-start gap-4 lg:gap-8 h-full">
                     {/* Track Info */}
-                    <div className="flex items-center gap-4 w-60 lg:w-80 flex-shrink-0 cursor-pointer" onClick={() => setIsModalOpen(true)}>
-                        <div className="relative group/img bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3 w-48 md:w-60 lg:w-80 flex-shrink-0 cursor-pointer h-full" onClick={() => setIsModalOpen(true)}>
+                        <div className="relative group/img bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700 h-full aspect-square">
                             {(track.spectrogram || track.image) && (
                                 <img
                                     src={track.spectrogram || track.image}
                                     alt={track.title}
-                                    className="w-16 h-16 object-cover opacity-90 group-hover/img:opacity-100 transition-opacity bg-blend-multiply dark:bg-blend-screen"
+                                    className="w-full h-full object-cover opacity-90 group-hover/img:opacity-100 transition-opacity bg-blend-multiply dark:bg-blend-screen"
                                 />
                             )}
-                            <div className="absolute inset-0 bg-black/0 group-hover/img:bg-black/10 transition-colors flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white opacity-0 group-hover/img:opacity-100 transition-opacity drop-shadow-md">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h3" />
-                                </svg>
-                            </div>
                         </div>
 
                         <div className="overflow-hidden">
-                            <h4 className="font-bold text-base text-primary-dark dark:text-white truncate" title={track.title}>{track.title}</h4>
-                            <p className="text-sm text-gray-500 truncate" title={track.artist}>{track.artist}</p>
+                            <h4 className="font-bold text-sm md:text-base text-primary-dark dark:text-white truncate" title={track.title}>{track.title}</h4>
+                            <p className="text-xs text-gray-500 truncate" title={track.artist}>{track.artist}</p>
                         </div>
                     </div>
 
                     {/* Controls */}
-                    <div className="flex items-center gap-3 flex-shrink-0 order-2 xl:order-none">
+                    <div className="flex items-center gap-2 flex-shrink-0 order-2 xl:order-none h-full">
                         {/* Prev Button */}
                         <button
                             onClick={playPrev}
                             disabled={currentIndex <= 0}
-                            className={`p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${currentIndex <= 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-primary-dark dark:hover:text-white'}`}
+                            className={`p-1.5 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${currentIndex <= 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-primary-dark dark:hover:text-white'}`}
                             title="Anterior"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                            </svg>
-                        </button>
-
-                        {/* Rewind Button */}
-                        <button
-                            onClick={rewind}
-                            className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hover:text-primary-dark dark:hover:text-white"
-                            title="Rebobinar 10s"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
                             </svg>
                         </button>
 
                         {/* Play/Pause */}
                         <button
                             onClick={togglePlay}
-                            className="w-14 h-14 flex items-center justify-center rounded-full bg-accent-green text-white hover:brightness-110 hover:scale-105 transition-all shadow-md"
+                            className={`flex items-center justify-center rounded-full bg-accent-green text-white hover:brightness-110 hover:scale-105 transition-all shadow-md ${isPlaying ? 'w-12 h-12' : 'w-10 h-10'}`}
                         >
                             {isPlaying ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-7 h-7 fill-current">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 fill-current">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
                                 </svg>
                             ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-7 h-7 fill-current ml-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 fill-current ml-0.5">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
                                 </svg>
                             )}
@@ -269,17 +253,17 @@ export const PersistentPlayer = () => {
                         <button
                             onClick={playNext}
                             disabled={currentIndex >= playlist.length - 1}
-                            className={`p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${currentIndex >= playlist.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-primary-dark dark:hover:text-white'}`}
+                            className={`p-1.5 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${currentIndex >= playlist.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-primary-dark dark:hover:text-white'}`}
                             title="Siguiente"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                             </svg>
                         </button>
                     </div>
 
                     {/* Waveform */}
-                    <div className="flex-1 relative h-14 lg:h-16 flex items-center group min-w-0 order-1 xl:order-none w-full xl:w-auto mt-4 xl:mt-0">
+                    <div className={`flex-1 relative h-12 flex items-center group min-w-0 order-1 xl:order-none w-full xl:w-auto mt-0 transition-opacity duration-300 ${isPlaying ? 'opacity-100 flex' : 'opacity-0 hidden'}`}>
                         {/* Time Indicator - Floating */}
                         <div className="absolute -top-6 left-0 text-xs font-mono text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
                             {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60).toString().padStart(2, '0')}
@@ -295,8 +279,6 @@ export const PersistentPlayer = () => {
                             <div ref={containerRef} className="absolute inset-0"></div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
 

@@ -11,6 +11,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [selectedLocation, setSelectedLocation] = useState<string>('All');
+    const [onlyWithAudio, setOnlyWithAudio] = useState(false); // New Filter State
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [showFilters, setShowFilters] = useState(false);
 
@@ -28,10 +29,11 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
             
             const matchesCategory = selectedCategory === 'All' || s.category === selectedCategory;
             const matchesLocation = selectedLocation === 'All' || s.location === selectedLocation;
+            const matchesAudio = !onlyWithAudio || s.audios.length > 0;
 
-            return matchesSearch && matchesCategory && matchesLocation;
+            return matchesSearch && matchesCategory && matchesLocation && matchesAudio;
         });
-    }, [allSpecies, searchTerm, selectedCategory, selectedLocation]);
+    }, [allSpecies, searchTerm, selectedCategory, selectedLocation, onlyWithAudio]);
 
     const playAudio = (species: Species) => {
         if (species.audios.length === 0) return;
@@ -112,6 +114,20 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             ))}
                         </div>
                     </div>
+
+                    {/* Content Filter */}
+                    <div>
+                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Contenido</h3>
+                        <button 
+                            onClick={() => setOnlyWithAudio(!onlyWithAudio)}
+                            className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-light transition-all ${onlyWithAudio ? 'bg-accent-green text-white font-normal shadow-sm' : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
+                        >
+                             <span>Solo con Audio</span>
+                             <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${onlyWithAudio ? 'bg-white border-white' : 'border-gray-300 dark:border-gray-600'}`}>
+                                 {onlyWithAudio && <svg xmlns="http://www.w3.org/2000/svg" className="h-2 w-2 text-accent-green" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
+                             </div>
+                        </button>
+                    </div>
                 </div>
             </aside>
 
@@ -176,40 +192,46 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             animate={{ opacity: 1 }}
                             className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${isSidebarCollapsed ? 'xl:grid-cols-5 lg:grid-cols-4' : 'lg:grid-cols-4'} gap-5`}
                         >
-                            {filteredSpecies.map(species => (
-                                <motion.div 
-                                    layout
-                                    key={species.id} 
-                                    className="bg-white dark:bg-[#121b28] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden group hover:shadow-lg hover:border-accent-green/30 transition-all duration-300 flex flex-col"
-                                >
-                                    <div className="aspect-[4/3] overflow-hidden relative">
-                                        <img 
-                                            src={species.mainImage || '/placeholder.jpg'} 
-                                            alt={species.scientificName} 
-                                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-                                            loading="lazy"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                                            <button 
-                                                onClick={() => playAudio(species)}
-                                                className="bg-accent-green text-white p-3 rounded-full hover:scale-110 active:scale-95 transition-transform"
-                                                disabled={species.audios.length === 0}
-                                            >
-                                                ▶ Play
-                                            </button>
+                            {filteredSpecies.map(species => {
+                                const coverImage = (onlyWithAudio && species.audios.length > 0 && species.audios[0].spectrogramImage) 
+                                    ? species.audios[0].spectrogramImage 
+                                    : (species.mainImage || '/placeholder.jpg');
+
+                                return (
+                                    <motion.div 
+                                        layout
+                                        key={species.id} 
+                                        className="bg-white dark:bg-[#121b28] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden group hover:shadow-lg hover:border-accent-green/30 transition-all duration-300 flex flex-col"
+                                    >
+                                        <div className="aspect-[4/3] overflow-hidden relative">
+                                            <img 
+                                                src={coverImage} 
+                                                alt={species.scientificName} 
+                                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                                                loading="lazy"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                                <button 
+                                                    onClick={() => playAudio(species)}
+                                                    className="bg-accent-green text-white p-3 rounded-full hover:scale-110 active:scale-95 transition-transform"
+                                                    disabled={species.audios.length === 0}
+                                                >
+                                                    ▶ Play
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="p-4 flex-1 flex flex-col">
-                                        <span className="text-xs text-accent-green font-medium mb-1">{categoryTitles[species.category] || species.category}</span>
-                                        <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-accent-green transition-colors text-sm">{species.commonName_es}</h4>
-                                        <p className="text-xs text-gray-400 italic mb-2">{species.scientificName}</p>
-                                        <div className="mt-auto pt-2 border-t border-gray-50 dark:border-gray-800 flex items-center justify-between">
-                                            <span className="text-[10px] text-gray-500">{species.location}</span>
-                                            <a href={`/${lang}/species/${species.id}`} className="text-xs text-accent-green hover:underline">Ver más &rarr;</a>
+                                        <div className="p-4 flex-1 flex flex-col">
+                                            <span className="text-xs text-accent-green font-medium mb-1">{categoryTitles[species.category] || species.category}</span>
+                                            <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-accent-green transition-colors text-sm">{species.commonName_es}</h4>
+                                            <p className="text-xs text-gray-400 italic mb-2">{species.scientificName}</p>
+                                            <div className="mt-auto pt-2 border-t border-gray-50 dark:border-gray-800 flex items-center justify-between">
+                                                <span className="text-[10px] text-gray-500">{species.location}</span>
+                                                <a href={`/${lang}/species/${species.id}`} className="text-xs text-accent-green hover:underline">Ver más &rarr;</a>
+                                            </div>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            ))}
+                                    </motion.div>
+                                );
+                            })}
                         </motion.div>
                     ) : (
                         <motion.div 
@@ -217,32 +239,38 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             animate={{ opacity: 1 }}
                             className="flex flex-col gap-3"
                         >
-                            {filteredSpecies.map(species => (
-                                <motion.div 
-                                    layout
-                                    key={species.id}
-                                    className="flex items-center gap-4 bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow group flex-wrap md:flex-nowrap"
-                                >
-                                    <img src={species.mainImage} alt="" className="w-12 h-12 rounded-lg object-cover" />
-                                    <div className="flex-1 min-w-0">
-                                        <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">{species.commonName_es}</h4>
-                                        <p className="text-xs text-gray-400 italic truncate">{species.scientificName}</p>
-                                    </div>
-                                    <div className="text-xs text-gray-500">{species.location}</div>
-                                    <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
-                                        <button 
-                                            onClick={() => playAudio(species)}
-                                            className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs hover:bg-accent-green hover:text-white transition-colors"
-                                            disabled={species.audios.length === 0}
-                                        >
-                                            Play
-                                        </button>
-                                        <a href={`/${lang}/species/${species.id}`} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 text-xs hover:border-accent-green hover:text-accent-green transition-colors">
-                                            Detalles
-                                        </a>
-                                    </div>
-                                </motion.div>
-                            ))}
+                            {filteredSpecies.map(species => {
+                                const coverImage = (onlyWithAudio && species.audios.length > 0 && species.audios[0].spectrogramImage) 
+                                    ? species.audios[0].spectrogramImage 
+                                    : (species.mainImage || '/placeholder.jpg');
+
+                                return (
+                                    <motion.div 
+                                        layout
+                                        key={species.id}
+                                        className="flex items-center gap-4 bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow group flex-wrap md:flex-nowrap"
+                                    >
+                                        <img src={coverImage} alt="" className="w-12 h-12 rounded-lg object-cover" />
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">{species.commonName_es}</h4>
+                                            <p className="text-xs text-gray-400 italic truncate">{species.scientificName}</p>
+                                        </div>
+                                        <div className="text-xs text-gray-500">{species.location}</div>
+                                        <div className="flex items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
+                                            <button 
+                                                onClick={() => playAudio(species)}
+                                                className="px-2 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs hover:bg-accent-green hover:text-white transition-colors"
+                                                disabled={species.audios.length === 0}
+                                            >
+                                                Play
+                                            </button>
+                                            <a href={`/${lang}/species/${species.id}`} className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 text-xs hover:border-accent-green hover:text-accent-green transition-colors">
+                                                Detalles
+                                            </a>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
                         </motion.div>
                     )}
                 </AnimatePresence>
