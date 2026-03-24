@@ -93,6 +93,9 @@ export async function getAllSpecies(): Promise<Species[]> {
                 };
             });
 
+        // Backend Filter: skip occurrences that have NO audio recordings
+        if (audios.length === 0) return null;
+
         const classToCategory: Record<string, SpeciesCategory> = {
             Amphibia: "Amphibians",
             Aves: "Birds",
@@ -126,7 +129,7 @@ export async function getAllSpecies(): Promise<Species[]> {
             audios: audios,
             location: location?.locality || "Unknown Location",
         };
-    });
+    }).filter(Boolean) as unknown as Species[];
 }
 
 export async function getSpeciesById(id: string): Promise<Species | undefined> {
