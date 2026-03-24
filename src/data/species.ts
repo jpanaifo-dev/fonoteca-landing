@@ -60,23 +60,35 @@ export async function getAllSpecies(): Promise<Species[]> {
         const isImage = (m: any) => m.type && m.type.toLowerCase().includes('image');
         const isAudio = (m: any) => m.type && (m.type.toLowerCase().includes('sound') || m.type.toLowerCase().includes('audio'));
 
+        const formatMediaUrl = (identifier: string) => {
+            if (!identifier) return "/placeholder.jpg";
+            if (identifier.startsWith('http://') || identifier.startsWith('https://')) {
+                return identifier;
+            }
+            // If it is a relative path or storage key (e.g., 'folder/image.jpg')
+            // Prepend your Supabase Storage public bucket URL path
+            const supabaseUrl = import.meta.env.SUPABASE_URL || '';
+            const publicUrlPath = `${supabaseUrl}/storage/v1/object/public/multimedia/${identifier}`;
+            return publicUrlPath;
+        };
+
         // Main Image
         const mainImageMedia = media.find(
             (m) => m.title === "Main Image" || isImage(m)
         );
-        const mainImage = mainImageMedia ? mainImageMedia.identifier : "/placeholder.jpg";
+        const mainImage = mainImageMedia ? formatMediaUrl(mainImageMedia.identifier) : "/placeholder.jpg";
 
         // Gallery Images
         const galleryImages = media
             .filter(isImage)
-            .map((m) => m.identifier);
+            .map((m) => formatMediaUrl(m.identifier));
 
         // Audios
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
             .map((m) => ({
                 title: m.title || "Audio",
-                url: m.identifier,
+                url: formatMediaUrl(m.identifier),
                 description: m.description || "",
                 spectrogramImage: undefined,
             }));
