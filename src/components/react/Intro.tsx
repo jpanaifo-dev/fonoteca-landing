@@ -8,7 +8,7 @@ interface IntroProps {
 
 export const Intro: React.FC<IntroProps> = ({ content }) => {
     return (
-        <section className="py-24 bg-white overflow-hidden">
+        <section className="py-24 bg-white dark:bg-[#0c141d] overflow-hidden">
             <div className="container mx-auto px-6">
                 <div className="flex flex-col md:flex-row items-center gap-16">
                     {/* Text Content */}
@@ -16,20 +16,20 @@ export const Intro: React.FC<IntroProps> = ({ content }) => {
                         <span className="text-accent-green font-bold tracking-widest uppercase text-sm mb-4 block">
                             {content.label}
                         </span>
-                        <h2 className="text-4xl md:text-5xl text-primary-dark mb-8 font-light leading-tight">
+                        <h2 className="text-4xl md:text-5xl text-primary-dark dark:text-white mb-8 font-light leading-tight">
                             {content.title_start} <br />
                             <strong className="font-bold">{content.title_strong}</strong>
                         </h2>
-                        <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                        <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg leading-relaxed">
                             {content.p1}
                         </p>
-                        <p className="text-gray-600 mb-8 text-lg leading-relaxed">
+                        <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg leading-relaxed">
                             {content.p2}
                         </p>
 
                         <a
                             href="#"
-                            className="group inline-flex items-center text-primary-dark font-semibold border-b-2 border-accent-green hover:text-accent-green transition-colors"
+                            className="group inline-flex items-center text-primary-dark dark:text-white font-semibold border-b-2 border-accent-green hover:text-accent-green transition-colors"
                         >
                             {content.link}
                             <svg

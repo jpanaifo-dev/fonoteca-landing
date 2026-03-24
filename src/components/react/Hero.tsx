@@ -35,13 +35,13 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
                     <div className="min-h-[160px] md:min-h-[120px] mb-4 flex items-center justify-center">
                         <h1
                             key={currentTitleIndex}
-                            className="text-4xl md:text-6xl lg:text-7xl font-light text-white tracking-wide animate-fade-up leading-tight"
+                            className="text-4xl md:text-6xl lg:text-8xl font-light text-white tracking-wide animate-fade-up leading-tight"
                         >
                             {content.titles_animate[currentTitleIndex]}
                         </h1>
                     </div>
 
-                    <p className="text-sm md:text-base text-gray-300/90 mb-8 max-w-xl font-light animate-fade-in delay-200 mt-2 px-4">
+                    <p className="text-base md:text-xl text-gray-300/90 mb-8 max-w-2xl font-light animate-fade-in delay-200 mt-2 px-4">
                         {content.description}
                     </p>
 
