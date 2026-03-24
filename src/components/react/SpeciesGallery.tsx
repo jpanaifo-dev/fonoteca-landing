@@ -48,6 +48,21 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                 )}
             </div>
 
+            {/* Drive Alternative Viewer */}
+            {images[currentIndex]?.includes('docs.google.com') && (
+                <div className="bg-gray-50 dark:bg-black/20 p-4 rounded-2xl border border-gray-100 dark:border-white/5">
+                    <p className="text-gray-400 text-xs mb-2">Visor Alternativo (Google Drive Iframe):</p>
+                    <div className="rounded-xl overflow-hidden aspect-[4/3] bg-black/5 border border-black/5">
+                        <iframe 
+                            src={`https://drive.google.com/file/d/${images[currentIndex].match(/id=([a-zA-Z0-9_-]+)/)?.[1]}/preview`} 
+                            width="100%" 
+                            height="100%" 
+                            className="border-0" 
+                        />
+                    </div>
+                </div>
+            )}
+
             {/* Thumbnails */}
             {images.length > 1 && (
                 <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">

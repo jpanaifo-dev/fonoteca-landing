@@ -252,18 +252,28 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         className="bg-white dark:bg-[#121b28] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden group hover:shadow-lg hover:border-accent-green/30 transition-all duration-300 flex flex-col"
                                     >
                                         <div className="aspect-[4/3] overflow-hidden relative bg-gray-100 dark:bg-gray-800">
-                                            {!loadedImages[species.id] && (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="w-5 h-5 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
-                                                </div>
+                                            {coverImage.includes('docs.google.com') ? (
+                                                <iframe 
+                                                    src={`https://drive.google.com/file/d/${coverImage.match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`} 
+                                                    className="w-full h-full border-0 pointer-events-none" 
+                                                    scrolling="no"
+                                                />
+                                            ) : (
+                                                <>
+                                                    {!loadedImages[species.id] && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <div className="w-5 h-5 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                                        </div>
+                                                    )}
+                                                    <img
+                                                        src={coverImage}
+                                                        alt={species.scientificName}
+                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
+                                                        className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
+                                                        loading="lazy"
+                                                    />
+                                                </>
                                             )}
-                                            <img
-                                                src={coverImage}
-                                                alt={species.scientificName}
-                                                onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
-                                                className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
-                                                loading="lazy"
-                                            />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                                                 <button
                                                     onClick={() => playAudio(species)}
@@ -305,17 +315,27 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         className="flex items-center gap-4 bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow group flex-wrap md:flex-nowrap"
                                     >
                                         <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
-                                            {!loadedImages['list-' + species.id] && (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
-                                                </div>
+                                            {coverImage.includes('docs.google.com') ? (
+                                                <iframe 
+                                                    src={`https://drive.google.com/file/d/${coverImage.match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`} 
+                                                    className="w-full h-full border-0 pointer-events-none" 
+                                                    scrolling="no"
+                                                />
+                                            ) : (
+                                                <>
+                                                    {!loadedImages['list-' + species.id] && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                                        </div>
+                                                    )}
+                                                    <img 
+                                                        src={coverImage} 
+                                                        alt="" 
+                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
+                                                        className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`} 
+                                                    />
+                                                </>
                                             )}
-                                            <img 
-                                                src={coverImage} 
-                                                alt="" 
-                                                onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
-                                                className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`} 
-                                            />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">{species.commonName_es}</h4>
