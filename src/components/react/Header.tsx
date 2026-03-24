@@ -45,13 +45,13 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" })
     return (
         <>
             <header
-                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white shadow-sm py-4" : "bg-transparent py-6"
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-[#0a0f18]/95 backdrop-blur-md shadow-sm py-4 border-b border-gray-900" : "bg-transparent py-6"
                     }`}
             >
                 <div className="container mx-auto px-6 flex justify-between items-center h-full">
                     <a
                         href={`/${lang}/`}
-                        className={`group flex gap-3 items-center transition-colors duration-300 ${isScrolled ? "text-primary-dark" : "text-white"}`}
+                        className="group flex gap-3 items-center transition-colors duration-300 text-white"
                     >
                         <img
                             src={logoSrc}
@@ -71,13 +71,13 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" })
                             className="group flex flex-col gap-1.5 w-8 cursor-pointer z-50"
                         >
                             <span
-                                className={`block w-full h-0.5 transition-all group-hover:bg-accent-green ${isScrolled ? "bg-primary-dark" : "bg-white"}`}
+                                className="block w-full h-0.5 transition-all group-hover:bg-accent-green bg-white"
                             ></span>
                             <span
-                                className={`block w-3/4 h-0.5 ml-auto transition-all group-hover:bg-accent-green group-hover:w-full ${isScrolled ? "bg-primary-dark" : "bg-white"}`}
+                                className="block w-3/4 h-0.5 ml-auto transition-all group-hover:bg-accent-green group-hover:w-full bg-white"
                             ></span>
                             <span
-                                className={`block w-full h-0.5 transition-all group-hover:bg-accent-green ${isScrolled ? "bg-primary-dark" : "bg-white"}`}
+                                className="block w-full h-0.5 transition-all group-hover:bg-accent-green bg-white"
                             ></span>
                         </button>
                     </div>
