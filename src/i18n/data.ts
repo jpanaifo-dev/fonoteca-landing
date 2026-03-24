@@ -14,8 +14,9 @@ export const translations = {
         hero: {
             title: "Conoce la belleza de la naturaleza",
             titles_animate: [
-                "Sonidos del Bosque",
-                "Susurros de la Vida"
+                "Ecosistemas Vivos | Sonidos de la Selva",
+                "Biodiversidad Amazónica | Preservación Sonora",
+                "Archivo Vivo | La Voz del Amazonas"
             ],
             description: "Una colección sonora que conecta con la biodiversidad del mundo. Descubre la belleza de la naturaleza a través de nuestras grabaciones.",
             cta: "Explorar Ahora"
@@ -176,8 +177,9 @@ export const translations = {
         hero: {
             title: "Experience nature's beauty",
             titles_animate: [
-                "Sounds of the Forest",
-                "Whispers of Life"
+                "Living Ecosystems | Sounds of the Jungle",
+                "Amazon Biodiversity | Sonic Preservation",
+                "Living Archive | The Voice of the Amazon"
             ],
             description: "A sound collection connecting you with the world's biodiversity. Discover the beauty of nature through our recordings.",
             cta: "Explore Now"
@@ -338,8 +340,9 @@ export const translations = {
         hero: {
             title: "Conheça a beleza da natureza",
             titles_animate: [
-                "Sons da Floresta",
-                "Sussurros da Vida"
+                "Ecossistemas Vivos | Sons da Selva",
+                "Biodiversidade Amazônica | Preservação Sonora",
+                "Arquivo Vivo | A Voz do Amazonas"
             ],
             description: "Uma coleção sonora que conecta com a biodiversidade do mundo. Descubra a beleza da natureza através de nossas gravações.",
             cta: "Explorar Agora"

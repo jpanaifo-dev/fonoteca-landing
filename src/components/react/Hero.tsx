@@ -31,13 +31,17 @@ export const Hero: React.FC<HeroProps> = ({ content }) => {
 
             {/* Content centered */}
             <div className="relative z-10 container mx-auto px-6 text-center mt-[-40px]">
-                <div className="max-w-4xl mx-auto flex flex-col items-center">
+                <div className="max-w-8xl mx-auto flex flex-col items-center">
                     <div className="min-h-[160px] md:min-h-[120px] mb-4 flex items-center justify-center">
                         <h1
                             key={currentTitleIndex}
-                            className="text-4xl md:text-6xl lg:text-8xl font-light text-white tracking-wide animate-fade-up leading-tight"
+                            className="text-4xl md:text-6xl lg:text-[112px] font-light text-white tracking-wide animate-fade-up leading-none flex flex-col gap-1"
                         >
-                            {content.titles_animate[currentTitleIndex]}
+                            {content.titles_animate[currentTitleIndex].split('|').map((part, i) => (
+                                <span key={i} className="block mt-1 font-extralight tracking-tight opacity-95">
+                                    {part.trim()}
+                                </span>
+                            ))}
                         </h1>
                     </div>
 
