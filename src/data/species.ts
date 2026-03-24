@@ -51,11 +51,30 @@ export async function getAllSpecies(): Promise<Species[]> {
         return [];
     }
 
-    return (occurrences as any[] || []).map((occ) => {
-        const taxon = occ.taxa;
-        const location = occ.locations;
-        const media = (occ.multimedia as any[]) || [];
+    // Group occurrences by Taxon (Scientific Name) to avoid duplicates in the list
+    const speciesMap = new Map<string, { taxon: any; location: any; media: any[]; occurrenceID: string }>();
 
+    (occurrences as any[] || []).forEach((occ) => {
+        const taxon = occ.taxa;
+        if (!taxon) return;
+        
+        const key = taxon.scientificName;
+        if (!speciesMap.has(key)) {
+            speciesMap.set(key, {
+                taxon: taxon,
+                location: occ.locations, // Uses the first encountered location
+                media: [],
+                occurrenceID: occ.occurrenceID
+            });
+        }
+
+        const group = speciesMap.get(key)!;
+        if (occ.multimedia && Array.isArray(occ.multimedia)) {
+             group.media.push(...occ.multimedia);
+        }
+    });
+
+    return Array.from(speciesMap.values()).map(({ taxon, location, media, occurrenceID }) => {
         // Case-insensitive media matching
         const isImage = (m: any) => m.type && m.type.toLowerCase().includes('image');
         const isAudio = (m: any) => m.type && (m.type.toLowerCase().includes('sound') || m.type.toLowerCase().includes('audio'));
@@ -65,8 +84,6 @@ export async function getAllSpecies(): Promise<Species[]> {
             if (identifier.startsWith('http://') || identifier.startsWith('https://')) {
                 return identifier;
             }
-            // If it is a relative path or storage key (e.g., 'folder/image.jpg')
-            // Prepend your Supabase Storage public bucket URL path
             const supabaseUrl = import.meta.env.SUPABASE_URL || '';
             const publicUrlPath = `${supabaseUrl}/storage/v1/object/public/multimedia/${identifier}`;
             return publicUrlPath;
@@ -78,9 +95,10 @@ export async function getAllSpecies(): Promise<Species[]> {
         );
         const mainImage = mainImageMedia ? formatMediaUrl(mainImageMedia.identifier) : "/placeholder.jpg";
 
-        // Gallery Images
+        // Gallery Images - Exclude main to avoid duplicates
         const galleryImages = media
             .filter(isImage)
+            .filter((m) => m.identifier !== mainImageMedia?.identifier)
             .map((m) => formatMediaUrl(m.identifier));
 
         // Audios
@@ -106,7 +124,7 @@ export async function getAllSpecies(): Promise<Species[]> {
         const commonName = taxon?.vernacularName || "Sin Nombre";
         
         // Extract slug
-        const occSlug = occ.occurrenceID.split("_")[0] || "unknown";
+        const occSlug = occurrenceID.split("_")[0] || "unknown";
 
         return {
             id: occSlug,
@@ -118,7 +136,7 @@ export async function getAllSpecies(): Promise<Species[]> {
             description: {
                 es: "Descripción del registro cargado desde Base de Datos.",
                 en: "Record description loaded from Database.",
-                pt: "Descrição do registro carregado do Banco de Datos.",
+                pt: "Descrição do registro cargado do Banco de Datos.",
             },
             characteristics: {
                 es: ["Disponible en Base de Datos"],

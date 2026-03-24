@@ -26,37 +26,43 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                 </AnimatePresence>
 
                 {/* Navigation Arrows */}
-                <button
-                    onClick={() => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-md transition-all"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                </button>
-                <button
-                    onClick={() => setCurrentIndex((prev) => (prev + 1) % images.length)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-md transition-all"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                    </svg>
-                </button>
+                {images.length > 1 && (
+                    <>
+                        <button
+                            onClick={() => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-md transition-all"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={() => setCurrentIndex((prev) => (prev + 1) % images.length)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-md transition-all"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                            </svg>
+                        </button>
+                    </>
+                )}
             </div>
 
             {/* Thumbnails */}
-            <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                {images.map((img, idx) => (
-                    <button
-                        key={idx}
-                        onClick={() => setCurrentIndex(idx)}
-                        className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl transition-all ${idx === currentIndex ? 'ring-2 ring-accent-green ring-offset-2' : 'opacity-70 hover:opacity-100'
-                            }`}
-                    >
-                        <img src={img} alt="" className="h-full w-full object-cover" />
-                    </button>
-                ))}
-            </div>
+            {images.length > 1 && (
+                <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                    {images.map((img, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => setCurrentIndex(idx)}
+                            className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl transition-all ${idx === currentIndex ? 'ring-2 ring-accent-green ring-offset-2' : 'opacity-70 hover:opacity-100'
+                                }`}
+                        >
+                            <img src={img} alt="" className="h-full w-full object-cover" />
+                        </button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
