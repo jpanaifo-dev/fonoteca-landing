@@ -22,7 +22,7 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params;
 const content = translations[lang as keyof typeof translations];
-const allSpecies = getAllSpecies();
+const allSpecies = await getAllSpecies();
 ---
 
 <Layout

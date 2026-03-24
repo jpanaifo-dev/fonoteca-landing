@@ -9,8 +9,8 @@ import { translations, LANGUAGES, type Language } from "../../../i18n/data";
 import { getAllSpecies, type Species } from "../../../data/species";
 import logoIiap from "../../../assets/logo_iiap.png";
 
-export function getStaticPaths() {
-    const speciesList = getAllSpecies();
+export async function getStaticPaths() {
+    const speciesList = await getAllSpecies();
 
     return LANGUAGES.flatMap((lang) =>
         speciesList.map((species) => ({
