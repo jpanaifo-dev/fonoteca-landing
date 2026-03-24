@@ -18,16 +18,14 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
 
     return (
         <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
-            {/* Background Space Gradient */}
-            <div className="absolute inset-0 z-0 bg-gradient-to-b from-[#080d15] via-[#0c1622] to-[#04070a]">
-                {/* Glowing radial centers */}
-                <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-teal-500/10 rounded-full blur-[100px] animate-pulse"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[80%] h-[80%] bg-emerald-500/5 rounded-full blur-[120px]"></div>
-
-                {/* Curved Earth Element at bottom */}
-                <div className="absolute -bottom-[70%] md:-bottom-[65%] left-1/2 -translate-x-1/2 w-[160%] md:w-[120%] aspect-square rounded-full bg-[#04070a] border-t-2 border-accent-green/30 shadow-[0_-30px_60px_rgba(20,184,166,0.12)] flex justify-center">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-b from-teal-900/30 to-transparent"></div>
-                </div>
+            {/* Background Image Overlay */}
+            <div className="absolute inset-0 z-0">
+                <img
+                    src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop"
+                    alt="Forest Background"
+                    className="object-cover w-full h-full"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#04070a]"></div>
             </div>
 
             {/* Content centered */}

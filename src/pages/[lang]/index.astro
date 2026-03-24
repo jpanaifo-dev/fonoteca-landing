@@ -42,9 +42,9 @@ const allSpecies = await getAllSpecies();
         {/* Audio Archive Section */}
         <section
             id="library"
-            class="py-12 bg-white dark:bg-gray-800 scroll-mt-20"
+            class="py-12 bg-white dark:bg-[#0c141d] scroll-mt-20"
         >
-            <div class="container mx-auto px-6">
+            <div class="w-full max-w-[1400px] mx-auto px-6">
                 <div class="mb-12 text-center">
                     <h2
                         class="text-3xl md:text-4xl font-light text-primary-dark dark:text-white mb-4"
@@ -58,7 +58,12 @@ const allSpecies = await getAllSpecies();
                         alta fidelidad.
                     </p>
                 </div>
-                <AudioList client:load allSpecies={allSpecies} lang={lang} />
+                <AudioList client:load allSpecies={allSpecies.slice(0, 4)} lang={lang} />
+                <div class="mt-8 text-center">
+                    <a href={`/${lang}/species`} class="inline-flex items-center gap-2 border border-gray-200 dark:border-gray-700 hover:border-accent-green bg-white dark:bg-[#121b28] text-primary-dark dark:text-white font-medium py-3 px-8 rounded-full transition-all shadow-sm hover:shadow-md">
+                        Ver Más Grabaciones &rarr;
+                    </a>
+                </div>
             </div>
         </section>
 
