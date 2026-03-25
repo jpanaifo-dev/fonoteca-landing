@@ -2,45 +2,36 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Species, SpeciesCategory } from '../../data/species';
 
+import { useSpeciesStore } from '../../store/useSpeciesStore';
+
 interface SpeciesExplorerProps {
     allSpecies: Species[];
     lang: 'es' | 'en' | 'pt';
 }
 
 export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, lang }) => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState<string>('All');
-    const [selectedLocation, setSelectedLocation] = useState<string>('All');
-    const [selectedFamily, setSelectedFamily] = useState<string>('All');
-    const [selectedGenus, setSelectedGenus] = useState<string>('All');
-    const [onlyWithAudio, setOnlyWithAudio] = useState(false); // New Filter State
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+    const {
+        searchTerm, setSearchTerm,
+        selectedCategory, setSelectedCategory,
+        selectedLocation, setSelectedLocation,
+        selectedFamily, setSelectedFamily,
+        selectedGenus, setSelectedGenus,
+        onlyWithAudio, setOnlyWithAudio,
+        viewMode, setViewMode,
+        isSidebarCollapsed, setIsSidebarCollapsed,
+        page, setPage
+    } = useSpeciesStore();
+
     const [showFilters, setShowFilters] = useState(false);
-
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
-    
-    // Pagination State
-    const [page, setPage] = useState(1);
-    const ITEMS_PER_PAGE = 20;
 
+    // Smooth hydration check since we are using persist
+    const [isHydrated, setIsHydrated] = useState(false);
     useEffect(() => {
-        const handleLocationChange = () => {
-            const params = new URLSearchParams(window.location.search);
-            setSearchTerm(params.get('q') || '');
-            setSelectedCategory(params.get('category') || 'All');
-            setSelectedLocation(params.get('location') || 'All');
-            setSelectedFamily(params.get('family') || 'All');
-            setSelectedGenus(params.get('genus') || 'All');
-            setOnlyWithAudio(params.get('audio') === 'true');
-            setPage(parseInt(params.get('page') || '1'));
-        };
-        
-        window.addEventListener('popstate', handleLocationChange);
-        handleLocationChange(); // Initial load
-
-        return () => window.removeEventListener('popstate', handleLocationChange);
+        setIsHydrated(true);
     }, []);
+
+    const ITEMS_PER_PAGE = 20;
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
@@ -49,11 +40,11 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     // Dynamic Lists for filters
     const categories = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.category)))], [allSpecies]);
     const locations = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.location)))], [allSpecies]);
-    
+
     const families = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.family || 'Unknown').filter(Boolean)))], [allSpecies]);
     const genera = useMemo(() => {
-        const matchingSpecies = selectedFamily === 'All' 
-            ? allSpecies 
+        const matchingSpecies = selectedFamily === 'All'
+            ? allSpecies
             : allSpecies.filter(s => s.family === selectedFamily);
         return ['All', ...Array.from(new Set(matchingSpecies.map(s => s.genus || 'Unknown').filter(Boolean)))];
     }, [allSpecies, selectedFamily]);
@@ -80,31 +71,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
     const totalPages = Math.ceil(filteredSpecies.length / ITEMS_PER_PAGE);
 
-    // Reset page to 1 on filter changes to avoid empty screens
-    useEffect(() => {
-        const currentParams = new URLSearchParams(window.location.search);
-        
-        if (searchTerm) currentParams.set('q', searchTerm); else currentParams.delete('q');
-        if (selectedCategory !== 'All') currentParams.set('category', selectedCategory); else currentParams.delete('category');
-        if (selectedLocation !== 'All') currentParams.set('location', selectedLocation); else currentParams.delete('location');
-        if (selectedFamily !== 'All') currentParams.set('family', selectedFamily); else currentParams.delete('family');
-        if (selectedGenus !== 'All') currentParams.set('genus', selectedGenus); else currentParams.delete('genus');
-        if (onlyWithAudio) currentParams.set('audio', 'true'); else currentParams.delete('audio');
-        
-        if (page > 1) currentParams.set('page', page.toString()); else currentParams.delete('page');
 
-        const existingParams = new URLSearchParams(window.location.search).toString();
-        if (currentParams.toString() !== existingParams) {
-            const query = currentParams.toString() ? `?${currentParams.toString()}` : '';
-            const newUrl = `${window.location.pathname}${query}`;
-            window.history.pushState({ path: newUrl }, '', newUrl);
-        }
-    }, [searchTerm, selectedCategory, selectedLocation, selectedFamily, selectedGenus, onlyWithAudio, page]);
-
-    // Reset page to 1 if ANY FILTER changes to avoid empty screens
-    useEffect(() => {
-        setPage(1);
-    }, [searchTerm, selectedCategory, selectedLocation, selectedFamily, selectedGenus, onlyWithAudio]);
 
     const playAudio = (species: Species) => {
         if (species.audios.length === 0) return;
@@ -130,6 +97,48 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
         Reptiles: 'Reptiles'
     };
 
+    if (!isHydrated) {
+        return (
+            <div className="flex flex-col lg:flex-row gap-6 min-h-[700px] text-gray-800 dark:text-gray-200">
+                <aside className={`hidden lg:block w-72 lg:w-[260px] p-5 bg-white dark:bg-[#121b28] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 h-fit ${useSpeciesStore.getState().isSidebarCollapsed ? 'lg:w-0 p-0 overflow-hidden border-0' : ''}`}>
+                    <div className="animate-pulse space-y-5">
+                        <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-1/2"></div>
+                        <div className="h-10 bg-gray-50 dark:bg-gray-900 rounded-xl"></div>
+                        <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-1/3"></div>
+                        <div className="h-10 bg-gray-50 dark:bg-gray-900 rounded-xl"></div>
+                        <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-1/4"></div>
+                        <div className="space-y-2">
+                            <div className="h-6 bg-gray-100 dark:bg-gray-800 rounded w-full"></div>
+                            <div className="h-6 bg-gray-100 dark:bg-gray-800 rounded w-4/5"></div>
+                            <div className="h-6 bg-gray-100 dark:bg-gray-800 rounded w-5/6"></div>
+                        </div>
+                    </div>
+                </aside>
+                <div className="flex-1">
+                    <div className="flex justify-between items-center mb-6 p-4 bg-white dark:bg-[#121b28] rounded-2xl border border-gray-100 dark:border-gray-800 animate-pulse">
+                        <div className="h-6 w-32 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                        <div className="h-6 w-48 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                    </div>
+                    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${useSpeciesStore.getState().isSidebarCollapsed ? 'xl:grid-cols-5 lg:grid-cols-4' : 'lg:grid-cols-4'} gap-5`}>
+                        {Array.from({ length: 8 }).map((_, i) => (
+                            <div key={i} className="bg-white dark:bg-[#121b28] rounded-2xl h-[330px] border border-gray-100 dark:border-gray-800 animate-pulse overflow-hidden flex flex-col">
+                                <div className="aspect-[4/3] bg-gray-100 dark:bg-gray-800"></div>
+                                <div className="p-4 flex-1 flex flex-col justify-between">
+                                    <div className="space-y-2">
+                                        <div className="h-4 bg-gray-100 dark:bg-gray-800 rounded w-3/4"></div>
+                                        <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/2"></div>
+                                    </div>
+                                    <div className="h-8 bg-gray-100 dark:bg-gray-800 rounded-xl w-full mt-4"></div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+
     return (
         <div className="flex flex-col lg:flex-row gap-6 min-h-[700px] text-gray-800 dark:text-gray-200">
             {/* Dark Overlay for mobile aside */}
@@ -142,12 +151,22 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
             {/* Sidebar Filters */}
             <aside className={`fixed lg:sticky lg:top-24 z-30 bg-white dark:bg-[#121b28] rounded-r-2xl lg:rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 h-screen lg:h-fit overflow-y-auto transform transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'w-0 lg:w-0 p-0 overflow-hidden opacity-0 border-0' : 'w-72 lg:w-[260px] p-5'} ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+                {/* Collapse toggle for desktop */}
                 <div className="flex items-center justify-between mb-4 lg:hidden">
                     <h2 className="font-bold text-sm">Filtros</h2>
                     <button onClick={() => setShowFilters(false)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
                         ✖
                     </button>
                 </div>
+                {/* Button to open sidebar on mobile when collapsed */}
+                {isSidebarCollapsed && (
+                    <button
+                        onClick={() => setShowFilters(true)}
+                        className="lg:hidden mb-4 px-3 py-1 bg-accent-green text-white rounded-md"
+                    >
+                        Mostrar filtros
+                    </button>
+                )}
 
                 <div className="space-y-6">
                     {/* Family Filter */}
@@ -306,33 +325,23 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         className="bg-white dark:bg-[#121b28] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden group hover:shadow-lg hover:border-accent-green/30 transition-all duration-300 flex flex-col"
                                     >
                                         <div className="aspect-[4/3] overflow-hidden relative bg-gray-100 dark:bg-gray-800">
-                                            {coverImage.includes('docs.google.com') ? (
-                                                <iframe 
-                                                    src={`https://drive.google.com/file/d/${coverImage.match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`} 
-                                                    className="w-full h-full border-0 pointer-events-none" 
-                                                    scrolling="no"
-                                                />
-                                            ) : (
-                                                <>
-                                                    {!loadedImages[species.id] && (
-                                                        <div className="absolute inset-0 flex items-center justify-center">
-                                                            <div className="w-5 h-5 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
-                                                        </div>
-                                                    )}
-                                                    <img
-                                                        src={coverImage}
-                                                        alt={species.scientificName}
-                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
-                                                        onError={(e) => {
-                                                            const target = e.target as HTMLImageElement;
-                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
-                                                            setLoadedImages(prev => ({ ...prev, [species.id]: true }));
-                                                        }}
-                                                        className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
-                                                        loading="lazy"
-                                                    />
-                                                </>
+                                            {!loadedImages[species.id] && (
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="w-5 h-5 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                                </div>
                                             )}
+                                            <img
+                                                src={coverImage}
+                                                alt={species.scientificName}
+                                                onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
+                                                onError={(e) => {
+                                                    const target = e.target as HTMLImageElement;
+                                                    target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                    setLoadedImages(prev => ({ ...prev, [species.id]: true }));
+                                                }}
+                                                className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
+                                                loading="lazy"
+                                            />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                                                 <button
                                                     onClick={() => playAudio(species)}
@@ -374,32 +383,22 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         className="flex items-center gap-4 bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow group flex-wrap md:flex-nowrap"
                                     >
                                         <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
-                                            {coverImage.includes('docs.google.com') ? (
-                                                <iframe 
-                                                    src={`https://drive.google.com/file/d/${coverImage.match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`} 
-                                                    className="w-full h-full border-0 pointer-events-none" 
-                                                    scrolling="no"
-                                                />
-                                            ) : (
-                                                <>
-                                                    {!loadedImages['list-' + species.id] && (
-                                                        <div className="absolute inset-0 flex items-center justify-center">
-                                                            <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
-                                                        </div>
-                                                    )}
-                                                    <img 
-                                                        src={coverImage} 
-                                                        alt="" 
-                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
-                                                        onError={(e) => {
-                                                            const target = e.target as HTMLImageElement;
-                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
-                                                            setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }));
-                                                        }}
-                                                        className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`} 
-                                                    />
-                                                </>
+                                            {!loadedImages['list-' + species.id] && (
+                                                <div className="absolute inset-0 flex items-center justify-center">
+                                                    <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                                </div>
                                             )}
+                                            <img
+                                                src={coverImage}
+                                                alt=""
+                                                onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
+                                                onError={(e) => {
+                                                    const target = e.target as HTMLImageElement;
+                                                    target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                    setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }));
+                                                }}
+                                                className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`}
+                                            />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">{species.commonName_es}</h4>
@@ -428,21 +427,21 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-1.5 mt-10 mb-4">
-                        <button 
+                        <button
                             onClick={() => handlePageChange(Math.max(1, page - 1))}
                             disabled={page === 1}
                             className="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium transition-colors"
                         >
                             &larr; Anterior
                         </button>
-                        
+
                         <div className="flex items-center gap-1">
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                                 <button
                                     key={p}
                                     onClick={() => handlePageChange(p)}
-                                    className={`w-7 h-7 rounded-lg text-xs font-medium transition-all ${page === p 
-                                        ? 'bg-accent-green text-white shadow-sm shadow-accent-green/20' 
+                                    className={`w-7 h-7 rounded-lg text-xs font-medium transition-all ${page === p
+                                        ? 'bg-accent-green text-white shadow-sm shadow-accent-green/20'
                                         : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
                                 >
                                     {p}
@@ -450,7 +449,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             ))}
                         </div>
 
-                        <button 
+                        <button
                             onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
                             disabled={page === totalPages}
                             className="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-medium transition-colors"

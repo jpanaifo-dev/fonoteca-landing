@@ -77,3 +77,24 @@ TypeError: Cannot read properties of null (reading 'useRef')
   [1mStack trace:[22m
 [2m    at d:\IIAP-REPOS\fonoteca-landing\node_modules\react\cjs\react.development.js:1263:33
     [...] See full stack trace in the browser, or rerun with --verbose.[22m
+[2m19:48:15[22m Configuration file updated. Restarting...
+[2m19:48:15[22m Configuration file updated. Restarting...
+[2m19:48:15[22m Configuration file updated. Restarting...
+[2m19:48:17[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m19:48:26[22m [34m[content][39m Syncing content
+[2m19:48:26[22m [34m[content][39m Astro config changed
+[2m19:48:26[22m [34m[content][39m Clearing content store
+[2m19:48:26[22m [34m[content][39m Synced content
+[2m19:48:26[22m [34m[types][39m Generated [2m8.36s[22m
+[2m19:48:26[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m19:48:26[22m [34m[content][39m Syncing content
+[2m19:48:26[22m [34m[content][39m Synced content
+[2m19:48:26[22m [34m[types][39m Generated [2m9.76s[22m
+[2m19:48:26[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
+[2m19:48:26[22m [34m[content][39m Syncing content
+[2m19:48:26[22m [34m[content][39m Astro config changed
+[2m19:48:26[22m [34m[content][39m Clearing content store
+[2m19:48:26[22m [34m[content][39m Synced content
+[2m19:48:26[22m [34m[types][39m Generated [2m10.13s[22m
+[2m19:48:27[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
+[2m19:48:27[22m [34m[vite][39m Port 4322 is in use, trying another one...
