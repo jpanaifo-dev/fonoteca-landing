@@ -45,6 +45,18 @@ const galleryImages =
     species.galleryImages.length > 0
         ? species.galleryImages
         : [species.mainImage];
+
+// Breadcrumbs implementation
+const breadcrumbs = {
+    backLink: `/${lang}/species`,
+    backText: lang === "es" ? "Volver a la lista" : lang === "pt" ? "Voltar para lista" : "Back to list",
+    currentText: lang === "es" ? "Detalles" : lang === "pt" ? "Detalhes" : "Details"
+};
+
+// Taxonomy chain string for body
+// Attempt to use kingdom and phylum if they exist on the object, otherwise rely on the available taxonomy down to genus.
+const taxonomyParts = [(species as any).kingdom || "Animalia", (species as any).phylum, species.class_name, species.order, species.family, species.genus].filter(Boolean);
+const taxonomy = taxonomyParts.length > 0 ? taxonomyParts.join(" ➔ ") : undefined;
 ---
 
 <Layout
@@ -64,29 +76,21 @@ const galleryImages =
             title={commonName}
             subtitle={species.scientificName}
             image={species.mainImage}
+            breadcrumbs={breadcrumbs}
         />
 
         <section class="py-24 bg-white">
             <div class="container mx-auto px-6">
-                {/* Back Link */}
-                <div class="mb-12">
-                    <a
-                        href={`/${lang}/species`}
-                        class="inline-flex items-center text-accent-green hover:underline font-medium"
-                    >
-                        &larr; {
-                            lang === "es"
-                                ? "Volver a la lista"
-                                : lang === "pt"
-                                  ? "Voltar para lista"
-                                  : "Back to list"
-                        }
-                    </a>
-                </div>
+                {/* Back Link Removed: Now in PageBanner */}
 
                 <div class="max-w-5xl mx-auto">
                     {/* Header Section: Titles & Location */}
                     <div class="text-center mb-12">
+                        {taxonomy && (
+                            <div class="mb-4 text-accent-green font-bold text-xs md:text-sm uppercase tracking-widest animate-fade-in">
+                                {taxonomy}
+                            </div>
+                        )}
                         <h1
                             class="text-4xl md:text-6xl text-primary-dark font-light mb-4"
                         >
