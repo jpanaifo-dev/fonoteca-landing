@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface PageBannerProps {
     title: string;
@@ -13,18 +13,32 @@ interface PageBannerProps {
 }
 
 export const PageBanner: React.FC<PageBannerProps> = ({ title, subtitle, image, breadcrumbs, taxonomy }) => {
+    const defaultImage = '/images/banner_fallback.webp';
+    const [currentImage, setCurrentImage] = useState<string>(defaultImage);
+
+    // Verify if the url is valid before rendering
+    useEffect(() => {
+        if (!image) {
+            setCurrentImage(defaultImage);
+            return;
+        }
+
+        const img = new window.Image();
+        img.src = image;
+        
+        img.onload = () => setCurrentImage(image);
+        img.onerror = () => setCurrentImage(defaultImage);
+    }, [image]);
+
     return (
         <section className="relative h-[40vh] min-h-[400px] flex items-center justify-center overflow-hidden">
             {/* Background Image */}
-            <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 z-0 bg-primary-dark">
                 <img
-                    src={image || '/images/banner_fallback.webp'}
+                    key={currentImage}
+                    src={currentImage}
                     alt={title}
-                    onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/images/banner_fallback.webp';
-                    }}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-opacity duration-1000 ease-in-out animate-fade-in"
                 />
                 <div className="absolute inset-0 bg-primary-dark/60 mix-blend-multiply"></div>
             </div>

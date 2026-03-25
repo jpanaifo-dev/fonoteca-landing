@@ -49,14 +49,28 @@ const galleryImages =
 // Breadcrumbs implementation
 const breadcrumbs = {
     backLink: `/${lang}/species`,
-    backText: lang === "es" ? "Volver a la lista" : lang === "pt" ? "Voltar para lista" : "Back to list",
-    currentText: lang === "es" ? "Detalles" : lang === "pt" ? "Detalhes" : "Details"
+    backText:
+        lang === "es"
+            ? "Volver a la lista"
+            : lang === "pt"
+              ? "Voltar para lista"
+              : "Back to list",
+    currentText:
+        lang === "es" ? "Detalles" : lang === "pt" ? "Detalhes" : "Details",
 };
 
 // Taxonomy chain string for body
 // Attempt to use kingdom and phylum if they exist on the object, otherwise rely on the available taxonomy down to genus.
-const taxonomyParts = [(species as any).kingdom || "Animalia", (species as any).phylum, species.class_name, species.order, species.family, species.genus].filter(Boolean);
-const taxonomy = taxonomyParts.length > 0 ? taxonomyParts.join(" ➔ ") : undefined;
+const taxonomyParts = [
+    (species as any).kingdom || "Animalia",
+    (species as any).phylum,
+    species.class_name,
+    species.order,
+    species.family,
+    species.genus,
+].filter(Boolean);
+const taxonomy =
+    taxonomyParts.length > 0 ? taxonomyParts.join(" - ") : undefined;
 ---
 
 <Layout
@@ -86,11 +100,13 @@ const taxonomy = taxonomyParts.length > 0 ? taxonomyParts.join(" ➔ ") : undefi
                 <div class="max-w-5xl mx-auto">
                     {/* Header Section: Titles & Location */}
                     <div class="text-center mb-12">
-                        {taxonomy && (
-                            <div class="mb-4 text-accent-green font-bold text-xs md:text-sm uppercase tracking-widest animate-fade-in">
-                                {taxonomy}
-                            </div>
-                        )}
+                        {
+                            taxonomy && (
+                                <div class="mb-4 text-accent-green font-bold text-xs md:text-sm uppercase tracking-widest animate-fade-in">
+                                    {taxonomy}
+                                </div>
+                            )
+                        }
                         <h1
                             class="text-4xl md:text-6xl text-primary-dark font-light mb-4"
                         >
@@ -459,7 +475,7 @@ const taxonomy = taxonomyParts.length > 0 ? taxonomyParts.join(" ➔ ") : undefi
                     title: audio.title,
                     artist: commonName,
                     url: audio.url,
-                    image: species.mainImage || '/images/logo-mini.webp', // Using main image as fallback, but spectrogram is primary for thumbnail
+                    image: species.mainImage || "/images/logo-mini.webp", // Using main image as fallback, but spectrogram is primary for thumbnail
                     spectrogram: audio.spectrogramImage,
                 }));
 
