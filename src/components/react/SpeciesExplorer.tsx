@@ -226,7 +226,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                 title: audio.title || 'Canto',
                 artist: `${species.commonName_es} (${species.scientificName})`,
                 url: audio.url,
-                image: species.mainImage,
+                image: species.mainImage || '/images/logo-mini.webp',
                 spectrogram: audio.spectrogramImage
             }
         });
@@ -512,7 +512,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             {paginatedSpecies.map(species => {
                                 const coverImage = (onlyWithAudio && species.audios.length > 0 && species.audios[0].spectrogramImage)
                                     ? species.audios[0].spectrogramImage
-                                    : (species.mainImage || '/placeholder.jpg');
+                                    : (species.mainImage || '/images/logo-mini.webp');
 
                                 return (
                                     <motion.div
@@ -540,7 +540,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                                         onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
                                                         onError={(e) => {
                                                             const target = e.target as HTMLImageElement;
-                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                            target.src = '/images/logo-mini.webp';
                                                             setLoadedImages(prev => ({ ...prev, [species.id]: true }));
                                                         }}
                                                         className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
@@ -580,7 +580,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             {paginatedSpecies.map(species => {
                                 const coverImage = (onlyWithAudio && species.audios.length > 0 && species.audios[0].spectrogramImage)
                                     ? species.audios[0].spectrogramImage
-                                    : (species.mainImage || '/placeholder.jpg');
+                                    : (species.mainImage || '/images/logo-mini.webp');
 
                                 return (
                                     <motion.div
@@ -608,7 +608,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                                         onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
                                                         onError={(e) => {
                                                             const target = e.target as HTMLImageElement;
-                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                            target.src = '/images/logo-mini.webp';
                                                             setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }));
                                                         }}
                                                         className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`}

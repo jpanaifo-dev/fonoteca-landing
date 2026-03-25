@@ -62,7 +62,7 @@ export const AudioList: React.FC<AudioListProps> = ({ allSpecies, lang }) => {
                 title: audio.title,
                 artist: `${audio.speciesName} (${audio.scientificName})`,
                 url: audio.url,
-                image: audio.mainImage,
+                image: audio.mainImage || '/images/logo-mini.webp',
                 spectrogram: audio.spectrogramImage
             }
         });

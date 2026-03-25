@@ -52,7 +52,7 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
                 title: mainAudio.title,
                 artist: `${species[`commonName_${lang}`]} (${species.scientificName})`,
                 url: mainAudio.url,
-                image: species.mainImage,
+                image: species.mainImage || '/images/logo-mini.webp',
                 spectrogram: mainAudio.spectrogramImage
             }
         })
@@ -115,8 +115,12 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
                                     {/* Image Aspect Box */}
                                     <div className="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
                                         <img
-                                            src={species.mainImage}
+                                            src={species.mainImage || '/images/logo-mini.webp'}
                                             alt={species[`commonName_${lang}`] as string}
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.src = '/images/logo-mini.webp';
+                                            }}
                                             className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700 pointer-events-none"
                                             loading="lazy"
                                         />

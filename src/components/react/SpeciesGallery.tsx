@@ -31,12 +31,16 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                     ) : (
                         <motion.img
                             key={currentIndex}
-                            src={images[currentIndex]}
+                            src={images[currentIndex] || '/images/logo-mini.webp'}
                             initial={{ opacity: 0, scale: 1.1 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.5 }}
-                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = '/images/logo-mini.webp';
+                            }}
+                            className="h-full w-full object-cover bg-gray-50 dark:bg-gray-800"
                             alt={`Species gallery ${currentIndex + 1}`}
                         />
                     )}
@@ -81,7 +85,15 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                             className={`relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl transition-all ${idx === currentIndex ? 'ring-2 ring-accent-green ring-offset-2' : 'opacity-70 hover:opacity-100'
                                 }`}
                         >
-                            <img src={img} alt="" className="h-full w-full object-cover" />
+                            <img 
+                                src={img || '/images/logo-mini.webp'} 
+                                alt="" 
+                                onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = '/images/logo-mini.webp';
+                                }}
+                                className="h-full w-full object-cover" 
+                            />
                         </button>
                     ))}
                 </div>
