@@ -4,8 +4,22 @@ export const ThemeToggle = () => {
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
     useEffect(() => {
-        const isDark = document.documentElement.classList.contains('dark');
-        setTheme(isDark ? 'dark' : 'light');
+        const updateTheme = () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            setTheme(isDark ? 'dark' : 'light');
+        };
+
+        updateTheme();
+
+        const observer = new MutationObserver(updateTheme);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+        document.addEventListener('astro:after-swap', updateTheme);
+
+        return () => {
+            observer.disconnect();
+            document.removeEventListener('astro:after-swap', updateTheme);
+        };
     }, []);
 
     const toggleTheme = () => {
