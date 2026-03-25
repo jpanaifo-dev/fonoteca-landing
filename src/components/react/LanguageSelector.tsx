@@ -58,11 +58,11 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ currentLang 
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={toggleDropdown}
-                className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-black/5 transition-colors text-sm font-medium"
+                className="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-black/5 transition-colors text-sm font-medium text-white"
                 aria-label="Select Language"
             >
                 <FlagIcon code={currentLang} className="w-5 h-5 rounded-full object-cover" />
-                <span className="uppercase text-inherit">{currentLang}</span>
+                <span className="uppercase text-white">{currentLang}</span>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

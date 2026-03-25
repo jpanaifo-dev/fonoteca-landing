@@ -20,10 +20,10 @@ export const StatsChart: React.FC = () => {
         <div className="w-full mx-auto container">
             <div className="p-8 md:p-12 rounded-3xl transition-colors duration-300">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-                    <div>
-                        <h3 className="text-4xl md:text-5xl lg:text-6xl text-primary-dark dark:text-white font-light leading-tight mb-2">
+                    <div className="w-full">
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl text-primary-dark dark:text-white font-light leading-tight mb-2">
                             Biblioteca vs. Grabaciones Activas
-                        </h3>
+                        </h2>
                         <p className="text-gray-500 dark:text-gray-400">
                             Comparativa de registros por grupo taxonómico
                         </p>
@@ -41,7 +41,7 @@ export const StatsChart: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="relative h-[450px] w-full mt-8">
+                <div className="relative h-[450px] w-full mt-8 px-6 max-w-7xl mx-auto">
                     {/* Grid Lines */}
                     {[0, 100, 200, 300, 400, 500].map((val) => (
                         <div

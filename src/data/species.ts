@@ -31,19 +31,40 @@ export interface Species {
     location: string;
     genus?: string;
     family?: string;
+    order?: string;
+    class_name?: string;
+    databaseDetails?: {
+        occurrenceID?: string;
+        basisOfRecord?: string;
+        institutionCode?: string;
+        collectionCode?: string;
+        catalogNumber?: string;
+        eventDate?: string;
+        eventTime?: string;
+        lifeStage?: string;
+        sex?: string;
+        identifiedBy?: string;
+        continent?: string;
+        country?: string;
+        stateProvince?: string;
+        locality?: string;
+        decimalLatitude?: number;
+        decimalLongitude?: number;
+        elevation?: number;
+    };
 }
 
 import { supabase } from "../lib/supabase";
 
-export async function getAllSpecies(): Promise<Species[]> {
-    const { data: occurrences, error } = await supabase
+export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
+    let query = supabase
         .from("occurrences")
         .select(`
             id,
             occurrenceID,
             taxon_id,
             location_id,
-            taxa (
+            taxa${searchTerm ? '!inner' : ''} (
                 *,
                 genus:genera (
                     *,
@@ -54,10 +75,11 @@ export async function getAllSpecies(): Promise<Species[]> {
             multimedia (*)
         `);
 
-    if (error) {
-        console.error("Error fetching species from Supabase:", error);
-        return [];
+    if (searchTerm) {
+        query = query.or(`scientificName.ilike.%${searchTerm}%,vernacularName.ilike.%${searchTerm}%`, { foreignTable: 'taxa' });
     }
+
+    const { data: occurrences, error } = await query;
 
     if (error) {
         console.error("Error fetching species from Supabase:", error);
@@ -69,16 +91,8 @@ export async function getAllSpecies(): Promise<Species[]> {
         const location = occ.locations;
         const media = occ.multimedia || [];
 
-        const isImage = (m: any) => {
-            if (!m.identifier) return false;
-            const typeMatch = m.type && (
-                m.type.toLowerCase().includes('image') || 
-                m.type.toLowerCase().includes('still')
-            );
-            return typeMatch;
-        };
-        
-        const isAudio = (m: any) => m.type && (m.type.toLowerCase().includes('sound') || m.type.toLowerCase().includes('audio'));
+        const isImage = (m: any) => m.type === 'Still' || (m.type && m.type.toLowerCase().includes('image'));
+        const isAudio = (m: any) => m.type === 'Sound' || (m.type && m.type.toLowerCase().includes('sound'));
 
         const formatMediaUrl = (identifier: string) => {
             if (!identifier) return "";
@@ -99,10 +113,10 @@ export async function getAllSpecies(): Promise<Species[]> {
             .filter(isAudio)
             .map((m: any) => {
                 let spectrogram = media.find(
-                    (other: any) => other.parent_multimedia_id === m.id && isImage(other)
+                    (other: any) => (other.parent_multimedia_id === m.id || other.tag === 'spectrogram') && isImage(other)
                 );
 
-                // Heuristic fallback: Use the last image if no explicit parent_multimedia_id match
+                // Heuristic fallback: Use the last image if no explicit match
                 if (!spectrogram) {
                     const allImages = media.filter(isImage);
                     if (allImages.length > 1) {
@@ -156,6 +170,27 @@ export async function getAllSpecies(): Promise<Species[]> {
             location: location?.locality || "Unknown Location",
             genus: taxon?.genus?.name,
             family: taxon?.genus?.family?.name,
+            order: taxon?.genus?.family?.order,
+            class_name: taxon?.genus?.family?.class,
+            databaseDetails: {
+                occurrenceID: occ?.occurrenceID,
+                basisOfRecord: occ?.basisOfRecord,
+                institutionCode: occ?.institutionCode,
+                collectionCode: occ?.collectionCode,
+                catalogNumber: occ?.catalogNumber,
+                eventDate: occ?.eventDate,
+                eventTime: occ?.eventTime,
+                lifeStage: occ?.lifeStage,
+                sex: occ?.sex,
+                identifiedBy: occ?.identifiedBy,
+                continent: location?.continent,
+                country: location?.country,
+                stateProvince: location?.stateProvince,
+                locality: location?.locality,
+                decimalLatitude: location?.decimalLatitude,
+                decimalLongitude: location?.decimalLongitude,
+                elevation: location?.elevation,
+            }
         };
     }).filter(Boolean) as unknown as Species[];
 }
