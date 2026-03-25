@@ -262,6 +262,23 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
 
                 {/* Ventana de Visualización Gráfica */}
                 <div className={`relative w-full bg-black group p-[1px] flex flex-col ${isModalView ? 'flex-1 overflow-hidden' : ''}`}>
+                    {/* Optional Static Spectrogram Image */}
+                    {spectrogramImage && (
+                        <div className="w-full bg-black relative flex-shrink-0 border-b border-gray-900 group-hover:opacity-90 transition-opacity">
+                            <img 
+                                src={spectrogramImage} 
+                                alt="Espectrograma estático" 
+                                className="w-full h-auto max-h-[300px] object-contain mx-auto"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                }}
+                            />
+                            <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] text-gray-400 uppercase tracking-tighter border border-white/10">
+                                Captura Original
+                            </div>
+                        </div>
+                    )}
+
                     {/* 1. Timeline Top */}
                     <div ref={timelineRef} className="w-full bg-[#181818] flex-shrink-0" />
                     

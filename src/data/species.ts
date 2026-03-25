@@ -27,6 +27,7 @@ export interface Species {
     };
     mainImage: string;
     galleryImages: string[];
+    spectrograms: string[];
     audios: SpeciesAudio[]; // List of audios
     location: string;
     genus?: string;
@@ -105,23 +106,24 @@ export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
             return identifier;
         };
 
-        const galleryImages = media
-            .filter(isImage)
+        const photos = media
+            .filter((m: any) => isImage(m) && !m.parent_multimedia_id && m.tag !== 'spectrogram')
+            .map((m: any) => formatMediaUrl(m.identifier));
+
+        const spectrograms = media
+            .filter((m: any) => isImage(m) && (m.parent_multimedia_id || m.tag === 'spectrogram'))
             .map((m: any) => formatMediaUrl(m.identifier));
 
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
             .map((m: any) => {
                 let spectrogram = media.find(
-                    (other: any) => (other.parent_multimedia_id === m.id || other.tag === 'spectrogram') && isImage(other)
+                    (other: any) => (other.parent_multimedia_id === m.id || (m.tag && other.tag === 'spectrogram' && other.title?.includes(m.title))) && isImage(other)
                 );
 
-                // Heuristic fallback: Use the last image if no explicit match
+                // Heuristic fallback: if no direct match, check if any spectrogram matches title
                 if (!spectrogram) {
-                    const allImages = media.filter(isImage);
-                    if (allImages.length > 1) {
-                        spectrogram = allImages[allImages.length - 1];
-                    }
+                    spectrogram = media.find((other: any) => isImage(other) && (other.tag === 'spectrogram' || other.parent_multimedia_id) && other.title?.includes(m.title));
                 }
 
                 return {
@@ -164,8 +166,9 @@ export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
                 en: ["Available in Database"],
                 pt: ["Disponível no Banco de Datos"],
             },
-            mainImage: galleryImages.length > 0 ? galleryImages[0] : "https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png",
-            galleryImages: galleryImages,
+            mainImage: photos.length > 0 ? photos[0] : "https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png",
+            galleryImages: photos,
+            spectrograms: spectrograms,
             audios: audios,
             location: location?.locality || "Unknown Location",
             genus: taxon?.genus?.name,
