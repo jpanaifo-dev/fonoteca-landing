@@ -9,6 +9,55 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      families: {
+        Row: {
+          id: string
+          kingdom: string | null
+          phylum: string | null
+          class: string
+          order: string
+          name: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          kingdom?: string | null
+          phylum?: string | null
+          class: string
+          order: string
+          name: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          kingdom?: string | null
+          phylum?: string | null
+          class?: string
+          order?: string
+          name?: string
+          created_at?: string | null
+        }
+      }
+      genera: {
+        Row: {
+          id: string
+          family_id: string
+          name: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          family_id: string
+          name: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          family_id?: string
+          name?: string
+          created_at?: string | null
+        }
+      }
       locations: {
         Row: {
           id: string
@@ -85,6 +134,8 @@ export interface Database {
           iso: number | null
           focalLength: string | null
           created_at: string | null
+          tag: string | null
+          parent_multimedia_id: string | null
         }
         Insert: {
           id?: string
@@ -108,6 +159,8 @@ export interface Database {
           iso?: number | null
           focalLength?: string | null
           created_at?: string | null
+          tag?: string | null
+          parent_multimedia_id?: string | null
         }
         Update: {
           id?: string
@@ -131,6 +184,8 @@ export interface Database {
           iso?: number | null
           focalLength?: string | null
           created_at?: string | null
+          tag?: string | null
+          parent_multimedia_id?: string | null
         }
       }
       occurrences: {
@@ -207,12 +262,6 @@ export interface Database {
           taxonID: string | null
           scientificName: string
           acceptedNameUsage: string | null
-          kingdom: string | null
-          phylum: string | null
-          class: string | null
-          order: string | null
-          family: string | null
-          genus: string | null
           specificEpithet: string | null
           infraspecificEpithet: string | null
           taxonRank: string | null
@@ -221,18 +270,13 @@ export interface Database {
           nomenclaturalCode: string | null
           created_at: string | null
           updated_at: string | null
+          genus_id: string | null
         }
         Insert: {
           id?: string
           taxonID?: string | null
           scientificName: string
           acceptedNameUsage?: string | null
-          kingdom?: string | null
-          phylum?: string | null
-          class?: string | null
-          order?: string | null
-          family?: string | null
-          genus?: string | null
           specificEpithet?: string | null
           infraspecificEpithet?: string | null
           taxonRank?: string | null
@@ -241,18 +285,13 @@ export interface Database {
           nomenclaturalCode?: string | null
           created_at?: string | null
           updated_at?: string | null
+          genus_id?: string | null
         }
         Update: {
           id?: string
           taxonID?: string | null
           scientificName?: string
           acceptedNameUsage?: string | null
-          kingdom?: string | null
-          phylum?: string | null
-          class?: string | null
-          order?: string | null
-          family?: string | null
-          genus?: string | null
           specificEpithet?: string | null
           infraspecificEpithet?: string | null
           taxonRank?: string | null
@@ -261,6 +300,7 @@ export interface Database {
           nomenclaturalCode?: string | null
           created_at?: string | null
           updated_at?: string | null
+          genus_id?: string | null
         }
       }
     }
@@ -280,6 +320,14 @@ export interface Database {
 }
 
 // Helper types for easier imports
+export type Family = Database['public']['Tables']['families']['Row']
+export type FamilyInsert = Database['public']['Tables']['families']['Insert']
+export type FamilyUpdate = Database['public']['Tables']['families']['Update']
+
+export type Genus = Database['public']['Tables']['genera']['Row']
+export type GenusInsert = Database['public']['Tables']['genera']['Insert']
+export type GenusUpdate = Database['public']['Tables']['genera']['Update']
+
 export type Location = Database['public']['Tables']['locations']['Row']
 export type LocationInsert = Database['public']['Tables']['locations']['Insert']
 export type LocationUpdate = Database['public']['Tables']['locations']['Update']
@@ -295,3 +343,4 @@ export type OccurrenceUpdate = Database['public']['Tables']['occurrences']['Upda
 export type Taxon = Database['public']['Tables']['taxa']['Row']
 export type TaxonInsert = Database['public']['Tables']['taxa']['Insert']
 export type TaxonUpdate = Database['public']['Tables']['taxa']['Update']
+

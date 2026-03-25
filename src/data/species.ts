@@ -29,6 +29,8 @@ export interface Species {
     galleryImages: string[];
     audios: SpeciesAudio[]; // List of audios
     location: string;
+    genus?: string;
+    family?: string;
 }
 
 import { supabase } from "../lib/supabase";
@@ -41,7 +43,13 @@ export async function getAllSpecies(): Promise<Species[]> {
             occurrenceID,
             taxon_id,
             location_id,
-            taxa (*),
+            taxa (
+                *,
+                genus:genera (
+                    *,
+                    family:families (*)
+                )
+            ),
             locations (*),
             multimedia (*)
         `);
@@ -90,9 +98,17 @@ export async function getAllSpecies(): Promise<Species[]> {
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
             .map((m: any) => {
-                const spectrogram = media.find(
+                let spectrogram = media.find(
                     (other: any) => other.parent_multimedia_id === m.id && isImage(other)
                 );
+
+                // Heuristic fallback: Use the last image if no explicit parent_multimedia_id match
+                if (!spectrogram) {
+                    const allImages = media.filter(isImage);
+                    if (allImages.length > 1) {
+                        spectrogram = allImages[allImages.length - 1];
+                    }
+                }
 
                 return {
                     title: m.title || "Audio",
@@ -103,7 +119,7 @@ export async function getAllSpecies(): Promise<Species[]> {
             });
 
         // Backend Filter: skip occurrences that have NO audio recordings
-        if (audios.length === 0) return null;
+        // if (audios.length === 0) return null;
 
         const classToCategory: Record<string, SpeciesCategory> = {
             Amphibia: "Amphibians",
@@ -113,7 +129,8 @@ export async function getAllSpecies(): Promise<Species[]> {
             Reptilia: "Reptiles",
         };
 
-        const category = classToCategory[taxon?.class || ""] || "Amphibians";
+        const class_name = taxon?.genus?.family?.class || "";
+        const category = classToCategory[class_name] || "Amphibians";
         const commonName = taxon?.vernacularName || "Sin Nombre";
 
         return {
@@ -137,6 +154,8 @@ export async function getAllSpecies(): Promise<Species[]> {
             galleryImages: galleryImages,
             audios: audios,
             location: location?.locality || "Unknown Location",
+            genus: taxon?.genus?.name,
+            family: taxon?.genus?.family?.name,
         };
     }).filter(Boolean) as unknown as Species[];
 }

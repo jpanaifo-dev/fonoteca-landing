@@ -11,6 +11,8 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const [selectedLocation, setSelectedLocation] = useState<string>('All');
+    const [selectedFamily, setSelectedFamily] = useState<string>('All');
+    const [selectedGenus, setSelectedGenus] = useState<string>('All');
     const [onlyWithAudio, setOnlyWithAudio] = useState(false); // New Filter State
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [showFilters, setShowFilters] = useState(false);
@@ -25,11 +27,15 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     useEffect(() => {
         const handleLocationChange = () => {
             const params = new URLSearchParams(window.location.search);
-            const p = parseInt(params.get('page') || '1');
-            setPage(p);
+            setSearchTerm(params.get('q') || '');
+            setSelectedCategory(params.get('category') || 'All');
+            setSelectedLocation(params.get('location') || 'All');
+            setSelectedFamily(params.get('family') || 'All');
+            setSelectedGenus(params.get('genus') || 'All');
+            setOnlyWithAudio(params.get('audio') === 'true');
+            setPage(parseInt(params.get('page') || '1'));
         };
         
-        // Listen to pushState/popstate
         window.addEventListener('popstate', handleLocationChange);
         handleLocationChange(); // Initial load
 
@@ -38,20 +44,19 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
-        const params = new URLSearchParams(window.location.search);
-        if (newPage === 1) {
-            params.delete('page');
-        } else {
-            params.set('page', newPage.toString());
-        }
-        const query = params.toString() ? `?${params.toString()}` : '';
-        const newUrl = `${window.location.pathname}${query}`;
-        window.history.pushState({ path: newUrl }, '', newUrl);
     };
 
     // Dynamic Lists for filters
     const categories = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.category)))], [allSpecies]);
     const locations = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.location)))], [allSpecies]);
+    
+    const families = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.family || 'Unknown').filter(Boolean)))], [allSpecies]);
+    const genera = useMemo(() => {
+        const matchingSpecies = selectedFamily === 'All' 
+            ? allSpecies 
+            : allSpecies.filter(s => s.family === selectedFamily);
+        return ['All', ...Array.from(new Set(matchingSpecies.map(s => s.genus || 'Unknown').filter(Boolean)))];
+    }, [allSpecies, selectedFamily]);
 
     const filteredSpecies = useMemo(() => {
         return allSpecies.filter(s => {
@@ -61,11 +66,13 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
             const matchesCategory = selectedCategory === 'All' || s.category === selectedCategory;
             const matchesLocation = selectedLocation === 'All' || s.location === selectedLocation;
+            const matchesFamily = selectedFamily === 'All' || s.family === selectedFamily;
+            const matchesGenus = selectedGenus === 'All' || s.genus === selectedGenus;
             const matchesAudio = !onlyWithAudio || s.audios.length > 0;
 
-            return matchesSearch && matchesCategory && matchesLocation && matchesAudio;
+            return matchesSearch && matchesCategory && matchesLocation && matchesFamily && matchesGenus && matchesAudio;
         });
-    }, [allSpecies, searchTerm, selectedCategory, selectedLocation, onlyWithAudio]);
+    }, [allSpecies, searchTerm, selectedCategory, selectedLocation, selectedFamily, selectedGenus, onlyWithAudio]);
 
     const paginatedSpecies = useMemo(() => {
         return filteredSpecies.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
@@ -75,13 +82,29 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
     // Reset page to 1 on filter changes to avoid empty screens
     useEffect(() => {
+        const currentParams = new URLSearchParams(window.location.search);
+        
+        if (searchTerm) currentParams.set('q', searchTerm); else currentParams.delete('q');
+        if (selectedCategory !== 'All') currentParams.set('category', selectedCategory); else currentParams.delete('category');
+        if (selectedLocation !== 'All') currentParams.set('location', selectedLocation); else currentParams.delete('location');
+        if (selectedFamily !== 'All') currentParams.set('family', selectedFamily); else currentParams.delete('family');
+        if (selectedGenus !== 'All') currentParams.set('genus', selectedGenus); else currentParams.delete('genus');
+        if (onlyWithAudio) currentParams.set('audio', 'true'); else currentParams.delete('audio');
+        
+        if (page > 1) currentParams.set('page', page.toString()); else currentParams.delete('page');
+
+        const existingParams = new URLSearchParams(window.location.search).toString();
+        if (currentParams.toString() !== existingParams) {
+            const query = currentParams.toString() ? `?${currentParams.toString()}` : '';
+            const newUrl = `${window.location.pathname}${query}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        }
+    }, [searchTerm, selectedCategory, selectedLocation, selectedFamily, selectedGenus, onlyWithAudio, page]);
+
+    // Reset page to 1 if ANY FILTER changes to avoid empty screens
+    useEffect(() => {
         setPage(1);
-        const params = new URLSearchParams(window.location.search);
-        params.delete('page');
-        const query = params.toString() ? `?${params.toString()}` : '';
-        const newUrl = `${window.location.pathname}${query}`;
-        window.history.pushState({ path: newUrl }, '', newUrl);
-    }, [searchTerm, selectedCategory, selectedLocation, onlyWithAudio]);
+    }, [searchTerm, selectedCategory, selectedLocation, selectedFamily, selectedGenus, onlyWithAudio]);
 
     const playAudio = (species: Species) => {
         if (species.audios.length === 0) return;
@@ -127,6 +150,37 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                 </div>
 
                 <div className="space-y-6">
+                    {/* Family Filter */}
+                    <div>
+                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Familia</h3>
+                        <select
+                            value={selectedFamily}
+                            onChange={(e) => {
+                                setSelectedFamily(e.target.value);
+                                setSelectedGenus('All');
+                            }}
+                            className="w-full px-2 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#0c141d] text-gray-800 dark:text-gray-200 text-xs focus:ring-1 focus:ring-accent-green/50 hover:bg-white dark:hover:bg-gray-800 transition-all outline-none"
+                        >
+                            {families.map(f => (
+                                <option key={f} value={f} className="dark:bg-[#121b28]">{f === 'All' ? (lang === 'es' ? 'Todas' : 'All') : f}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Genus Filter */}
+                    <div>
+                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Género</h3>
+                        <select
+                            value={selectedGenus}
+                            onChange={(e) => setSelectedGenus(e.target.value)}
+                            className="w-full px-2 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#0c141d] text-gray-800 dark:text-gray-200 text-xs focus:ring-1 focus:ring-accent-green/50 hover:bg-white dark:hover:bg-gray-800 transition-all outline-none"
+                        >
+                            {genera.map(g => (
+                                <option key={g} value={g} className="dark:bg-[#121b28]">{g === 'All' ? (lang === 'es' ? 'Todos' : 'All') : g}</option>
+                            ))}
+                        </select>
+                    </div>
+
                     {/* Category Filter */}
                     <div>
                         <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Grupo</h3>
@@ -269,6 +323,11 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                                         src={coverImage}
                                                         alt={species.scientificName}
                                                         onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
+                                                        onError={(e) => {
+                                                            const target = e.target as HTMLImageElement;
+                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                            setLoadedImages(prev => ({ ...prev, [species.id]: true }));
+                                                        }}
                                                         className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
                                                         loading="lazy"
                                                     />
@@ -332,6 +391,11 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                                         src={coverImage} 
                                                         alt="" 
                                                         onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
+                                                        onError={(e) => {
+                                                            const target = e.target as HTMLImageElement;
+                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                            setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }));
+                                                        }}
                                                         className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`} 
                                                     />
                                                 </>
