@@ -56,15 +56,15 @@ export interface Species {
 
 import { supabase } from "../lib/supabase";
 
-export async function getAllSpecies(): Promise<Species[]> {
-    const { data: occurrences, error } = await supabase
+export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
+    let query = supabase
         .from("occurrences")
         .select(`
             id,
             occurrenceID,
             taxon_id,
             location_id,
-            taxa (
+            taxa${searchTerm ? '!inner' : ''} (
                 *,
                 genus:genera (
                     *,
@@ -75,10 +75,11 @@ export async function getAllSpecies(): Promise<Species[]> {
             multimedia (*)
         `);
 
-    if (error) {
-        console.error("Error fetching species from Supabase:", error);
-        return [];
+    if (searchTerm) {
+        query = query.or(`scientificName.ilike.%${searchTerm}%,vernacularName.ilike.%${searchTerm}%`, { foreignTable: 'taxa' });
     }
+
+    const { data: occurrences, error } = await query;
 
     if (error) {
         console.error("Error fetching species from Supabase:", error);

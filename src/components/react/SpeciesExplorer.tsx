@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Species } from '../../data/species';
+import { getAllSpecies } from '../../data/species';
 import { useSpeciesStore } from '../../store/useSpeciesStore';
 
 
@@ -115,6 +116,40 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
         setIsHydrated(true);
     }, []);
 
+    // DB Search integration
+    const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+    const [dbSpecies, setDbSpecies] = useState<Species[] | null>(null);
+    const [isSearchingDB, setIsSearchingDB] = useState(false);
+
+    // Debounce the searchTerm
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+        }, 500); // 500ms boundary/debounce
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
+
+    // Query DB when debounced searchTerm changes
+    useEffect(() => {
+        const fetchSearch = async () => {
+            if (!debouncedSearch || debouncedSearch.trim() === '') {
+                setDbSpecies(null);
+                setIsSearchingDB(false);
+                return;
+            }
+            setIsSearchingDB(true);
+            try {
+                const results = await getAllSpecies(debouncedSearch.trim());
+                setDbSpecies(results);
+            } catch (err) {
+                console.error("DB Search failed:", err);
+            } finally {
+                setIsSearchingDB(false);
+            }
+        };
+        fetchSearch();
+    }, [debouncedSearch]);
+
     const ITEMS_PER_PAGE = 20;
 
     const handlePageChange = (newPage: number) => {
@@ -152,10 +187,15 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     }, [allSpecies, selectedClass, selectedOrder, selectedFamily]);
 
     const filteredSpecies = useMemo(() => {
-        return allSpecies.filter(s => {
-            const matchesSearch = s.scientificName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                s.commonName_es.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                s.id.toLowerCase().includes(searchTerm.toLowerCase());
+        const baseData = dbSpecies || allSpecies;
+        return baseData.filter(s => {
+            // Local text search is used temporarily while DB is debouncing/fetching, 
+            // once dbSpecies is set, we can trust the baseData but we still apply local text safely.
+            const matchesSearch = dbSpecies 
+                ? true // trust the DB results entirely for the text part
+                : s.scientificName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  s.commonName_es.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                  s.id.toLowerCase().includes(searchTerm.toLowerCase());
 
             const matchesCategory = selectedCategory === 'All' || s.category === selectedCategory;
             const matchesLocation = selectedLocation === 'All' || s.location === selectedLocation;
@@ -167,7 +207,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
             return matchesSearch && matchesCategory && matchesLocation && matchesClass && matchesOrder && matchesFamily && matchesGenus && matchesAudio;
         });
-    }, [allSpecies, searchTerm, selectedCategory, selectedLocation, selectedClass, selectedOrder, selectedFamily, selectedGenus, onlyWithAudio]);
+    }, [dbSpecies, allSpecies, searchTerm, selectedCategory, selectedLocation, selectedClass, selectedOrder, selectedFamily, selectedGenus, onlyWithAudio]);
 
     const paginatedSpecies = useMemo(() => {
         return filteredSpecies.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
@@ -430,11 +470,16 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                             <input
                                 type="text"
                                 placeholder={lang === 'es' ? 'Buscar...' : 'Search...'}
-                                className="w-full pl-9 pr-4 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-accent-green text-sm transition-shadow"
+                                className="w-full pl-9 pr-10 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-accent-green text-sm transition-shadow"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-gray-400 absolute left-3 top-2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                            {isSearchingDB && (
+                                <div className="absolute right-3 top-2.5">
+                                    <div className="w-4 h-4 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            )}
                         </div>
                     </div>
 

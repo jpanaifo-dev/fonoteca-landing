@@ -98,3 +98,31 @@ TypeError: Cannot read properties of null (reading 'useRef')
 [2m19:48:26[22m [34m[types][39m Generated [2m10.13s[22m
 [2m19:48:27[22m [34m[vite][39m Re-optimizing dependencies because lockfile has changed
 [2m19:48:27[22m [34m[vite][39m Port 4322 is in use, trying another one...
+[2m00:12:45[22m [34m[vite][39m [32m.env.local changed, restarting server...[39m
+[2m00:12:45[22m Restarting...
+[2m00:12:45[22m [34m[vite][39m [32m.env.local changed, restarting server...[39m
+[2m00:12:45[22m [34m[vite][39m [32m.env.local changed, restarting server...[39m
+[2m00:12:45[22m Restarting...
+[2m00:12:45[22m [34m[vite][39m [32m.env.local changed, restarting server...[39m
+[2m00:12:45[22m Restarting...
+[2m00:12:47[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m00:12:51[22m [34m[content][39m Syncing content
+[2m00:12:51[22m [34m[content][39m Astro config changed
+[2m00:12:51[22m [34m[content][39m Clearing content store
+[2m00:12:51[22m [34m[content][39m Synced content
+[2m00:12:51[22m [34m[types][39m Generated [2m4.64s[22m
+[2m00:12:51[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m00:12:51[22m [34m[vite][39m 
+[2m00:12:51[22m [34m[vite][39m   [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m4322[22m/[39m
+[2m00:12:52[22m [34m[content][39m Syncing content
+[2m00:12:52[22m [34m[content][39m Astro config changed
+[2m00:12:52[22m [34m[content][39m Clearing content store
+[2m00:12:52[22m [34m[content][39m Syncing content
+[2m00:12:52[22m [34m[content][39m Synced content
+[2m00:12:52[22m [34m[types][39m Generated [2m4.39s[22m
+[2m00:12:52[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[2m00:12:52[22m [34m[content][39m Synced content
+[2m00:12:52[22m [34m[types][39m Generated [2m5.30s[22m
+[2m00:12:52[22m [34m[vite][39m Port 4322 is in use, trying another one...
+[2m00:12:52[22m [34m[vite][39m 
+[2m00:12:52[22m [34m[vite][39m   [32m➜[39m  [1mLocal[22m:   [36mhttp://127.0.0.1:[1m4323[22m/[39m
