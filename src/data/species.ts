@@ -69,16 +69,8 @@ export async function getAllSpecies(): Promise<Species[]> {
         const location = occ.locations;
         const media = occ.multimedia || [];
 
-        const isImage = (m: any) => {
-            if (!m.identifier) return false;
-            const typeMatch = m.type && (
-                m.type.toLowerCase().includes('image') || 
-                m.type.toLowerCase().includes('still')
-            );
-            return typeMatch;
-        };
-        
-        const isAudio = (m: any) => m.type && (m.type.toLowerCase().includes('sound') || m.type.toLowerCase().includes('audio'));
+        const isImage = (m: any) => m.type === 'Still' || (m.type && m.type.toLowerCase().includes('image'));
+        const isAudio = (m: any) => m.type === 'Sound' || (m.type && m.type.toLowerCase().includes('sound'));
 
         const formatMediaUrl = (identifier: string) => {
             if (!identifier) return "";
@@ -99,10 +91,10 @@ export async function getAllSpecies(): Promise<Species[]> {
             .filter(isAudio)
             .map((m: any) => {
                 let spectrogram = media.find(
-                    (other: any) => other.parent_multimedia_id === m.id && isImage(other)
+                    (other: any) => (other.parent_multimedia_id === m.id || other.tag === 'spectrogram') && isImage(other)
                 );
 
-                // Heuristic fallback: Use the last image if no explicit parent_multimedia_id match
+                // Heuristic fallback: Use the last image if no explicit match
                 if (!spectrogram) {
                     const allImages = media.filter(isImage);
                     if (allImages.length > 1) {

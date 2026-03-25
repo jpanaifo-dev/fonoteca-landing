@@ -168,6 +168,66 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                     </button>
                 )}
 
+                {/* Active Filters Summary (Chips) */}
+                {(selectedCategory !== 'All' || selectedLocation !== 'All' || selectedFamily !== 'All' || selectedGenus !== 'All' || onlyWithAudio || searchTerm) && (
+                    <div className="mb-4 pb-4 border-b border-gray-50 dark:border-gray-800">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Filtros Activos</span>
+                            <button 
+                                onClick={() => {
+                                    setSearchTerm('');
+                                    setSelectedCategory('All');
+                                    setSelectedLocation('All');
+                                    setSelectedFamily('All');
+                                    setSelectedGenus('All');
+                                    setOnlyWithAudio(false);
+                                }} 
+                                className="text-[10px] text-accent-green hover:underline cursor-pointer"
+                            >
+                                Limpiar
+                            </button>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                            {searchTerm && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-md text-[10px] font-medium border border-gray-200/50 dark:border-gray-700">
+                                    <span className="truncate max-w-[80px]">"{searchTerm}"</span>
+                                    <button onClick={() => setSearchTerm('')} className="text-gray-400 hover:text-red-500 transition-colors">✖</button>
+                                </div>
+                            )}
+                            {selectedCategory !== 'All' && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-md text-[10px] font-medium border border-accent-green/20">
+                                    <span>{categoryTitles[selectedCategory] || selectedCategory}</span>
+                                    <button onClick={() => setSelectedCategory('All')} className="hover:text-red-500 transition-colors">✖</button>
+                                </div>
+                            )}
+                            {selectedLocation !== 'All' && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-md text-[10px] font-medium border border-accent-green/20">
+                                    <span className="truncate max-w-[80px]">{selectedLocation}</span>
+                                    <button onClick={() => setSelectedLocation('All')} className="hover:text-red-500 transition-colors">✖</button>
+                                </div>
+                            )}
+                            {selectedFamily !== 'All' && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-md text-[10px] font-medium border border-accent-green/20">
+                                    <span className="truncate max-w-[80px]">{selectedFamily}</span>
+                                    <button onClick={() => { setSelectedFamily('All'); setSelectedGenus('All'); }} className="hover:text-red-500 transition-colors">✖</button>
+                                </div>
+                            )}
+                            {selectedGenus !== 'All' && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-md text-[10px] font-medium border border-accent-green/20">
+                                    <span className="truncate max-w-[80px]">{selectedGenus}</span>
+                                    <button onClick={() => setSelectedGenus('All')} className="hover:text-red-500 transition-colors">✖</button>
+                                </div>
+                            )}
+                            {onlyWithAudio && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-md text-[10px] font-medium border border-accent-green/20">
+                                    <span>Con Audio</span>
+                                    <button onClick={() => setOnlyWithAudio(false)} className="hover:text-red-500 transition-colors">✖</button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 <div className="space-y-6">
                     {/* Family Filter */}
                     <div>
@@ -325,23 +385,33 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         className="bg-white dark:bg-[#121b28] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden group hover:shadow-lg hover:border-accent-green/30 transition-all duration-300 flex flex-col"
                                     >
                                         <div className="aspect-[4/3] overflow-hidden relative bg-gray-100 dark:bg-gray-800">
-                                            {!loadedImages[species.id] && (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="w-5 h-5 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
-                                                </div>
+                                            {coverImage.includes('docs.google.com') ? (
+                                                <iframe
+                                                    src={`https://drive.google.com/file/d/${coverImage.match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`}
+                                                    className="w-full h-full border-0 pointer-events-none"
+                                                    scrolling="no"
+                                                />
+                                            ) : (
+                                                <>
+                                                    {!loadedImages[species.id] && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <div className="w-5 h-5 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                                        </div>
+                                                    )}
+                                                    <img
+                                                        src={coverImage}
+                                                        alt={species.scientificName}
+                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
+                                                        onError={(e) => {
+                                                            const target = e.target as HTMLImageElement;
+                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                            setLoadedImages(prev => ({ ...prev, [species.id]: true }));
+                                                        }}
+                                                        className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
+                                                        loading="lazy"
+                                                    />
+                                                </>
                                             )}
-                                            <img
-                                                src={coverImage}
-                                                alt={species.scientificName}
-                                                onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
-                                                onError={(e) => {
-                                                    const target = e.target as HTMLImageElement;
-                                                    target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
-                                                    setLoadedImages(prev => ({ ...prev, [species.id]: true }));
-                                                }}
-                                                className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
-                                                loading="lazy"
-                                            />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                                                 <button
                                                     onClick={() => playAudio(species)}
@@ -383,22 +453,32 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                         className="flex items-center gap-4 bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 hover:shadow-md transition-shadow group flex-wrap md:flex-nowrap"
                                     >
                                         <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
-                                            {!loadedImages['list-' + species.id] && (
-                                                <div className="absolute inset-0 flex items-center justify-center">
-                                                    <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
-                                                </div>
+                                            {coverImage.includes('docs.google.com') ? (
+                                                <iframe
+                                                    src={`https://drive.google.com/file/d/${coverImage.match(/id=([a-zA-Z0-9_-]+)/)?.[1] || ""}/preview`}
+                                                    className="w-full h-full border-0 pointer-events-none"
+                                                    scrolling="no"
+                                                />
+                                            ) : (
+                                                <>
+                                                    {!loadedImages['list-' + species.id] && (
+                                                        <div className="absolute inset-0 flex items-center justify-center">
+                                                            <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                                                        </div>
+                                                    )}
+                                                    <img
+                                                        src={coverImage}
+                                                        alt=""
+                                                        onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
+                                                        onError={(e) => {
+                                                            const target = e.target as HTMLImageElement;
+                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                            setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }));
+                                                        }}
+                                                        className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`}
+                                                    />
+                                                </>
                                             )}
-                                            <img
-                                                src={coverImage}
-                                                alt=""
-                                                onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
-                                                onError={(e) => {
-                                                    const target = e.target as HTMLImageElement;
-                                                    target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
-                                                    setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }));
-                                                }}
-                                                className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`}
-                                            />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="font-bold text-gray-900 dark:text-white text-sm truncate">{species.commonName_es}</h4>
