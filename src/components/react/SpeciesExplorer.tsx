@@ -55,6 +55,42 @@ const FilterListBox: React.FC<FilterListBoxProps> = ({ title, items, value, onCh
     );
 };
 
+interface CollapsibleSectionProps {
+    title: string;
+    children: React.ReactNode;
+}
+
+const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ title, children }) => {
+    const [isOpen, setIsOpen] = useState(true);
+    return (
+        <div className="border border-gray-100 dark:border-gray-800 rounded-xl bg-gray-50/10 dark:bg-[#0c141d]/10 overflow-hidden">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full px-4 py-2 flex items-center justify-between text-left text-[11px] font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400 bg-gray-50/50 dark:bg-gray-800/20 hover:bg-gray-100/30 dark:hover:bg-gray-800/40 transition-colors"
+            >
+                <span>{title}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-3.5 h-3.5 transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+            </button>
+            <AnimatePresence initial={false}>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                    >
+                        <div className="p-3 space-y-4">
+                            {children}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
+
 export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, lang }) => {
     const {
         searchTerm, setSearchTerm,
@@ -218,7 +254,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
             )}
 
             {/* Sidebar Filters */}
-            <aside className={`fixed lg:sticky lg:top-24 z-30 bg-white dark:bg-[#121b28] rounded-r-2xl lg:rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 h-screen lg:h-fit overflow-y-auto transform transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'w-0 lg:w-0 p-0 overflow-hidden opacity-0 border-0' : 'w-72 lg:w-[260px] p-5'} ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+            <aside className={`fixed lg:sticky lg:top-24 z-30 bg-white dark:bg-[#121b28] rounded-r-2xl lg:rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 h-screen lg:h-fit overflow-y-auto transform transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'w-0 lg:w-0 p-0 overflow-hidden opacity-0 border-0' : 'w-72 lg:w-[260px] p-4'} ${showFilters ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
                 {/* Collapse toggle for desktop */}
                 <div className="flex items-center justify-between mb-4 lg:hidden">
                     <h2 className="font-bold text-sm">Filtros</h2>
@@ -308,84 +344,52 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                     </div>
                 )}
 
-                <div className="space-y-6">
-                    {/* Class Filter */}
-                    <FilterListBox
-                        title="Clase"
-                        items={classes}
-                        value={selectedClass}
-                        onChange={setSelectedClass}
-                        lang={lang}
-                    />
-
-                    {/* Order Filter */}
-                    <FilterListBox
-                        title="Orden"
-                        items={orders}
-                        value={selectedOrder}
-                        onChange={setSelectedOrder}
-                        lang={lang}
-                    />
-
-                    {/* Family Filter */}
-                    <FilterListBox
-                        title="Familia"
-                        items={families}
-                        value={selectedFamily}
-                        onChange={setSelectedFamily}
-                        lang={lang}
-                    />
-
-                    {/* Genus Filter */}
-                    <FilterListBox
-                        title="Género"
-                        items={genera}
-                        value={selectedGenus}
-                        onChange={setSelectedGenus}
-                        lang={lang}
-                    />
-
-
-
-                    {/* Category Filter */}
-                    <div>
-                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Grupo</h3>
-                        <div className="space-y-1 flex flex-col">
-                            {categories.map(cat => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setSelectedCategory(cat)}
-                                    className={`px-3 py-1.5 rounded-xl text-xs font-light text-left transition-all ${selectedCategory === cat
-                                        ? 'bg-accent-green text-white font-normal shadow-sm shadow-accent-green/10'
-                                        : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
-                                >
-                                    {cat === 'All' ? (lang === 'es' ? 'Todas' : 'All') : (categoryTitles[cat] || cat)}
-                                </button>
-                            ))}
+                <div className="space-y-4">
+                    {/* Taxonomía */}
+                    <CollapsibleSection title={lang === 'es' ? 'Taxonomía' : 'Taxonomy'}>
+                        <FilterListBox title="Clase" items={classes} value={selectedClass} onChange={setSelectedClass} lang={lang} />
+                        <FilterListBox title="Orden" items={orders} value={selectedOrder} onChange={setSelectedOrder} lang={lang} />
+                        <FilterListBox title="Familia" items={families} value={selectedFamily} onChange={setSelectedFamily} lang={lang} />
+                        <FilterListBox title="Género" items={genera} value={selectedGenus} onChange={setSelectedGenus} lang={lang} />
+                        <div>
+                            <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Grupo</h3>
+                            <div className="space-y-1 flex flex-col">
+                                {categories.map(cat => (
+                                    <button
+                                        key={cat}
+                                        onClick={() => setSelectedCategory(cat)}
+                                        className={`px-3 py-1.5 rounded-xl text-xs font-light text-left transition-all ${selectedCategory === cat
+                                            ? 'bg-accent-green text-white font-normal shadow-sm shadow-accent-green/10'
+                                            : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
+                                    >
+                                        {cat === 'All' ? (lang === 'es' ? 'Todas' : 'All') : (categoryTitles[cat] || cat)}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    </CollapsibleSection>
 
-                    {/* Location Filter */}
-                    <div>
-                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Ubicación</h3>
-                        <div className="space-y-1 flex flex-col">
-                            {locations.map(loc => (
-                                <button
-                                    key={loc}
-                                    onClick={() => setSelectedLocation(loc)}
-                                    className={`px-3 py-1.5 rounded-xl text-xs font-light text-left transition-all ${selectedLocation === loc
-                                        ? 'bg-accent-green text-white font-normal shadow-sm shadow-accent-green/10'
-                                        : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
-                                >
-                                    {loc === 'All' ? (lang === 'es' ? 'Todas' : 'All') : loc}
-                                </button>
-                            ))}
+                    {/* Localidad */}
+                    <CollapsibleSection title={lang === 'es' ? 'Localidad' : 'Location'}>
+                        <div>
+                            <div className="space-y-1 flex flex-col">
+                                {locations.map(loc => (
+                                    <button
+                                        key={loc}
+                                        onClick={() => setSelectedLocation(loc)}
+                                        className={`px-3 py-1.5 rounded-xl text-xs font-light text-left transition-all ${selectedLocation === loc
+                                            ? 'bg-accent-green text-white font-normal shadow-sm shadow-accent-green/10'
+                                            : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
+                                    >
+                                        {loc === 'All' ? (lang === 'es' ? 'Todas' : 'All') : loc}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    </CollapsibleSection>
 
-                    {/* Content Filter */}
-                    <div>
-                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Contenido</h3>
+                    {/* Recursos */}
+                    <CollapsibleSection title={lang === 'es' ? 'Recursos' : 'Resources'}>
                         <button
                             onClick={() => setOnlyWithAudio(!onlyWithAudio)}
                             className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-light transition-all ${onlyWithAudio ? 'bg-accent-green text-white font-normal shadow-sm' : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'}`}
@@ -395,7 +399,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                 {onlyWithAudio && <svg xmlns="http://www.w3.org/2000/svg" className="h-2 w-2 text-accent-green" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>}
                             </div>
                         </button>
-                    </div>
+                    </CollapsibleSection>
                 </div>
             </aside>
 
