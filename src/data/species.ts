@@ -33,6 +33,25 @@ export interface Species {
     family?: string;
     order?: string;
     class_name?: string;
+    databaseDetails?: {
+        occurrenceID?: string;
+        basisOfRecord?: string;
+        institutionCode?: string;
+        collectionCode?: string;
+        catalogNumber?: string;
+        eventDate?: string;
+        eventTime?: string;
+        lifeStage?: string;
+        sex?: string;
+        identifiedBy?: string;
+        continent?: string;
+        country?: string;
+        stateProvince?: string;
+        locality?: string;
+        decimalLatitude?: number;
+        decimalLongitude?: number;
+        elevation?: number;
+    };
 }
 
 import { supabase } from "../lib/supabase";
@@ -152,6 +171,25 @@ export async function getAllSpecies(): Promise<Species[]> {
             family: taxon?.genus?.family?.name,
             order: taxon?.genus?.family?.order,
             class_name: taxon?.genus?.family?.class,
+            databaseDetails: {
+                occurrenceID: occ?.occurrenceID,
+                basisOfRecord: occ?.basisOfRecord,
+                institutionCode: occ?.institutionCode,
+                collectionCode: occ?.collectionCode,
+                catalogNumber: occ?.catalogNumber,
+                eventDate: occ?.eventDate,
+                eventTime: occ?.eventTime,
+                lifeStage: occ?.lifeStage,
+                sex: occ?.sex,
+                identifiedBy: occ?.identifiedBy,
+                continent: location?.continent,
+                country: location?.country,
+                stateProvince: location?.stateProvince,
+                locality: location?.locality,
+                decimalLatitude: location?.decimalLatitude,
+                decimalLongitude: location?.decimalLongitude,
+                elevation: location?.elevation,
+            }
         };
     }).filter(Boolean) as unknown as Species[];
 }
