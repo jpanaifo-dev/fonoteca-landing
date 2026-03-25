@@ -167,7 +167,7 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
             if (identifier.includes('drive.google.com/file/d/')) {
                 const idMatch = identifier.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
                 if (idMatch && idMatch[1]) {
-                    return `https://docs.google.com/uc?export=download&id=${idMatch[1]}`;
+                    return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
                 }
             }
             return identifier;

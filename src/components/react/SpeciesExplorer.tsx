@@ -611,6 +611,44 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
     );
 };
 
+// Component to handle both regular images and Google Drive iframes
+const MediaViewer: React.FC<{ 
+    src: string; 
+    alt: string; 
+    className: string; 
+    onLoaded: () => void; 
+    isLoaded: boolean;
+}> = ({ src, alt, className, onLoaded, isLoaded }) => {
+    const isDrive = src.includes('drive.google.com/file/d/') && src.includes('/preview');
+    
+    if (isDrive) {
+        return (
+            <div className="relative w-full h-full">
+                <iframe
+                    src={src}
+                    className={`${className} border-0 pointer-events-none transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    allow="autoplay"
+                    title={alt}
+                    onLoad={onLoaded}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                />
+            </div>
+        );
+    }
+
+    return (
+        <img
+            src={src}
+            alt={alt}
+            className={`${className} transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={onLoaded}
+            onError={(e) => {
+                (e.target as HTMLImageElement).src = '/images/logo-mini.webp';
+            }}
+        />
+    );
+};
+
 // Extracted Species Card for better performance and readability
 const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'grid' | 'list'; onPlay: () => void; lang: string }> = ({ species, coverImage, viewMode, onPlay, lang }) => {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -629,15 +667,13 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
                 layout
                 className="bg-white dark:bg-[#121b28] p-3 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:border-accent-green/30 transition-shadow group"
             >
-                <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-900 border border-gray-50 dark:border-gray-800">
-                    <img 
-                        src={coverImage} 
-                        alt="" 
-                        className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
-                        onLoad={() => setIsLoaded(true)}
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/images/logo-mini.webp';
-                        }}
+                <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-900 border border-gray-50 dark:border-gray-800 relative">
+                    <MediaViewer
+                        src={coverImage}
+                        alt=""
+                        className="w-full h-full object-cover"
+                        isLoaded={isLoaded}
+                        onLoaded={() => setIsLoaded(true)}
                     />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -670,15 +706,12 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
                          <RefreshCw className="w-6 h-6 text-gray-200 animate-spin" />
                     </div>
                 )}
-                <img 
-                    src={coverImage} 
+                <MediaViewer
+                    src={coverImage}
                     alt={species.scientificName}
-                    draggable={false}
-                    className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-105 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-                    onLoad={() => setIsLoaded(true)}
-                    onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/images/logo-mini.webp';
-                    }}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    isLoaded={isLoaded}
+                    onLoaded={() => setIsLoaded(true)}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
                     {species.audios.length > 0 && (

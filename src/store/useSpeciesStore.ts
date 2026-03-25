@@ -33,7 +33,7 @@ export const useSpeciesStore = create<SpeciesState>()(
             selectedOrder: 'All',
             selectedFamily: 'All',
             selectedGenus: 'All',
-            onlyWithAudio: true,
+            onlyWithAudio: false,
             viewMode: 'grid',
             isSidebarCollapsed: false,
             page: 1,
