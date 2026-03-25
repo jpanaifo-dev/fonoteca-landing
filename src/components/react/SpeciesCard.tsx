@@ -19,8 +19,12 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ id, name, scientific, 
             {/* Image Container */}
             <div className="h-full w-full relative">
                 <img
-                    src={image}
+                    src={image || '/images/logo-mini.webp'}
                     alt={name}
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/images/logo-mini.webp';
+                    }}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 {/* Gradient Overlay */}

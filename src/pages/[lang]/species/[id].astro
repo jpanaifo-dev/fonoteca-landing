@@ -455,7 +455,7 @@ const galleryImages =
                     title: audio.title,
                     artist: commonName,
                     url: audio.url,
-                    image: species.mainImage, // Using main image as fallback, but spectrogram is primary for thumbnail
+                    image: species.mainImage || '/images/logo-mini.webp', // Using main image as fallback, but spectrogram is primary for thumbnail
                     spectrogram: audio.spectrogramImage,
                 }));
 

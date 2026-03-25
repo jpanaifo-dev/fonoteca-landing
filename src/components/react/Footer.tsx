@@ -13,12 +13,15 @@ export const Footer: React.FC<FooterProps> = ({ content, logoSrc }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
                     {/* Brand */}
                     <div className="col-span-1 lg:col-span-1">
-                        <a href="#" className="flex items-center gap-3 mb-6">
+                        <a href="#" className="group flex gap-3 items-center mb-6 transition-colors duration-300 text-white">
                             <img
                                 src={logoSrc}
                                 alt="Logo IIAP"
-                                className="h-12 w-auto object-contain brightness-0 invert"
+                                className="h-12 w-auto object-contain transition-transform group-hover:scale-105"
                             />
+                            <span className="text-sm md:text-base font-medium max-w-[260px] leading-tight">
+                                Instituto de Investigaciones de la Amazonía Peruana
+                            </span>
                         </a>
                         <p className="text-gray-400 text-sm leading-relaxed mb-6">
                             {content.description}

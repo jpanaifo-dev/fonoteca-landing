@@ -12,8 +12,12 @@ export const PageBanner: React.FC<PageBannerProps> = ({ title, subtitle, image }
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <img
-                    src={image}
+                    src={image || '/images/logo-mini.webp'}
                     alt={title}
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/images/logo-mini.webp';
+                    }}
                     className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-primary-dark/60 mix-blend-multiply"></div>
