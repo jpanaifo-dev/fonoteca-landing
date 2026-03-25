@@ -27,11 +27,15 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     useEffect(() => {
         const handleLocationChange = () => {
             const params = new URLSearchParams(window.location.search);
-            const p = parseInt(params.get('page') || '1');
-            setPage(p);
+            setSearchTerm(params.get('q') || '');
+            setSelectedCategory(params.get('category') || 'All');
+            setSelectedLocation(params.get('location') || 'All');
+            setSelectedFamily(params.get('family') || 'All');
+            setSelectedGenus(params.get('genus') || 'All');
+            setOnlyWithAudio(params.get('audio') === 'true');
+            setPage(parseInt(params.get('page') || '1'));
         };
         
-        // Listen to pushState/popstate
         window.addEventListener('popstate', handleLocationChange);
         handleLocationChange(); // Initial load
 
@@ -40,15 +44,6 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
-        const params = new URLSearchParams(window.location.search);
-        if (newPage === 1) {
-            params.delete('page');
-        } else {
-            params.set('page', newPage.toString());
-        }
-        const query = params.toString() ? `?${params.toString()}` : '';
-        const newUrl = `${window.location.pathname}${query}`;
-        window.history.pushState({ path: newUrl }, '', newUrl);
     };
 
     // Dynamic Lists for filters
@@ -87,12 +82,28 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
     // Reset page to 1 on filter changes to avoid empty screens
     useEffect(() => {
+        const currentParams = new URLSearchParams(window.location.search);
+        
+        if (searchTerm) currentParams.set('q', searchTerm); else currentParams.delete('q');
+        if (selectedCategory !== 'All') currentParams.set('category', selectedCategory); else currentParams.delete('category');
+        if (selectedLocation !== 'All') currentParams.set('location', selectedLocation); else currentParams.delete('location');
+        if (selectedFamily !== 'All') currentParams.set('family', selectedFamily); else currentParams.delete('family');
+        if (selectedGenus !== 'All') currentParams.set('genus', selectedGenus); else currentParams.delete('genus');
+        if (onlyWithAudio) currentParams.set('audio', 'true'); else currentParams.delete('audio');
+        
+        if (page > 1) currentParams.set('page', page.toString()); else currentParams.delete('page');
+
+        const existingParams = new URLSearchParams(window.location.search).toString();
+        if (currentParams.toString() !== existingParams) {
+            const query = currentParams.toString() ? `?${currentParams.toString()}` : '';
+            const newUrl = `${window.location.pathname}${query}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        }
+    }, [searchTerm, selectedCategory, selectedLocation, selectedFamily, selectedGenus, onlyWithAudio, page]);
+
+    // Reset page to 1 if ANY FILTER changes to avoid empty screens
+    useEffect(() => {
         setPage(1);
-        const params = new URLSearchParams(window.location.search);
-        params.delete('page');
-        const query = params.toString() ? `?${params.toString()}` : '';
-        const newUrl = `${window.location.pathname}${query}`;
-        window.history.pushState({ path: newUrl }, '', newUrl);
     }, [searchTerm, selectedCategory, selectedLocation, selectedFamily, selectedGenus, onlyWithAudio]);
 
     const playAudio = (species: Species) => {
@@ -312,6 +323,11 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                                         src={coverImage}
                                                         alt={species.scientificName}
                                                         onLoad={() => setLoadedImages(prev => ({ ...prev, [species.id]: true }))}
+                                                        onError={(e) => {
+                                                            const target = e.target as HTMLImageElement;
+                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                            setLoadedImages(prev => ({ ...prev, [species.id]: true }));
+                                                        }}
                                                         className={`object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 ${loadedImages[species.id] ? 'opacity-100' : 'opacity-0'}`}
                                                         loading="lazy"
                                                     />
@@ -375,6 +391,11 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                                         src={coverImage} 
                                                         alt="" 
                                                         onLoad={() => setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }))}
+                                                        onError={(e) => {
+                                                            const target = e.target as HTMLImageElement;
+                                                            target.src = 'https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png';
+                                                            setLoadedImages(prev => ({ ...prev, ['list-' + species.id]: true }));
+                                                        }}
                                                         className={`w-full h-full object-cover transition-opacity ${loadedImages['list-' + species.id] ? 'opacity-100' : 'opacity-0'}`} 
                                                     />
                                                 </>

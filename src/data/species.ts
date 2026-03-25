@@ -98,9 +98,17 @@ export async function getAllSpecies(): Promise<Species[]> {
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
             .map((m: any) => {
-                const spectrogram = media.find(
+                let spectrogram = media.find(
                     (other: any) => other.parent_multimedia_id === m.id && isImage(other)
                 );
+
+                // Heuristic fallback: Use the last image if no explicit parent_multimedia_id match
+                if (!spectrogram) {
+                    const allImages = media.filter(isImage);
+                    if (allImages.length > 1) {
+                        spectrogram = allImages[allImages.length - 1];
+                    }
+                }
 
                 return {
                     title: m.title || "Audio",
