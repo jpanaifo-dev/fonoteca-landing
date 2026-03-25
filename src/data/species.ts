@@ -55,9 +55,40 @@ export interface Species {
     };
 }
 
+export interface SpeciesFilterOptions {
+    searchTerm?: string;
+    location?: string;
+    className?: string;
+    order?: string;
+    family?: string;
+    genus?: string;
+    onlyWithAudio?: boolean;
+    page?: number;
+    limit?: number;
+}
+
 import { supabase } from "../lib/supabase";
 
-export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
+export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise<{ species: Species[], totalCount: number }> {
+    const {
+        searchTerm,
+        location,
+        className,
+        order,
+        family,
+        genus,
+        onlyWithAudio,
+        page = 1,
+        limit = 20
+    } = options;
+
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    // Base query for counting AND fetching
+    // To filter only with audio from backend, we use !inner join on multimedia when onlyWithAudio is true
+    const multimediaSelect = onlyWithAudio ? 'multimedia!inner(*)' : 'multimedia(*)';
+
     let query = supabase
         .from("occurrences")
         .select(`
@@ -65,31 +96,67 @@ export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
             occurrenceID,
             taxon_id,
             location_id,
-            taxa${searchTerm ? '!inner' : ''} (
-                *,
-                genus:genera (
-                    *,
-                    family:families (*)
+            taxa!inner (
+                scientificName,
+                vernacularName,
+                genus:genera!inner (
+                    name,
+                    family:families!inner (
+                        name,
+                        order,
+                        class
+                    )
                 )
             ),
-            locations (*),
-            multimedia (*)
-        `);
+            locations!inner (*),
+            ${multimediaSelect}
+        `, { count: 'exact' });
 
+    // 1. Search filter
     if (searchTerm) {
         query = query.or(`scientificName.ilike.%${searchTerm}%,vernacularName.ilike.%${searchTerm}%`, { foreignTable: 'taxa' });
     }
 
-    const { data: occurrences, error } = await query;
+    // 2. Taxonomic filters (Category was mapped to class, now we use class directly)
+    if (className && className !== 'All') {
+        query = query.eq('taxa.genus.family.class', className);
+    }
+
+    if (order && order !== 'All') {
+        query = query.eq('taxa.genus.family.order', order);
+    }
+
+    if (family && family !== 'All') {
+        query = query.eq('taxa.genus.family.name', family);
+    }
+
+    if (genus && genus !== 'All') {
+        query = query.eq('taxa.genus.name', genus);
+    }
+
+    // 3. Location filter
+    if (location && location !== 'All') {
+        query = query.eq('locations.locality', location);
+    }
+
+    // 4. Audio filter (Backend)
+    if (onlyWithAudio) {
+        query = query.eq('multimedia.type', 'Sound');
+    }
+
+    // 5. Pagination
+    query = query.range(from, to);
+
+    const { data: occurrences, error, count } = await query;
 
     if (error) {
         console.error("Error fetching species from Supabase:", error);
-        return [];
+        return { species: [], totalCount: 0 };
     }
 
-    return (occurrences as any[] || []).map((occ) => {
+    let speciesList = (occurrences as any[] || []).map((occ) => {
         const taxon = occ.taxa;
-        const location = occ.locations;
+        const loc = occ.locations;
         const media = occ.multimedia || [];
 
         const isImage = (m: any) => m.type === 'Still' || (m.type && m.type.toLowerCase().includes('image'));
@@ -120,12 +187,9 @@ export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
                 let spectrogram = media.find(
                     (other: any) => (other.parent_multimedia_id === m.id || (m.tag && other.tag === 'spectrogram' && other.title?.includes(m.title))) && isImage(other)
                 );
-
-                // Heuristic fallback: if no direct match, check if any spectrogram matches title
                 if (!spectrogram) {
                     spectrogram = media.find((other: any) => isImage(other) && (other.tag === 'spectrogram' || other.parent_multimedia_id) && other.title?.includes(m.title));
                 }
-
                 return {
                     title: m.title || "Audio",
                     url: formatMediaUrl(m.identifier),
@@ -134,43 +198,35 @@ export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
                 };
             });
 
-        // Backend Filter: skip occurrences that have NO audio recordings
-        // if (audios.length === 0) return null;
-
         const classToCategory: Record<string, SpeciesCategory> = {
-            Amphibia: "Amphibians",
-            Aves: "Birds",
-            Mammalia: "Mammals",
-            Insecta: "Crickets",
-            Reptilia: "Reptiles",
+            'Amphibia': "Amphibians",
+            'Aves': "Birds",
+            'Mammalia': "Mammals",
+            'Insecta': "Crickets",
+            'Reptilia': "Reptiles",
         };
 
         const class_name = taxon?.genus?.family?.class || "";
-        const category = classToCategory[class_name] || "Amphibians";
+        const cat = classToCategory[class_name] || "Amphibians";
         const commonName = taxon?.vernacularName || "Sin Nombre";
 
         return {
-            id: occ.id || "unknown", // Absolute occurrence UUID to keep duplicates discrete
+            id: occ.id || "unknown",
             scientificName: taxon?.scientificName || "Unknown",
             commonName_es: commonName,
             commonName_en: commonName,
             commonName_pt: commonName,
-            category: category,
+            category: cat,
             description: {
                 es: "Descripción del registro.",
                 en: "Record description.",
                 pt: "Descrição do registro.",
             },
-            characteristics: {
-                es: ["Disponible en Base de Datos"],
-                en: ["Available in Database"],
-                pt: ["Disponível no Banco de Datos"],
-            },
             mainImage: photos.length > 0 ? photos[0] : "https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png",
             galleryImages: photos,
             spectrograms: spectrograms,
             audios: audios,
-            location: location?.locality || "Unknown Location",
+            location: loc?.locality || "Unknown Location",
             genus: taxon?.genus?.name,
             family: taxon?.genus?.family?.name,
             order: taxon?.genus?.family?.order,
@@ -186,20 +242,52 @@ export async function getAllSpecies(searchTerm?: string): Promise<Species[]> {
                 lifeStage: occ?.lifeStage,
                 sex: occ?.sex,
                 identifiedBy: occ?.identifiedBy,
-                continent: location?.continent,
-                country: location?.country,
-                stateProvince: location?.stateProvince,
-                locality: location?.locality,
-                decimalLatitude: location?.decimalLatitude,
-                decimalLongitude: location?.decimalLongitude,
-                elevation: location?.elevation,
+                continent: loc?.continent,
+                country: loc?.country,
+                stateProvince: loc?.stateProvince,
+                locality: loc?.locality,
+                decimalLatitude: loc?.decimalLatitude,
+                decimalLongitude: loc?.decimalLongitude,
+                elevation: loc?.elevation,
             }
         };
-    }).filter(Boolean) as unknown as Species[];
+    });
+
+    return { 
+        species: speciesList, 
+        totalCount: count || 0 
+    };
 }
 
 export async function getSpeciesById(id: string): Promise<Species | undefined> {
-    const speciesList = await getAllSpecies();
-    return speciesList.find((s) => s.id === id);
+    const { species } = await getAllSpecies({ limit: 1000 }); // Heuristic for now
+    return species.find((s) => s.id === id);
 }
 
+// Helper to fetch unique filter values directly from Supabase
+export async function getFilterMetaData() {
+    const { data: taxa } = await supabase
+        .from('taxa')
+        .select(`
+            scientificName, 
+            vernacularName, 
+            genus:genera!inner(
+                name, 
+                family:families!inner(
+                    name, 
+                    order, 
+                    class
+                )
+            )
+        `) as { data: any[] | null };
+        
+    const { data: locs } = await supabase.from('locations').select('locality') as { data: any[] | null };
+
+    const classes = Array.from(new Set(taxa?.map(t => t.genus?.family?.class).filter(Boolean))).sort();
+    const orders = Array.from(new Set(taxa?.map(t => t.genus?.family?.order).filter(Boolean))).sort();
+    const families = Array.from(new Set(taxa?.map(t => t.genus?.family?.name).filter(Boolean))).sort();
+    const genera = Array.from(new Set(taxa?.map(t => t.genus?.name).filter(Boolean))).sort();
+    const localities = Array.from(new Set(locs?.map(l => l.locality).filter(Boolean))).sort();
+
+    return { classes, orders, families, genera, localities };
+}

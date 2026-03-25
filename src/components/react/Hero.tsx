@@ -35,10 +35,13 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
             {/* Content centered */}
             <div className="relative z-10 container mx-auto px-6 text-center mt-[-40px]">
                 <div className="max-w-9xl mx-auto flex flex-col items-center">
+                    <span className="text-accent-green font-bold text-xs md:text-sm uppercase tracking-[0.4em] mb-4 animate-fade-in">
+                        {lang === 'es' ? 'Bienvenido a la' : lang === 'pt' ? 'Bem-vindo à' : 'Welcome to'}
+                    </span>
                     <div className="min-h-[160px] md:min-h-[120px] mb-4 flex items-center justify-center">
                         <h1
                             key={currentTitleIndex}
-                            className="text-4xl md:text-6xl lg:text-[112px] font-light text-white tracking-wide animate-fade-up leading-none flex flex-col gap-1"
+                            className="text-4xl md:text-6xl lg:text-7xl font-light text-white tracking-wide animate-fade-up leading-none flex flex-col gap-1"
                         >
                             {content.titles_animate[currentTitleIndex].split('|').map((part, i) => (
                                 <span key={i} className="block mt-1 font-extralight tracking-tight">
@@ -48,7 +51,7 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
                         </h1>
                     </div>
 
-                    <p className="text-base md:text-xl text-gray-300/90 mb-8 max-w-2xl font-light animate-fade-in delay-200 mt-2 px-4">
+                    <p className="text-base text-gray-300/90 mb-8 max-w-2xl font-light animate-fade-in delay-200 mt-2 px-4">
                         {content.description}
                     </p>
 
@@ -58,19 +61,19 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
                     >
                         <div className="flex items-center gap-8 md:gap-12">
                             {/* Left Spectrogram */}
-                            <div className="flex items-end gap-2 md:gap-3 h-20 md:h-24 opacity-50 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-end gap-2 md:gap-3 h-20 opacity-50 group-hover:opacity-100 transition-opacity">
                                 <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1"></div>
                                 <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3"></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{animationDelay: '0.5s'}}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{animationDelay: '0.2s'}}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{ animationDelay: '0.5s' }}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{ animationDelay: '0.2s' }}></div>
                                 <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2"></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3" style={{animationDelay: '0.1s'}}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{animationDelay: '0.4s'}}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{animationDelay: '0.3s'}}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3" style={{ animationDelay: '0.1s' }}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{ animationDelay: '0.4s' }}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{ animationDelay: '0.3s' }}></div>
                             </div>
-                            
+
                             {/* Play Button */}
-                            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-accent-green/20 border-2 border-accent-green/50 backdrop-blur-md flex items-center justify-center group-hover:bg-accent-green group-hover:scale-110 transition-all duration-500 shadow-[0_0_50px_rgba(29,185,84,0.5)]">
+                            <div className="w-32 h-32 md:w-32 rounded-full bg-accent-green/20 border-2 border-accent-green/50 backdrop-blur-md flex items-center justify-center group-hover:bg-accent-green group-hover:scale-110 transition-all duration-500 shadow-[0_0_50px_rgba(29,185,84,0.5)]">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 md:w-20 md:h-20 text-white ml-2 md:ml-4">
                                     <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
                                 </svg>
@@ -78,12 +81,12 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
 
                             {/* Right Spectrogram */}
                             <div className="flex items-end gap-2 md:gap-3 h-20 md:h-24 opacity-50 group-hover:opacity-100 transition-opacity">
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{animationDelay: '0.3s'}}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{animationDelay: '0.4s'}}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3" style={{animationDelay: '0.1s'}}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{ animationDelay: '0.3s' }}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{ animationDelay: '0.4s' }}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3" style={{ animationDelay: '0.1s' }}></div>
                                 <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2"></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{animationDelay: '0.2s'}}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{animationDelay: '0.5s'}}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{ animationDelay: '0.2s' }}></div>
+                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{ animationDelay: '0.5s' }}></div>
                                 <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3"></div>
                                 <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1"></div>
                             </div>

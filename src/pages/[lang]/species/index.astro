@@ -3,6 +3,7 @@ import Layout from "../../../layouts/Layout.astro";
 import { Header } from "../../../components/react/Header";
 import { Footer } from "../../../components/react/Footer";
 import { PageBanner } from "../../../components/react/PageBanner";
+
 import { SpeciesExplorer } from "../../../components/react/SpeciesExplorer";
 import { translations, LANGUAGES } from "../../../i18n/data";
 import { getAllSpecies } from "../../../data/species";
@@ -17,7 +18,7 @@ export function getStaticPaths() {
 const { lang } = Astro.params;
 const content = translations[lang as keyof typeof translations];
 const speciesData = content.species_page;
-const allSpecies = await getAllSpecies();
+const initialData = await getAllSpecies();
 ---
 
 <Layout
@@ -40,7 +41,7 @@ const allSpecies = await getAllSpecies();
 
         <section class="py-12">
             <div class="w-full px-4 md:px-8 lg:px-12">
-                <SpeciesExplorer client:load allSpecies={allSpecies} lang={lang as 'es' | 'en' | 'pt'} />
+                <SpeciesExplorer client:load initialData={initialData} lang={lang as 'es' | 'en' | 'pt'} />
             </div>
         </section>
     </main>

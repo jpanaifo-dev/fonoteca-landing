@@ -6,14 +6,15 @@ export const LANGUAGES: Language[] = ['es', 'en', 'pt'];
 export const translations = {
     es: {
         nav: {
-            library: "La Fonoteca",
+            library: "Biblioteca Acústica",
             species: "Especies",
             stats: "Estadísticas",
             contact: "Contacto",
         },
         hero: {
-            title: "Conoce la belleza de la naturaleza",
+            title: "Biblioteca Acústica de fauna Amazónica",
             titles_animate: [
+                "Biblioteca Acústica | Fauna Amazónica",
                 "Ecosistemas Vivos | Sonidos de la Selva",
                 "Biodiversidad Amazónica | Preservación Sonora",
                 "Archivo Vivo | La Voz del Amazonas"
@@ -54,7 +55,7 @@ export const translations = {
         },
         species_page: {
             banner: {
-                title: "Explora la Fonoteca",
+                title: "Biblioteca Acústica de fauna Amazónica",
                 subtitle: "Una inmersión sonora en la biodiversidad amazónica",
                 image: landingImages.pageBanner.species_es
             },
@@ -157,6 +158,7 @@ export const translations = {
             ]
         },
         footer: {
+            library: "Biblioteca Acústica",
             description: "Investigación científica para el desarrollo sostenible de la Amazonía Peruana y la puesta en valor de su diversidad biológica y sociocultural.",
             links_title: "Enlaces",
             contact_title: "Contacto",
@@ -169,14 +171,15 @@ export const translations = {
     },
     en: {
         nav: {
-            library: "The Phonotheque",
+            library: "Acoustic Library",
             species: "Species",
             stats: "Statistics",
             contact: "Contact",
         },
         hero: {
-            title: "Experience nature's beauty",
+            title: "Amazonian Fauna Acoustic Library",
             titles_animate: [
+                "Acoustic Library | Amazonian Fauna",
                 "Living Ecosystems | Sounds of the Jungle",
                 "Amazon Biodiversity | Sonic Preservation",
                 "Living Archive | The Voice of the Amazon"
@@ -217,7 +220,7 @@ export const translations = {
         },
         species_page: {
             banner: {
-                title: "Explore the Phonotheque",
+                title: "Amazonian Fauna Acoustic Library",
                 subtitle: "A sonic immersion in the Amazonian biodiversity",
                 image: landingImages.pageBanner.species_en
             },
@@ -320,6 +323,7 @@ export const translations = {
             ]
         },
         footer: {
+            library: "Acoustic Library",
             description: "Scientific research for the sustainable development of the Peruvian Amazon and the enhancement of its biological and cultural diversity.",
             links_title: "Links",
             contact_title: "Contact",
@@ -332,14 +336,15 @@ export const translations = {
     },
     pt: {
         nav: {
-            library: "A Fonoteca",
+            library: "Biblioteca Acústica",
             species: "Espécies",
             stats: "Estatísticas",
             contact: "Contato",
         },
         hero: {
-            title: "Conheça a beleza da natureza",
+            title: "Biblioteca Acústica de fauna Amazônica",
             titles_animate: [
+                "Biblioteca Acústica | Fauna Amazônica",
                 "Ecossistemas Vivos | Sons da Selva",
                 "Biodiversidade Amazônica | Preservação Sonora",
                 "Arquivo Vivo | A Voz do Amazonas"
@@ -380,7 +385,7 @@ export const translations = {
         },
         species_page: {
             banner: {
-                title: "Explore a Fonoteca",
+                title: "Biblioteca Acústica de fauna Amazônica",
                 subtitle: "Uma imersão sonora na biodiversidade amazônica",
                 image: landingImages.pageBanner.species_en
             },
@@ -483,6 +488,7 @@ export const translations = {
             ]
         },
         footer: {
+            library: "Biblioteca Acústica",
             description: "Pesquisa científica para o desenvolvimento sustentável da Amazônia Peruana e a valorização de sua diversidade biológica e sociocultural.",
             links_title: "Links",
             contact_title: "Contato",
