@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    Search, 
-    Filter, 
-    LayoutGrid, 
-    List, 
-    ChevronDown, 
-    X, 
-    Music, 
-    MapPin, 
-    Play, 
+import {
+    Search,
+    Filter,
+    LayoutGrid,
+    List,
+    ChevronDown,
+    X,
+    Music,
+    MapPin,
+    Play,
     Info,
     ChevronLeft,
     ChevronRight,
@@ -141,7 +141,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
     useEffect(() => {
         setIsHydrated(true);
         const params = new URLSearchParams(window.location.search);
-        
+
         if (params.has('q')) {
             const q = params.get('q') || '';
             setSearchTerm(q);
@@ -216,7 +216,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
     // 5. URL Update on state change
     useEffect(() => {
         if (!isHydrated) return;
-        
+
         const params = new URLSearchParams();
         if (searchTerm) params.set('q', searchTerm);
         if (selectedLocation !== 'All') params.set('loc', selectedLocation);
@@ -230,8 +230,8 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
         const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
         window.history.replaceState({}, '', newUrl);
     }, [
-        searchTerm, selectedLocation, 
-        selectedClass, selectedOrder, selectedFamily, 
+        searchTerm, selectedLocation,
+        selectedClass, selectedOrder, selectedFamily,
         selectedGenus, onlyWithAudio, page, isHydrated
     ]);
 
@@ -289,7 +289,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                 </div>
                 <div className="flex items-center gap-2">
                     {isSidebarCollapsed && typeof window !== 'undefined' && window.innerWidth >= 1024 && (
-                        <button 
+                        <button
                             onClick={() => {
                                 setIsSidebarCollapsed(false);
                                 setIsMobileSheetOpen(false);
@@ -321,7 +321,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                             {searchTerm && (
                                 <div className="px-2 py-0.5 bg-white dark:bg-gray-800 text-[10px] rounded-md border border-gray-100 dark:border-gray-700 flex items-center gap-1">
                                     <span className="max-w-[70px] truncate text-gray-700 dark:text-gray-300">"{searchTerm}"</span>
-                                    <X className="w-2.5 h-2.5 cursor-pointer text-gray-400 hover:text-red-500" onClick={() => {setSearchInput(''); setSearchTerm('');}} />
+                                    <X className="w-2.5 h-2.5 cursor-pointer text-gray-400 hover:text-red-500" onClick={() => { setSearchInput(''); setSearchTerm(''); }} />
                                 </div>
                             )}
                             {selectedClass !== 'All' && (
@@ -414,7 +414,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
             <AnimatePresence>
                 {isMobileSheetOpen && (
                     <>
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
@@ -475,13 +475,13 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                                 className="w-full pl-10 pr-10 py-2.5 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 focus:ring-2 focus:ring-accent-green outline-none text-sm transition-shadow"
                             />
                             {searchInput && (
-                                <button onClick={() => {setSearchInput(''); setSearchTerm('');}} className="absolute right-3 top-2.5 p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full">
+                                <button onClick={() => { setSearchInput(''); setSearchTerm(''); }} className="absolute right-3 top-2.5 p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full">
                                     <X className="w-4 h-4 text-gray-400" />
                                 </button>
                             )}
                         </div>
 
-                        <button 
+                        <button
                             onClick={() => fetchData(true)}
                             className={`p-2.5 rounded-2xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all ${(isFetching || isLoading) ? 'animate-spin text-accent-green' : 'text-gray-500'}`}
                             disabled={isLoading || isFetching}
@@ -506,7 +506,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                             </button>
                         </div>
                         <span className="text-xs font-bold text-gray-400 whitespace-nowrap px-2">
-                             {totalCount} {lang === 'es' ? 'especies' : 'species'}
+                            {totalCount} {lang === 'es' ? 'especies' : 'species'}
                         </span>
                     </div>
                 </div>
@@ -520,38 +520,39 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                     </div>
                 ) : (
                     <div className="relative">
-                         {isFetching && (
+                        {isFetching && (
                             <div className="absolute top-0 right-0 z-10 p-2">
                                 <RefreshCw className="w-4 h-4 text-accent-green animate-spin" />
                             </div>
-                         )}
-                         
-                         <AnimatePresence mode="wait">
+                        )}
+
+                        <AnimatePresence mode="wait">
                             <motion.div
                                 key={viewMode}
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -10 }}
                                 transition={{ duration: 0.3 }}
-                                className={viewMode === 'grid' 
-                                    ? `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${isSidebarCollapsed ? 'xl:grid-cols-5' : 'xl:grid-cols-4'} gap-6` 
+                                className={viewMode === 'grid'
+                                    ? `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 ${isSidebarCollapsed ? 'xl:grid-cols-5' : 'xl:grid-cols-4'} gap-6`
                                     : "flex flex-col gap-4"
                                 }
                             >
                                 {species.length > 0 ? (
                                     species.map(s => {
-                                        const coverImage = (onlyWithAudio && s.audios.length > 0 && s.audios[0].spectrogramImage)
-                                            ? s.audios[0].spectrogramImage
+                                        const firstAudioWithSpectrogram = s.audios.find(a => a.spectrogramImage);
+                                        const coverImage = (onlyWithAudio && firstAudioWithSpectrogram)
+                                            ? (firstAudioWithSpectrogram.spectrogramImage as string)
                                             : (s.mainImage || '/images/logo-mini.webp');
-                                            
+
                                         return (
-                                            <SpeciesCard 
-                                                key={s.id} 
-                                                species={s} 
+                                            <SpeciesCard
+                                                key={s.id}
+                                                species={s}
                                                 coverImage={coverImage}
-                                                viewMode={viewMode} 
-                                                onPlay={() => playAudio(s)} 
-                                                lang={lang} 
+                                                viewMode={viewMode}
+                                                onPlay={() => playAudio(s)}
+                                                lang={lang}
                                             />
                                         );
                                     })
@@ -570,10 +571,10 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                                     </div>
                                 )}
                             </motion.div>
-                         </AnimatePresence>
+                        </AnimatePresence>
 
-                         {/* Pagination */}
-                         {totalPages > 1 && (
+                        {/* Pagination */}
+                        {totalPages > 1 && (
                             <div className="mt-12 flex justify-center items-center gap-2">
                                 <button
                                     disabled={page === 1}
@@ -582,7 +583,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                                 >
                                     <ChevronLeft className="w-5 h-5" />
                                 </button>
-                                
+
                                 <div className="flex gap-1.5 px-4">
                                     {Array.from({ length: totalPages }).map((_, i) => (
                                         <button
@@ -603,7 +604,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                                     <ChevronRight className="w-5 h-5" />
                                 </button>
                             </div>
-                         )}
+                        )}
                     </div>
                 )}
             </div>
@@ -612,24 +613,39 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
 };
 
 // Component to handle both regular images and Google Drive iframes
-const MediaViewer: React.FC<{ 
-    src: string; 
-    alt: string; 
-    className: string; 
-    onLoaded: () => void; 
+const MediaViewer: React.FC<{
+    src: string;
+    alt: string;
+    className: string;
+    onLoaded: () => void;
     isLoaded: boolean;
-}> = ({ src, alt, className, onLoaded, isLoaded }) => {
+    fallback?: string;
+}> = ({ src, alt, className, onLoaded, isLoaded, fallback = '/images/logo-mini.webp' }) => {
     const isDrive = src.includes('drive.google.com/file/d/') && src.includes('/preview');
-    
+    const [hasError, setHasError] = React.useState(false);
+
+    // If no source or error detected, show fallback
+    if (!src || hasError) {
+        return (
+            <img
+                src={fallback}
+                className={className}
+                alt="Fallback"
+                onLoad={onLoaded}
+            />
+        );
+    }
+
     if (isDrive) {
         return (
-            <div className="relative w-full h-full">
+            <div className="relative w-full h-full bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
                 <iframe
                     src={src}
                     className={`${className} border-0 pointer-events-none transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                     allow="autoplay"
                     title={alt}
                     onLoad={onLoaded}
+                    loading="lazy"
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
                 />
             </div>
@@ -642,9 +658,7 @@ const MediaViewer: React.FC<{
             alt={alt}
             className={`${className} transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={onLoaded}
-            onError={(e) => {
-                (e.target as HTMLImageElement).src = '/images/logo-mini.webp';
-            }}
+            onError={() => setHasError(true)}
         />
     );
 };
@@ -660,10 +674,10 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
         Mammals: lang === 'es' ? 'Mamíferos' : lang === 'pt' ? 'Mamíferos' : 'Mammals',
         Reptiles: 'Reptiles'
     };
-    
+
     if (viewMode === 'list') {
         return (
-            <motion.div 
+            <motion.div
                 layout
                 className="bg-white dark:bg-[#121b28] p-3 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:border-accent-green/30 transition-shadow group"
             >
@@ -696,14 +710,14 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
     }
 
     return (
-        <motion.div 
+        <motion.div
             layout
             className="group bg-white dark:bg-[#121b28] rounded-3xl border border-gray-100 dark:border-gray-800 hover:border-accent-green/30 transition-all duration-500 relative flex flex-col overflow-hidden"
         >
             <div className="aspect-[6/5] relative bg-gray-50 dark:bg-gray-900 overflow-hidden">
                 {!isLoaded && (
                     <div className="absolute inset-0 flex items-center justify-center animate-pulse">
-                         <RefreshCw className="w-6 h-6 text-gray-200 animate-spin" />
+                        <RefreshCw className="w-6 h-6 text-gray-200 animate-spin" />
                     </div>
                 )}
                 <MediaViewer
@@ -715,7 +729,7 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
                     {species.audios.length > 0 && (
-                        <button 
+                        <button
                             onClick={onPlay}
                             className="bg-white/20 backdrop-blur-md border border-white/30 text-white px-5 py-2 rounded-2xl hover:bg-accent-green hover:border-accent-green transition-all transform translate-y-4 group-hover:translate-y-0 duration-500 flex items-center gap-2 font-bold text-xs"
                         >
@@ -725,12 +739,12 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
                     )}
                 </div>
                 <div className="absolute top-4 left-4">
-                     <div className="bg-black/20 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-lg uppercase tracking-widest">
-                         {categoryTitles[species.category] || species.category}
-                     </div>
+                    <div className="bg-black/20 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-lg uppercase tracking-widest">
+                        {categoryTitles[species.category] || species.category}
+                    </div>
                 </div>
             </div>
-            
+
             <div className="p-5 flex-1 flex flex-col relative">
                 <div className="">
                     <span className="text-xs font-medium text-accent-green mb-1 block">
@@ -743,15 +757,15 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
                         {species.scientificName}
                     </p>
                 </div>
-                
+
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-800">
                     <div className="flex items-center gap-1.5 text-gray-500">
                         <MapPin className="w-3.5 h-3.5" />
                         <span className="text-[11px] truncate max-w-[140px]">{species.location}</span>
                     </div>
                     <a href={`/${lang}/species/${species.id}`} className="text-[11px] truncate font-medium text-accent-green hover:text-accent-green/80 flex items-center gap-1.5 transition-colors">
-                         {lang === 'es' ? 'Ver más' : 'Details'} 
-                         <ArrowRight className="w-3.5 h-3.5" />
+                        {lang === 'es' ? 'Ver más' : 'Details'}
+                        <ArrowRight className="w-3.5 h-3.5" />
                     </a>
                 </div>
             </div>

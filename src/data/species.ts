@@ -159,37 +159,39 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
         const loc = occ.locations;
         const media = occ.multimedia || [];
 
-        const isImage = (m: any) => m.type === 'Still' || (m.type && m.type.toLowerCase().includes('image'));
-        const isAudio = (m: any) => m.type === 'Sound' || (m.type && m.type.toLowerCase().includes('sound'));
+        const isImage = (m: any) => (m.type === 'Still' || (m.type && m.type.toLowerCase().includes('image')) || m.format?.includes('image'));
+        const isAudio = (m: any) => (m.type === 'Sound' || (m.type && m.type.toLowerCase().includes('sound')) || m.format?.includes('audio'));
 
         const formatMediaUrl = (identifier: string) => {
             if (!identifier) return "";
+            // If it's a Drive URL, use the preview viewer
             if (identifier.includes('drive.google.com/file/d/')) {
                 const idMatch = identifier.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
                 if (idMatch && idMatch[1]) {
                     return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
                 }
             }
+            // If it's a local path or a full URL, return it as is
             return identifier;
         };
 
+        // Images are those with tag 'gallery' or no tag
         const photos = media
-            .filter((m: any) => isImage(m) && !m.parent_multimedia_id && m.tag !== 'spectrogram')
+            .filter((m: any) => isImage(m) && (m.tag === 'gallery' || !m.tag))
             .map((m: any) => formatMediaUrl(m.identifier));
 
-        const spectrograms = media
-            .filter((m: any) => isImage(m) && (m.parent_multimedia_id || m.tag === 'spectrogram'))
-            .map((m: any) => formatMediaUrl(m.identifier));
+        // Spectrograms are those with tag 'spectrogram'
+        const spectrogramsList = media
+            .filter((m: any) => m.tag === 'spectrogram' && isImage(m));
 
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
             .map((m: any) => {
-                let spectrogram = media.find(
-                    (other: any) => (other.parent_multimedia_id === m.id || (m.tag && other.tag === 'spectrogram' && other.title?.includes(m.title))) && isImage(other)
+                // Find associated spectrogram: either by parent_multimedia_id OR by title match if same occurrence
+                let spectrogram = spectrogramsList.find(
+                    (s: any) => s.parent_multimedia_id === m.id || (s.title && m.title && s.title.includes(m.title))
                 );
-                if (!spectrogram) {
-                    spectrogram = media.find((other: any) => isImage(other) && (other.tag === 'spectrogram' || other.parent_multimedia_id) && other.title?.includes(m.title));
-                }
+                
                 return {
                     title: m.title || "Audio",
                     url: formatMediaUrl(m.identifier),
@@ -224,7 +226,7 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
             },
             mainImage: photos.length > 0 ? photos[0] : "https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png",
             galleryImages: photos,
-            spectrograms: spectrograms,
+            spectrograms: spectrogramsList.map((s: any) => formatMediaUrl(s.identifier)),
             audios: audios,
             location: loc?.locality || "Unknown Location",
             genus: taxon?.genus?.name,
