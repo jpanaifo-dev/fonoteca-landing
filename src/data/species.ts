@@ -31,6 +31,8 @@ export interface Species {
     location: string;
     genus?: string;
     family?: string;
+    order?: string;
+    class_name?: string;
 }
 
 import { supabase } from "../lib/supabase";
@@ -148,6 +150,8 @@ export async function getAllSpecies(): Promise<Species[]> {
             location: location?.locality || "Unknown Location",
             genus: taxon?.genus?.name,
             family: taxon?.genus?.family?.name,
+            order: taxon?.genus?.family?.order,
+            class_name: taxon?.genus?.family?.class,
         };
     }).filter(Boolean) as unknown as Species[];
 }

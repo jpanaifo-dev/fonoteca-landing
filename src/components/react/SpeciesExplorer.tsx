@@ -1,19 +1,67 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import type { Species, SpeciesCategory } from '../../data/species';
-
+import type { Species } from '../../data/species';
 import { useSpeciesStore } from '../../store/useSpeciesStore';
+
 
 interface SpeciesExplorerProps {
     allSpecies: Species[];
     lang: 'es' | 'en' | 'pt';
 }
 
+
+interface FilterListBoxProps {
+    title: string;
+    items: string[];
+    value: string;
+    onChange: (val: string) => void;
+    lang: string;
+}
+
+const FilterListBox: React.FC<FilterListBoxProps> = ({ title, items, value, onChange, lang }) => {
+    const [search, setSearch] = useState('');
+    const filteredItems = items.filter(i =>
+        i.toLowerCase().includes(search.toLowerCase()) || i === 'All'
+    );
+
+    return (
+        <div>
+            <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">{title}</h3>
+            <div className="border border-gray-100 dark:border-gray-800 rounded-xl p-1 bg-gray-50/50 dark:bg-[#0c141d]">
+                <input
+                    type="text"
+                    placeholder={lang === 'es' ? 'Filtrar...' : 'Search...'}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full px-2 py-1 text-xs bg-transparent outline-none border-b border-gray-100 dark:border-gray-800 text-gray-800 dark:text-gray-200"
+                />
+                <ul className="max-h-28 min-h-[40px] overflow-y-auto mt-1 space-y-0.5 px-1 pb-1">
+                    {filteredItems.map(item => (
+                        <li key={item}>
+                            <button
+                                onClick={() => onChange(item)}
+                                className={`w-full text-left px-2 py-0.5 rounded-md text-[11px] cursor-pointer transition-colors ${value === item
+                                    ? 'bg-accent-green text-white font-medium'
+                                    : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300'
+                                    }`}
+                            >
+                                {item === 'All' ? (lang === 'es' ? 'Todas' : 'All') : item}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        </div>
+    );
+};
+
 export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, lang }) => {
     const {
         searchTerm, setSearchTerm,
         selectedCategory, setSelectedCategory,
         selectedLocation, setSelectedLocation,
+        selectedClass, setSelectedClass,
+        selectedOrder, setSelectedOrder,
         selectedFamily, setSelectedFamily,
         selectedGenus, setSelectedGenus,
         onlyWithAudio, setOnlyWithAudio,
@@ -41,13 +89,31 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
     const categories = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.category)))], [allSpecies]);
     const locations = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.location)))], [allSpecies]);
 
-    const families = useMemo(() => ['All', ...Array.from(new Set(allSpecies.map(s => s.family || 'Unknown').filter(Boolean)))], [allSpecies]);
+    const classes = useMemo(() => {
+        return ['All', ...Array.from(new Set(allSpecies.map(s => s.class_name).filter((item): item is string => Boolean(item))))];
+    }, [allSpecies]);
+
+    const orders = useMemo(() => {
+        const match = selectedClass === 'All' ? allSpecies : allSpecies.filter(s => s.class_name === selectedClass);
+        return ['All', ...Array.from(new Set(match.map(s => s.order).filter((item): item is string => Boolean(item))))];
+    }, [allSpecies, selectedClass]);
+
+    const families = useMemo(() => {
+        const match = allSpecies.filter(s =>
+            (selectedClass === 'All' || s.class_name === selectedClass) &&
+            (selectedOrder === 'All' || s.order === selectedOrder)
+        );
+        return ['All', ...Array.from(new Set(match.map(s => s.family).filter((item): item is string => Boolean(item))))];
+    }, [allSpecies, selectedClass, selectedOrder]);
+
     const genera = useMemo(() => {
-        const matchingSpecies = selectedFamily === 'All'
-            ? allSpecies
-            : allSpecies.filter(s => s.family === selectedFamily);
-        return ['All', ...Array.from(new Set(matchingSpecies.map(s => s.genus || 'Unknown').filter(Boolean)))];
-    }, [allSpecies, selectedFamily]);
+        const match = allSpecies.filter(s =>
+            (selectedClass === 'All' || s.class_name === selectedClass) &&
+            (selectedOrder === 'All' || s.order === selectedOrder) &&
+            (selectedFamily === 'All' || s.family === selectedFamily)
+        );
+        return ['All', ...Array.from(new Set(match.map(s => s.genus).filter((item): item is string => Boolean(item))))];
+    }, [allSpecies, selectedClass, selectedOrder, selectedFamily]);
 
     const filteredSpecies = useMemo(() => {
         return allSpecies.filter(s => {
@@ -57,13 +123,15 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
 
             const matchesCategory = selectedCategory === 'All' || s.category === selectedCategory;
             const matchesLocation = selectedLocation === 'All' || s.location === selectedLocation;
+            const matchesClass = selectedClass === 'All' || s.class_name === selectedClass;
+            const matchesOrder = selectedOrder === 'All' || s.order === selectedOrder;
             const matchesFamily = selectedFamily === 'All' || s.family === selectedFamily;
             const matchesGenus = selectedGenus === 'All' || s.genus === selectedGenus;
             const matchesAudio = !onlyWithAudio || s.audios.length > 0;
 
-            return matchesSearch && matchesCategory && matchesLocation && matchesFamily && matchesGenus && matchesAudio;
+            return matchesSearch && matchesCategory && matchesLocation && matchesClass && matchesOrder && matchesFamily && matchesGenus && matchesAudio;
         });
-    }, [allSpecies, searchTerm, selectedCategory, selectedLocation, selectedFamily, selectedGenus, onlyWithAudio]);
+    }, [allSpecies, searchTerm, selectedCategory, selectedLocation, selectedClass, selectedOrder, selectedFamily, selectedGenus, onlyWithAudio]);
 
     const paginatedSpecies = useMemo(() => {
         return filteredSpecies.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
@@ -173,7 +241,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                     <div className="mb-4 pb-4 border-b border-gray-50 dark:border-gray-800">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Filtros Activos</span>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setSearchTerm('');
                                     setSelectedCategory('All');
@@ -181,7 +249,7 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                     setSelectedFamily('All');
                                     setSelectedGenus('All');
                                     setOnlyWithAudio(false);
-                                }} 
+                                }}
                                 className="text-[10px] text-accent-green hover:underline cursor-pointer"
                             >
                                 Limpiar
@@ -204,6 +272,18 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                                 <div className="flex items-center gap-1 px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-md text-[10px] font-medium border border-accent-green/20">
                                     <span className="truncate max-w-[80px]">{selectedLocation}</span>
                                     <button onClick={() => setSelectedLocation('All')} className="hover:text-red-500 transition-colors">✖</button>
+                                </div>
+                            )}
+                            {selectedClass !== 'All' && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-md text-[10px] font-medium border border-accent-green/20">
+                                    <span className="truncate max-w-[80px]">{selectedClass}</span>
+                                    <button onClick={() => setSelectedClass('All')} className="hover:text-red-500 transition-colors">✖</button>
+                                </div>
+                            )}
+                            {selectedOrder !== 'All' && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-accent-green/10 text-accent-green rounded-md text-[10px] font-medium border border-accent-green/20">
+                                    <span className="truncate max-w-[80px]">{selectedOrder}</span>
+                                    <button onClick={() => setSelectedOrder('All')} className="hover:text-red-500 transition-colors">✖</button>
                                 </div>
                             )}
                             {selectedFamily !== 'All' && (
@@ -229,36 +309,43 @@ export const SpeciesExplorer: React.FC<SpeciesExplorerProps> = ({ allSpecies, la
                 )}
 
                 <div className="space-y-6">
+                    {/* Class Filter */}
+                    <FilterListBox
+                        title="Clase"
+                        items={classes}
+                        value={selectedClass}
+                        onChange={setSelectedClass}
+                        lang={lang}
+                    />
+
+                    {/* Order Filter */}
+                    <FilterListBox
+                        title="Orden"
+                        items={orders}
+                        value={selectedOrder}
+                        onChange={setSelectedOrder}
+                        lang={lang}
+                    />
+
                     {/* Family Filter */}
-                    <div>
-                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Familia</h3>
-                        <select
-                            value={selectedFamily}
-                            onChange={(e) => {
-                                setSelectedFamily(e.target.value);
-                                setSelectedGenus('All');
-                            }}
-                            className="w-full px-2 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#0c141d] text-gray-800 dark:text-gray-200 text-xs focus:ring-1 focus:ring-accent-green/50 hover:bg-white dark:hover:bg-gray-800 transition-all outline-none"
-                        >
-                            {families.map(f => (
-                                <option key={f} value={f} className="dark:bg-[#121b28]">{f === 'All' ? (lang === 'es' ? 'Todas' : 'All') : f}</option>
-                            ))}
-                        </select>
-                    </div>
+                    <FilterListBox
+                        title="Familia"
+                        items={families}
+                        value={selectedFamily}
+                        onChange={setSelectedFamily}
+                        lang={lang}
+                    />
 
                     {/* Genus Filter */}
-                    <div>
-                        <h3 className="font-semibold text-gray-400 dark:text-gray-500 text-xs uppercase tracking-wider mb-2 pb-1 border-b border-gray-50 dark:border-gray-800">Género</h3>
-                        <select
-                            value={selectedGenus}
-                            onChange={(e) => setSelectedGenus(e.target.value)}
-                            className="w-full px-2 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-[#0c141d] text-gray-800 dark:text-gray-200 text-xs focus:ring-1 focus:ring-accent-green/50 hover:bg-white dark:hover:bg-gray-800 transition-all outline-none"
-                        >
-                            {genera.map(g => (
-                                <option key={g} value={g} className="dark:bg-[#121b28]">{g === 'All' ? (lang === 'es' ? 'Todos' : 'All') : g}</option>
-                            ))}
-                        </select>
-                    </div>
+                    <FilterListBox
+                        title="Género"
+                        items={genera}
+                        value={selectedGenus}
+                        onChange={setSelectedGenus}
+                        lang={lang}
+                    />
+
+
 
                     {/* Category Filter */}
                     <div>
