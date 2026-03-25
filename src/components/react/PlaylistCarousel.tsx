@@ -22,13 +22,15 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
     const [api, setApi] = useState<CarouselApi>()
     const [autoplayEnabled, setAutoplayEnabled] = useState(true)
 
-    // Data Prep: Multiplicamos para asegurar que el loop de Embla funcione suave si hay pocos registros
+    // Data Prep: Multiplicamos para asegurar que el loop de Embla funcione suave
     const carouselItems = useMemo(() => {
         if (!allSpecies || allSpecies.length === 0) return []
-        if (allSpecies.length < 6) {
-            return [...allSpecies, ...allSpecies, ...allSpecies]
+        let items = [...allSpecies]
+        // Embla requiere que el total de slides exceda el viewport para el loop continuo
+        while (items.length < 12) {
+            items = [...items, ...allSpecies]
         }
-        return allSpecies
+        return items
     }, [allSpecies])
 
     // Intervalo de Autoplay
