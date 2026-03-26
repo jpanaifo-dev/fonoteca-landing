@@ -12,14 +12,14 @@ export const translations = {
             contact: "Contacto",
         },
         hero: {
-            title: "Biblioteca Acústica de fauna Amazónica",
+            title: "Biblioteca acústica de fauna amazónica - Fonoteca",
             titles_animate: [
-                "Biblioteca Acústica | Fauna Amazónica",
+                "Biblioteca acústica de fauna amazónica | Fonoteca",
                 "Ecosistemas Vivos | Sonidos de la Selva",
                 "Biodiversidad Amazónica | Preservación Sonora",
                 "Archivo Vivo | La Voz del Amazonas"
             ],
-            description: "Una colección sonora que conecta con la biodiversidad del mundo. Descubre la belleza de la naturaleza a través de nuestras grabaciones.",
+            description: "Una colección sonora que conecta con la biodiversidad amazónica. Descubre la belleza de la naturaleza a través de nuestras grabaciones.",
             cta: "Explorar Ahora"
         },
         intro: {
@@ -55,7 +55,7 @@ export const translations = {
         },
         species_page: {
             banner: {
-                title: "Biblioteca Acústica de fauna Amazónica",
+                title: "Biblioteca acústica de fauna amazónica - Fonoteca",
                 subtitle: "Una inmersión sonora en la biodiversidad amazónica",
                 image: landingImages.pageBanner.species_es
             },
@@ -147,14 +147,14 @@ export const translations = {
             ]
         },
         features: {
-            title: "Soluciones Confiables, Resultados Reales",
+            title: "Ecosistemas Digitales, Investigación Científica",
             items: [
-                { title: "Servicios de Grabación", description: "Como tus asesores de audio, proporcionamos equipos y técnicas de planificación proactiva para capturar los sonidos de la naturaleza." },
-                { title: "Archivo y Preservación", description: "La experiencia y eficiencia proporcionan a tu organización un archivo de audio único y disfrutable." },
-                { title: "Servicios de Taxonomía", description: "Obtén liderazgo científico experto sin el costo total. Nuestros servicios incluyen identificación taxonómica y guía estratégica." },
-                { title: "Análisis de Bioacústica", description: "Mantén tus datos limpios y actualizados con nuestra ayuda confiable. Manejamos las tareas de análisis para que tú te enfoques en la investigación." },
-                { title: "Servicios de Educación", description: "Desde informes mensuales hasta preparación anual, nuestro equipo mantiene tu conocimiento organizado. Hacemos que los números tengan sentido." },
-                { title: "Monitoreo Ambiental", description: "" }
+                { title: "Grabación Bioacústica", description: "Implementamos equipos de alta fidelidad y técnicas proactivas para capturar los sonidos de la fauna en su hábitat natural." },
+                { title: "Archivo de Biodiversidad", description: "Un repositorio centralizado y eficiente para la preservación de la memoria sonora de la Amazonía para las generaciones futuras." },
+                { title: "Análisis Taxonómico", description: "Contamos con expertos científicos para la identificación precisa de especies a partir de sus firmas acústicas y rasgos biológicos." },
+                { title: "Monitoreo Ambiental", description: "Evaluamos la salud de los ecosistemas mediante el análisis de paisajes sonoros y la presencia de especies clave." },
+                { title: "Educación y Difusión", description: "Hacemos que la ciencia sea accesible, proporcionando reportes organizados y material educativo sobre nuestra biodiversidad sonora." },
+                { title: "Publicaciones Científicas", description: "Facilitamos datos robustos para la investigación académica y la toma de decisiones informadas en conservación." }
             ]
         },
         footer: {
@@ -177,14 +177,14 @@ export const translations = {
             contact: "Contact",
         },
         hero: {
-            title: "Amazonian Fauna Acoustic Library",
+            title: "Amazonian Fauna Acoustic Library - Fonoteca",
             titles_animate: [
-                "Acoustic Library | Amazonian Fauna",
+                "Acoustic Library | Fonoteca",
                 "Living Ecosystems | Sounds of the Jungle",
                 "Amazon Biodiversity | Sonic Preservation",
                 "Living Archive | The Voice of the Amazon"
             ],
-            description: "A sound collection connecting you with the world's biodiversity. Discover the beauty of nature through our recordings.",
+            description: "A sound collection connecting you with Amazonian biodiversity. Discover the beauty of nature through our recordings.",
             cta: "Explore Now"
         },
         intro: {
@@ -220,7 +220,7 @@ export const translations = {
         },
         species_page: {
             banner: {
-                title: "Amazonian Fauna Acoustic Library",
+                title: "Amazonian Fauna Acoustic Library - Fonoteca",
                 subtitle: "A sonic immersion in the Amazonian biodiversity",
                 image: landingImages.pageBanner.species_en
             },
@@ -312,14 +312,14 @@ export const translations = {
             ]
         },
         features: {
-            title: "Reliable Solutions, Real Results",
+            title: "Digital Ecosystems, Scientific Research",
             items: [
-                { title: "Recording Services", description: "As your audio advisors we provide proactive planning and equipment to capture nature sounds." },
-                { title: "Audit & Assurance", description: "Experience and efficiency provides your organization with a uniquely enjoyable audio archive." },
-                { title: "Taxonomy Services", description: "Get expert scientific leadership without the full-time cost. Our services include taxonomic identification and strategic guidance." },
-                { title: "Bioacoustics Analysis", description: "Keep your data clean and up-to-date with our reliable help. We handle the analysis tasks so you can focus on research." },
-                { title: "Education Services", description: "From monthly reports to year-end prep, our team keeps your knowledge organized. We make your numbers make sense." },
-                { title: "Environmental Monitoring", description: "" }
+                { title: "Bioacoustic Recording", description: "We implement high-fidelity equipment and proactive techniques to capture fauna sounds in their natural habitat." },
+                { title: "Biodiversity Archive", description: "A centralized and efficient repository for preserving the sonic memory of the Amazon for future generations." },
+                { title: "Taxonomic Analysis", description: "We rely on scientific experts for the precise identification of species through their acoustic signatures and biological traits." },
+                { title: "Environmental Monitoring", description: "We evaluate ecosystem health through soundscape analysis and the presence of key species." },
+                { title: "Education & Outreach", description: "We make science accessible by providing organized reports and educational material about our sonic biodiversity." },
+                { title: "Scientific Publications", description: "We facilitate robust data for academic research and informed decision-making in conservation." }
             ]
         },
         footer: {
@@ -342,14 +342,14 @@ export const translations = {
             contact: "Contato",
         },
         hero: {
-            title: "Biblioteca Acústica de fauna Amazônica",
+            title: "Biblioteca acústica de fauna Amazônica - Fonoteca",
             titles_animate: [
-                "Biblioteca Acústica | Fauna Amazônica",
+                "Biblioteca acústica | Fonoteca",
                 "Ecossistemas Vivos | Sons da Selva",
                 "Biodiversidade Amazônica | Preservação Sonora",
                 "Arquivo Vivo | A Voz do Amazonas"
             ],
-            description: "Uma coleção sonora que conecta com a biodiversidade do mundo. Descubra a beleza da natureza através de nossas gravações.",
+            description: "Uma coleção sonora que conecta com a biodiversidade amazônica. Descubra a beleza da natureza através de nossas gravações.",
             cta: "Explorar Agora"
         },
         intro: {
@@ -385,7 +385,7 @@ export const translations = {
         },
         species_page: {
             banner: {
-                title: "Biblioteca Acústica de fauna Amazônica",
+                title: "Biblioteca acústica de fauna Amazônica - Fonoteca",
                 subtitle: "Uma imersão sonora na biodiversidade amazônica",
                 image: landingImages.pageBanner.species_en
             },
@@ -477,14 +477,14 @@ export const translations = {
             ]
         },
         features: {
-            title: "Soluções Confiáveis, Resultados Reais",
+            title: "Ecossistemas Digitais, Pesquisa Científica",
             items: [
-                { title: "Serviços de Gravação", description: "Como seus consultores de áudio, fornecemos planejamento proativo e equipamentos para capturar sons da natureza." },
-                { title: "Arquivo e Preservação", description: "Experiência e eficiência proporcionam à sua organização um arquivo de áudio único e agradável." },
-                { title: "Serviços de Taxonomia", description: "Obtenha liderança científica especializada sem o custo integral. Nossos serviços incluem identificação taxonômica e orientação estratégica." },
-                { title: "Análise Bioacústica", description: "Mantenha seus dados limpos e atualizados com nossa ajuda confiável. Cuidamos das tarefas de análise para que você possa focar na pesquisa." },
-                { title: "Serviços de Educação", description: "De relatórios mensais a preparação anual, nossa equipe mantém seu conhecimento organizado." },
-                { title: "Monitoramento Ambiental", description: "" }
+                { title: "Gravação Bioacústica", description: "Implementamos equipamentos de alta fidelidade e técnicas proativas para capturar os sons da fauna em seu habitat natural." },
+                { title: "Arquivo de Biodiversidade", description: "Um repositório centralizado e eficiente para a preservação da memória sonora da Amazônia para as futuras gerações." },
+                { title: "Análise Taxonômica", description: "Contamos com especialistas científicos para a identificação precisa de espécies a partir de suas assinaturas acústicas." },
+                { title: "Monitoramento Ambiental", description: "Avaliamos a saúde dos ecossistemas através do análise de paisagens sonoras e da presença de espécies-chave." },
+                { title: "Educação e Difusão", description: "Tornamos a ciência acessível, fornecendo relatórios organizados e material educativo sobre nossa biodiversidade sonora." },
+                { title: "Publicações Científicas", description: "Facilitamos datos robustos para a pesquisa acadêmica e a tomada de decisões informadas em conservação." }
             ]
         },
         footer: {
