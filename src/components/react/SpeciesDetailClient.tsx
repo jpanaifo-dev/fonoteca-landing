@@ -246,6 +246,15 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                     {/* Sidebar Sticky Navigation */}
                     <aside className="lg:w-64 shrink-0 lg:sticky lg:top-24 mt-2">
                         <div className="space-y-6">
+                            {/* Back to list Link */}
+                            <a 
+                                href={`/${lang}/species`} 
+                                className="inline-flex items-center gap-2 text-[10px] font-black tracking-widest text-accent-green hover:text-accent-green-dark transition-colors mb-4 group px-2"
+                            >
+                                <ChevronRight size={14} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
+                                {lang === 'es' ? 'VOLVER A LA BIBLIOTECA' : lang === 'pt' ? 'VOLTAR PARA LISTA' : 'BACK TO LIBRARY'}
+                            </a>
+
                             <div>
                                 <h4 className="text-[10px] font-black tracking-widest uppercase text-gray-400 mb-4 px-2">Contents</h4>
                                 <nav className="space-y-1">
