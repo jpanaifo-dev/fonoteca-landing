@@ -29,7 +29,9 @@ const content = translations[lang as keyof typeof translations];
         lang={lang}
     />
 
-    <SpeciesDetailClient client:only="react" id={id!} lang={lang} />
+    <div class="min-h-screen">
+        <SpeciesDetailClient client:only="react" id={id!} lang={lang} />
+    </div>
 
     <Footer content={content.footer} logoSrc={logoIiap.src} />
 </Layout>

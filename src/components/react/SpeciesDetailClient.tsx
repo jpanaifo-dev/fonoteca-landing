@@ -6,13 +6,9 @@ import { AudioPlayer } from './AudioPlayer';
 import {
     Bird,
     TrendingDown,
-    TrendingUp,
-    Minus,
     MapPin,
-    Info,
     FileText,
     Share2,
-    CheckCircle,
     ChevronRight,
     Lock
 } from 'lucide-react';
@@ -21,6 +17,30 @@ interface Props {
     id: string;
     lang: string;
 }
+
+const SectionHeader: React.FC<{
+    title: string;
+    description?: string;
+    badges?: string[];
+    className?: string;
+}> = ({ title, description, badges, className = "" }) => (
+    <div className={`flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-gray-100 pb-6 mb-8 ${className}`}>
+        <div className="space-y-1">
+            <h3 className="text-2xl font-black text-gray-900 leading-tight">{title}</h3>
+            {description && <p className="text-gray-500 font-medium text-sm">{description}</p>}
+        </div>
+        {badges && badges.length > 0 && (
+            <div className="flex gap-2">
+                {badges.map(badge => (
+                    <span key={badge} className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded ${badge === 'VERIFIED' ? 'bg-accent-green text-white' : 'bg-gray-100 text-gray-400'
+                        }`}>
+                        {badge}
+                    </span>
+                ))}
+            </div>
+        )}
+    </div>
+);
 
 export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
     const [species, setSpecies] = useState<Species | null>(null);
@@ -79,12 +99,30 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
 
     if (loading) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent-green"></div>
-                    <p className="text-gray-400 font-medium animate-pulse">
-                        {lang === 'es' ? 'Cargando detalles...' : lang === 'pt' ? 'Carregando detalhes...' : 'Loading details...'}
-                    </p>
+            <div className="fixed inset-0 z-[9999] bg-[#0c141d] flex flex-col items-center justify-center min-h-screen">
+                <style>{`
+                    @keyframes fadeInUpSplash {
+                        from { opacity: 0; transform: translateY(20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    @keyframes fadeInSplash {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes slideBorderSplash {
+                        0% { transform: translateX(-100%); }
+                        100% { transform: translateX(100%); }
+                    }
+                    .animate-splash-up { animation: fadeInUpSplash 0.8s ease-out forwards; }
+                    .animate-splash-in { opacity: 0; animation: fadeInSplash 1s ease-out 0.4s forwards; }
+                    .animate-splash-border { animation: slideBorderSplash 1.5s ease-in-out infinite; }
+                `}</style>
+                <div className="text-white text-3xl md:text-5xl font-sans font-light tracking-[0.1em] relative select-none animate-splash-up text-center px-4 max-w-4xl leading-tight">
+                    BIBLIOTECA ACÚSTICA DE FAUNA AMAZÓNICA
+                    <div className="absolute -bottom-2 inset-x-0 h-1 bg-accent-green translate-x-[-100%] animate-splash-border"></div>
+                </div>
+                <div className="mt-8 text-gray-400 text-xs md:text-sm tracking-[0.4em] text-center max-w-md px-4 uppercase font-light animate-splash-in">
+                    {lang === 'es' ? 'Cargando detalles...' : lang === 'pt' ? 'Carregando detalhes...' : 'Loading details...'}
                 </div>
             </div>
         );
@@ -251,19 +289,25 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                     <div className="flex-1 max-w-4xl flex flex-col gap-4">
 
                         {/* Section: At a glance */}
-                        <section id="at-a-glance" className="scroll-mt-24 space-y-8">
-                            <h3 className="text-2xl font-black text-gray-900 mb-2">La especie</h3>
+                        <section id="at-a-glance" className="scroll-mt-24">
+                            <SectionHeader
+                                title={lang === 'es' ? 'La Especie' : 'The Species'}
+                                description={lang === 'es' ? 'Resumen general y galería de identificación visual.' : 'Quick summary and visual identification gallery.'}
+                            />
                             {/* Gallery Inside Sections */}
                             {species.galleryImages && species.galleryImages.length > 0 && (
-                                <div className="pt-4">
+                                <div className="pt-4 mb-16">
                                     <SpeciesGallery images={species.galleryImages.map(img => img.url)} />
                                 </div>
                             )}
                         </section>
 
                         {/* Section: Distribution */}
-                        <section id="distribution" className="scroll-mt-24 space-y-8 border-t border-gray-100 pt-16">
-                            <h3 className="text-2xl font-black text-gray-900">Distribución</h3>
+                        <section id="distribution" className="scroll-mt-24 border-t border-gray-100 pt-16">
+                            <SectionHeader
+                                title={lang === 'es' ? 'Distribución' : 'Distribution'}
+                                description={lang === 'es' ? 'Áreas geográficas y contexto de observación.' : 'Geographic ranges and observation context.'}
+                            />
                             <div className="bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 min-h-[400px] flex items-center justify-center relative p-8 group">
                                 <div className="text-center space-y-4 relative z-10 max-w-md">
                                     <MapPin size={48} className="text-accent-green mx-auto animate-bounce" />
@@ -286,13 +330,11 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                         </section>
 
                         {/* Section: Audios & Analysis */}
-                        <section id="audios" className="scroll-mt-24 space-y-12 border-t border-gray-100 pt-16">
-                            <div className="space-y-4">
-                                <h3 className="text-2xl font-black text-gray-900">Audios y Análisis Acústico</h3>
-                                <p className="text-gray-500 max-w-2xl">
-                                    Explora la fonología y los patrones acústicos a través de grabaciones en alta fidelidad y espectrogramas dinámicos.
-                                </p>
-                            </div>
+                        <section id="audios" className="scroll-mt-24 border-t border-gray-100 pt-16">
+                            <SectionHeader
+                                title={lang === 'es' ? 'Audios y Análisis Acústico' : 'Audios & Acoustic Analysis'}
+                                description={lang === 'es' ? 'Explora la fonología y los patrones acústicos a través de grabaciones en alta fidelidad y espectrogramas dinámicos.' : 'Explore phonology and acoustic patterns through high-fidelity recordings and dynamic spectrograms.'}
+                            />
 
                             <div className="space-y-16">
                                 {species.audios.map((audio) => (
@@ -347,8 +389,11 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                         </section>
 
                         {/* Section: Ecology / Characteristics */}
-                        <section id="characteristics" className="scroll-mt-24 space-y-8 border-t border-gray-100 pt-16">
-                            <h3 className="text-2xl font-black text-gray-900">Ecology & Description</h3>
+                        <section id="characteristics" className="scroll-mt-24 border-t border-gray-100 pt-16">
+                            <SectionHeader
+                                title={lang === 'es' ? 'Ecología y Descripción' : 'Ecology & Description'}
+                                description={lang === 'es' ? 'Comportamiento y características físicas detalladas.' : 'Detailed behavior and physical characteristics.'}
+                            />
                             <div className="prose prose-lg text-gray-700 leading-relaxed max-w-none">
                                 <p className="mb-8 p-8 bg-gray-50 rounded-sm italic border-l-8 border-accent-green font-medium">
                                     {description}
@@ -368,9 +413,12 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                         </section>
 
                         {/* Section: Taxonomy */}
-                        <section id="taxonomy" className="scroll-mt-24 space-y-8 pt-16">
+                        <section id="taxonomy" className="scroll-mt-24 pt-16">
+                            <SectionHeader
+                                title={lang === 'es' ? 'Taxonomía Científica' : 'Scientific Taxonomy'}
+                                description={lang === 'es' ? 'Clasificación biológica jerárquica.' : 'Hierarchical biological classification.'}
+                            />
                             <div className="p-8 bg-primary-dark rounded-lg relative overflow-hidden group">
-                                <h3 className="text-2xl font-black text-white mb-8 relative z-10">Scientific Taxonomy</h3>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
                                     {[
                                         { label: 'KINGDOM', value: 'Animalia' },
@@ -389,17 +437,12 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                         </section>
 
                         {/* Section: Details del Registro */}
-                        <section id="details" className="scroll-mt-24 space-y-12 border-t border-gray-100 pt-16">
-                            <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-gray-100 pb-8">
-                                <div className="space-y-2">
-                                    <h3 className="text-2xl font-black text-gray-900 leading-tight">Record Details</h3>
-                                    <p className="text-gray-500 font-medium">Metadatos técnicos y contexto del especimen observado.</p>
-                                </div>
-                                <div className="flex gap-2">
-                                    <span className="px-3 py-1 bg-accent-green text-white text-[10px] font-black tracking-widest uppercase rounded">VERIFIED</span>
-                                    <span className="px-3 py-1 bg-gray-100 text-gray-400 text-[10px] font-black tracking-widest uppercase rounded">CATALOGED</span>
-                                </div>
-                            </div>
+                        <section id="details" className="scroll-mt-24 border-t border-gray-100 pt-16">
+                            <SectionHeader
+                                title={lang === 'es' ? 'Detalles del Registro' : 'Record Details'}
+                                description={lang === 'es' ? 'Metadatos técnicos y contexto del especimen observado.' : 'Technical metadata and context of the observed specimen.'}
+                                badges={['VERIFIED', 'CATALOGED']}
+                            />
 
                             {species.databaseDetails && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -440,23 +483,28 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                             )}
                         </section>
 
-                        {/* CTA / Support Section (Image 4 Inspired) */}
-                        <div className="pt-24">
-                            <div className="bg-[#45a45e] p-12 rounded-[3.5rem] flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden group shadow-2xl shadow-accent-green/20 text-white">
-                                <div className="relative z-10 space-y-6 text-center md:text-left">
-                                    <h3 className="text-4xl font-black leading-tight max-w-md">Support our science</h3>
-                                    <p className="text-white/80 font-medium max-w-sm">
-                                        We rely on recordings to keep this service running and help biodiversity thrive around the world.
-                                    </p>
-                                    <button className="px-10 py-4 bg-gray-900 text-white font-black rounded-xl hover:bg-black transition-all hover:scale-105 active:scale-95 shadow-xl inline-flex items-center gap-2 group">
-                                        DONATE NOW <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                                    </button>
+                        {/* CTA / Support Section */}
+                        <div className="pt-24 pb-12">
+                            <div className="relative overflow-hidden bg-gradient-to-br from-primary-dark to-[#0c141d] rounded-lg p-10 md:p-16 text-white border border-white/5 group">
+                                {/* Decorative elements */}
+                                <div className="absolute top-0 right-0 w-96 h-96 bg-accent-green/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-accent-green/20 transition-all duration-700"></div>
+                                <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent-green/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+
+                                <div className="relative z-10 flex flex-col md:flex-row items-center gap-12 text-center md:text-left">
+                                    <div className="flex-1 space-y-8">
+                                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-full text-[10px] font-black tracking-[0.2em] uppercase text-accent-green border border-accent-green/20">
+                                            <span className="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
+                                            INVESTIGACIÓN Y CONSERVACIÓN
+                                        </div>
+                                        <h3 className="text-4xl md:text-5xl font-black leading-[1.1] tracking-tight">
+                                            Ayúdanos a proteger la biodiversidad amazónica
+                                        </h3>
+                                    </div>
+                                    <div className="w-56 h-56 md:w-72 md:h-72 shrink-0 relative animate-float transition-transform duration-700 group-hover:scale-110">
+                                        <div className="absolute inset-0 bg-accent-green/20 blur-[60px] rounded-full"></div>
+                                        <img src="/images/logo-mini.webp" alt="Support" className="relative z-10 w-full h-full object-contain filter brightness-90 contrast-125" />
+                                    </div>
                                 </div>
-                                <div className="relative z-10 w-64 h-64 lg:w-80 lg:h-80 grayscale brightness-110 group-hover:grayscale-0 group-hover:brightness-125 transition-all duration-700">
-                                    <img src="/images/logo-mini.webp" alt="Support owl" className="w-full h-full object-contain" />
-                                </div>
-                                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-white/5 rounded-full blur-[80px]" />
-                                <div className="absolute -top-24 -right-24 w-96 h-96 bg-accent-green-dark/20 rounded-full blur-[100px]" />
                             </div>
                         </div>
 
