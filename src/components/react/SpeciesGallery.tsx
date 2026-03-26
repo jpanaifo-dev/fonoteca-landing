@@ -44,21 +44,23 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
 
     const renderGrid = () => {
         const count = images.length;
+        const imgClass = "w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 p-2 md:p-4";
+        const cellClass = "cursor-pointer overflow-hidden group bg-[#0a0a0a] border border-white/5 relative flex items-center justify-center";
 
         if (count === 1) {
             return (
-                <div className="w-full aspect-video rounded-3xl overflow-hidden cursor-pointer shadow-lg group" onClick={() => openLightbox(0)}>
-                    <img src={images[0]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Gallery 1" />
+                <div className={`${cellClass} w-full aspect-video rounded-3xl`} onClick={() => openLightbox(0)}>
+                    <img src={images[0]} className={imgClass} alt="Gallery 1" />
                 </div>
             );
         }
 
         if (count === 2) {
             return (
-                <div className="grid grid-cols-2 gap-2 h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-lg">
+                <div className="grid grid-cols-2 gap-3 h-[300px] md:h-[400px] rounded-3xl overflow-hidden">
                     {images.slice(0, 2).map((img, i) => (
-                        <div key={i} className="cursor-pointer overflow-hidden group" onClick={() => openLightbox(i)}>
-                            <img src={img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={`Gallery ${i+1}`} />
+                        <div key={i} className={`${cellClass} rounded-2xl`} onClick={() => openLightbox(i)}>
+                            <img src={img} className={imgClass} alt={`Gallery ${i+1}`} />
                         </div>
                     ))}
                 </div>
@@ -67,13 +69,13 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
 
         if (count === 3) {
             return (
-                <div className="grid grid-cols-2 grid-rows-2 gap-2 h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-lg">
-                    <div className="row-span-2 cursor-pointer overflow-hidden group" onClick={() => openLightbox(0)}>
-                        <img src={images[0]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Gallery 1" />
+                <div className="grid grid-cols-2 grid-rows-2 gap-3 h-[400px] md:h-[500px]">
+                    <div className={`${cellClass} row-span-2 rounded-3xl`} onClick={() => openLightbox(0)}>
+                        <img src={images[0]} className={imgClass} alt="Gallery 1" />
                     </div>
                     {images.slice(1, 3).map((img, i) => (
-                        <div key={i+1} className="cursor-pointer overflow-hidden group" onClick={() => openLightbox(i+1)}>
-                            <img src={img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={`Gallery ${i+2}`} />
+                        <div key={i+1} className={`${cellClass} rounded-2xl`} onClick={() => openLightbox(i+1)}>
+                            <img src={img} className={imgClass} alt={`Gallery ${i+2}`} />
                         </div>
                     ))}
                 </div>
@@ -82,14 +84,14 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
 
         if (count === 4) {
             return (
-                <div className="grid grid-cols-2 grid-rows-2 gap-2 h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-lg">
-                    <div className="row-span-2 cursor-pointer overflow-hidden group" onClick={() => openLightbox(0)}>
-                        <img src={images[0]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Gallery 1" />
+                <div className="grid grid-cols-2 grid-rows-2 gap-3 h-[400px] md:h-[500px]">
+                    <div className={`${cellClass} row-span-2 rounded-3xl`} onClick={() => openLightbox(0)}>
+                        <img src={images[0]} className={imgClass} alt="Gallery 1" />
                     </div>
-                    <div className="grid grid-rows-3 gap-2 h-full">
+                    <div className="grid grid-rows-3 gap-3 h-full">
                          {images.slice(1, 4).map((img, i) => (
-                            <div key={i+1} className="cursor-pointer overflow-hidden group" onClick={() => openLightbox(i+1)}>
-                                <img src={img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={`Gallery ${i+2}`} />
+                            <div key={i+1} className={`${cellClass} rounded-xl`} onClick={() => openLightbox(i+1)}>
+                                <img src={img} className={imgClass} alt={`Gallery ${i+2}`} />
                             </div>
                         ))}
                     </div>
@@ -99,28 +101,28 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
 
         // 5 or more
         return (
-            <div className="grid grid-cols-2 gap-2 h-[500px] md:h-[600px] rounded-3xl overflow-hidden shadow-2xl">
+            <div className="grid grid-cols-2 gap-3 h-[400px] md:h-[500px]">
                 {/* Left Column (2 images) */}
-                <div className="grid grid-rows-2 gap-2 h-full">
+                <div className="grid grid-rows-2 gap-3 h-full">
                     {images.slice(0, 2).map((img, i) => (
-                        <div key={i} className="cursor-pointer overflow-hidden group" onClick={() => openLightbox(i)}>
-                            <img src={img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={`Gallery ${i+1}`} />
+                        <div key={i} className={`${cellClass} rounded-2xl`} onClick={() => openLightbox(i)}>
+                            <img src={img} className={imgClass} alt={`Gallery ${i+1}`} />
                         </div>
                     ))}
                 </div>
 
                 {/* Right Column (3 images) */}
-                <div className="grid grid-rows-3 gap-2 h-full">
+                <div className="grid grid-rows-3 gap-3 h-full">
                     {images.slice(2, 4).map((img, i) => (
-                        <div key={i+2} className="cursor-pointer overflow-hidden group" onClick={() => openLightbox(i+2)}>
-                            <img src={img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={`Gallery ${i+3}`} />
+                        <div key={i+2} className={`${cellClass} rounded-xl`} onClick={() => openLightbox(i+2)}>
+                            <img src={img} className={imgClass} alt={`Gallery ${i+3}`} />
                         </div>
                     ))}
                     {/* The 5th item with the +X overlay */}
-                    <div className="relative cursor-pointer overflow-hidden group" onClick={() => openLightbox(4)}>
-                        <img src={images[4]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Gallery 5" />
+                    <div className={`${cellClass} rounded-xl`} onClick={() => openLightbox(4)}>
+                        <img src={images[4]} className={imgClass} alt="Gallery 5" />
                         {images.length > 5 && (
-                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center group-hover:bg-black/40 transition-colors">
+                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center group-hover:bg-black/40 transition-colors pointer-events-none">
                                 <span className="text-white text-3xl font-bold">+{images.length - 4}</span>
                             </div>
                         )}
@@ -131,7 +133,7 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
     };
 
     return (
-        <>
+        <div className="w-full">
             {renderGrid()}
 
             {/* Lightbox / Facebook Style Viewer */}
@@ -141,12 +143,12 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-10"
+                        className="fixed inset-0 z-[100] bg-black/98 flex items-center justify-center p-4 md:p-10 backdrop-blur-md"
                         onClick={closeLightbox}
                     >
                         {/* Close Button */}
                         <button 
-                            className="absolute top-6 right-6 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all shadow-xl backdrop-blur-md"
+                            className="absolute top-6 right-6 z-10 p-3 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all border border-white/5 backdrop-blur-md"
                             onClick={closeLightbox}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
@@ -158,7 +160,7 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                         {images.length > 1 && (
                             <>
                                 <button 
-                                    className="absolute left-6 top-1/2 -translate-y-1/2 z-10 p-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-md"
+                                    className="absolute left-6 top-1/2 -translate-y-1/2 z-10 p-4 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all backdrop-blur-md"
                                     onClick={prevImage}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8">
@@ -166,7 +168,7 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                                     </svg>
                                 </button>
                                 <button 
-                                    className="absolute right-6 top-1/2 -translate-y-1/2 z-10 p-4 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-md"
+                                    className="absolute right-6 top-1/2 -translate-y-1/2 z-10 p-4 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all backdrop-blur-md"
                                     onClick={nextImage}
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8">
@@ -177,32 +179,39 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                         )}
 
                         {/* Image Counter */}
-                        <div className="absolute top-6 left-6 text-white/70 text-sm font-medium">
+                        <div className="absolute top-6 left-1/2 -translate-x-1/2 text-white/80 text-[10px] font-bold bg-white/5 px-4 py-2 rounded-full border border-white/5 backdrop-blur-md uppercase tracking-[0.2em] pointer-events-none">
                             {lightboxIndex + 1} / {images.length}
                         </div>
 
-                        {/* Image Container */}
+                        {/* Image Container with fixed height vs responsive width logic */}
                         <motion.div 
                             key={lightboxIndex}
-                            initial={{ scale: 0.9, opacity: 0 }}
+                            initial={{ scale: 0.98, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            className="relative max-w-7xl max-h-full flex items-center justify-center overflow-hidden rounded-lg pointer-events-none"
+                            exit={{ scale: 0.98, opacity: 0 }}
+                            className="relative w-full h-full flex flex-col items-center justify-center pointer-events-none"
                         >
-                            <img 
-                                src={images[lightboxIndex]} 
-                                className="max-w-full max-h-[85vh] object-contain shadow-2xl pointer-events-auto"
-                                alt={`Gallery ${lightboxIndex + 1}`}
-                            />
+                            <div className="relative bg-[#050505] p-2 md:p-3 rounded-2xl border border-white/10 flex items-center justify-center max-w-[95vw] max-h-[85vh] overflow-hidden pointer-events-auto">
+                                <img 
+                                    src={images[lightboxIndex]} 
+                                    className="max-w-full max-h-[70vh] md:max-h-[75vh] w-auto h-auto object-contain transition-all rounded-lg"
+                                    alt={`Gallery ${lightboxIndex + 1}`}
+                                />
+                            </div>
+                            
+                            {/* Metadata/Caption Placeholder Area */}
+                            <div className="mt-6 text-white/20 text-[9px] tracking-[0.4em] uppercase pointer-events-none font-medium">
+                                Visualización de Registro
+                            </div>
                         </motion.div>
 
-                        {/* Bottom Info (Optional) */}
-                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-xs tracking-widest uppercase">
+                        {/* ESC key hint */}
+                        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/20 text-[8px] tracking-[0.5em] uppercase">
                             Presiona ESC para cerrar
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
-        </>
+        </div>
     );
 };

@@ -6,7 +6,11 @@ import { PageBanner } from "../../../components/react/PageBanner";
 import { SpeciesGallery } from "../../../components/react/SpeciesGallery";
 import { AudioPlayer } from "../../../components/react/AudioPlayer";
 import { translations, LANGUAGES, type Language } from "../../../i18n/data";
-import { getAllSpecies, type Species } from "../../../data/species";
+import {
+    getAllSpecies,
+    getSpeciesById,
+    type Species,
+} from "../../../data/species";
 import logoIiap from "../../../assets/logo_iiap.png";
 
 export async function getStaticPaths() {
@@ -15,13 +19,15 @@ export async function getStaticPaths() {
     return LANGUAGES.flatMap((lang) =>
         species.map((s: Species) => ({
             params: { lang, id: s.id },
-            props: { species: s },
         })),
     );
 }
 
-const { lang } = Astro.params;
-const { species } = Astro.props as { species: Species };
+const { lang, id } = Astro.params;
+
+// Siempre buscar los detalles completos del registro (incluida la ficha técnica)
+// que getAllSpecies no necesariamente incluye en la vista de lista.
+const species = await getSpeciesById(id!);
 const content = translations[lang as keyof typeof translations];
 const currentLang = lang as Language;
 
@@ -146,7 +152,9 @@ const taxonomy =
                                 <div class="mb-16">
                                     <SpeciesGallery
                                         client:load
-                                        images={species.galleryImages.map((img) => img.url)}
+                                        images={species.galleryImages.map(
+                                            (img) => img.url,
+                                        )}
                                     />
                                 </div>
                             )
@@ -174,7 +182,9 @@ const taxonomy =
                                         audioUrl={audio.url}
                                         title={audio.title ?? undefined}
                                         artist={commonName}
-                                        description={audio.description ?? undefined}
+                                        description={
+                                            audio.description ?? undefined
+                                        }
                                         spectrogramImage={
                                             audio.spectrogramImage ?? undefined
                                         }
@@ -199,7 +209,9 @@ const taxonomy =
                             <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-3xl">
                                 <SpeciesGallery
                                     client:load
-                                    images={species.spectrograms.map((img) => img.url)}
+                                    images={species.spectrograms.map(
+                                        (img) => img.url,
+                                    )}
                                 />
                             </div>
                         </div>
