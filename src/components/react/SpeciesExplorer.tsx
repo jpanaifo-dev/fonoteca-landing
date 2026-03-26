@@ -725,7 +725,7 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
     return (
         <motion.div
             layout
-            className="group bg-white dark:bg-[#121b28] rounded-3xl border border-gray-100 dark:border-gray-800 hover:border-accent-green/30 transition-all duration-500 relative flex flex-col overflow-hidden"
+            className="group bg-white dark:bg-[#121b28] rounded-xl border border-gray-100 dark:border-gray-800 hover:border-accent-green/30 transition-all duration-500 relative flex flex-col overflow-hidden"
         >
             <div className="aspect-[6/5] relative bg-gray-50 dark:bg-gray-900 overflow-hidden">
                 {!isLoaded && (
@@ -752,7 +752,7 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
                     )}
                 </div>
                 <div className="absolute top-4 left-4">
-                    <div className="bg-black/20 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-lg uppercase tracking-widest">
+                    <div className="bg-black/50 backdrop-blur-md border border-white/20 text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-widest">
                         {categoryTitles[species.category] || species.category}
                     </div>
                 </div>
