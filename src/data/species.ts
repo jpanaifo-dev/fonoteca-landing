@@ -143,6 +143,37 @@ export interface SpeciesFilterOptions {
     limit?: number;
 }
 
+// --- Helpers ---
+export const formatMediaUrl = (identifier: string, isAudio: boolean = false) => {
+    if (!identifier) return "";
+
+    // Skip folders
+    if (identifier.includes('drive.google.com/drive/u/0/folders/') || identifier.includes('/folders/')) {
+        return "";
+    }
+
+    // Google Drive direct link patterns
+    if (identifier.includes('drive.google.com')) {
+        let fileId = "";
+        const idMatch = identifier.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+        const queryMatch = identifier.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+
+        if (idMatch && idMatch[1]) fileId = idMatch[1];
+        else if (queryMatch && queryMatch[1]) fileId = queryMatch[1];
+
+        if (fileId) {
+            if (isAudio) {
+                // docs.google.com/uc works better for audio streaming in Wavesurfer
+                return `https://docs.google.com/uc?export=download&id=${fileId}`;
+            }
+            // lh3 works best for direct image embedding (spectrograms, photos)
+            return `https://lh3.googleusercontent.com/d/${fileId}`;
+        }
+    }
+
+    return identifier;
+};
+
 import { supabase } from "../lib/supabase";
 
 export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise<{ species: Species[], totalCount: number }> {
@@ -215,9 +246,9 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
     }
 
     // 4. Audio filter (Backend via inner join)
-    if (onlyWithAudio) {
-        query = query.eq('multimedia.type', 'Sound');
-    }
+    // if (onlyWithAudio) {
+    //     query = query.eq('multimedia.type', 'Sound');
+    // }
 
     // 5. Pagination
     query = query.range(from, to).order('created_at', { ascending: false });
@@ -233,25 +264,11 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
         const loc = occ.locations;
         const media = occ.multimedia || [];
 
-        const isImage = (m: DbMultimedia) => (m.type === 'Still' || (m.format && m.format.includes('image')));
-        const isAudio = (m: DbMultimedia) => (m.type === 'Sound' || (m.format && m.format.includes('audio')));
-
-        const formatMediaUrl = (identifier: string) => {
-            if (!identifier) return "";
-            if (identifier.includes('drive.google.com/drive/u/0/folders/') || identifier.includes('/folders/')) {
-                return "";
-            }
-            if (identifier.includes('drive.google.com/file/d/')) {
-                const idMatch = identifier.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-                if (idMatch && idMatch[1]) {
-                    return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
-                }
-            }
-            return identifier;
-        };
+        const isImage = (m: DbMultimedia): boolean => !!(m.type === 'Still' || m.format?.includes('image'));
+        const isAudio = (m: DbMultimedia): boolean => !!(m.type === 'Sound' || m.format?.includes('audio'));
 
         const createMultimedia = (m: DbMultimedia): Multimedia => {
-            const url = formatMediaUrl(m.identifier);
+            const url = formatMediaUrl(m.identifier, isAudio(m));
             return {
                 id: m.id,
                 identifier: m.identifier,
@@ -266,14 +283,14 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
         };
 
         const photos = media
-            .filter((m) => isImage(m) && (m.type === 'Still'))
+            .filter((m) => isImage(m) && (m.type === 'Still') && m.tag !== 'spectrogram')
             .map(createMultimedia)
             .filter((m) => m.identifier !== "");
 
         const spectrogramsList = media
-            .filter((m) => m.tag === 'spectrogram')
+            .filter((m) => isImage(m) && (m.type === 'Still') && m.tag === 'spectrogram')
             .map(createMultimedia)
-            .filter((m) => m.url !== "");
+            .filter((m) => m.identifier !== "");
 
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
@@ -418,25 +435,11 @@ export async function getSpeciesById(id: string): Promise<Species | undefined> {
     const loc = occurrence.locations;
     const media = occurrence.multimedia || [];
 
-    const isImage = (m: DbMultimedia) => (m.type === 'Still' || (m.format && m.format.includes('image')));
-    const isAudio = (m: DbMultimedia) => (m.type === 'Sound' || (m.format && m.format.includes('audio')));
-
-    const formatMediaUrl = (identifier: string) => {
-        if (!identifier) return "";
-        if (identifier.includes('drive.google.com/drive/u/0/folders/') || identifier.includes('/folders/')) {
-            return "";
-        }
-        if (identifier.includes('drive.google.com/file/d/')) {
-            const idMatch = identifier.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-            if (idMatch && idMatch[1]) {
-                return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
-            }
-        }
-        return identifier;
-    };
+    const isImage = (m: DbMultimedia): boolean => !!(m.type === 'Still' || m.format?.includes('image'));
+    const isAudio = (m: DbMultimedia): boolean => !!(m.type === 'Sound' || m.format?.includes('audio'));
 
     const createMultimedia = (m: DbMultimedia): Multimedia => {
-        const url = formatMediaUrl(m.identifier);
+        const url = formatMediaUrl(m.identifier, isAudio(m));
         return {
             id: m.id,
             identifier: m.identifier,
@@ -451,7 +454,7 @@ export async function getSpeciesById(id: string): Promise<Species | undefined> {
     };
 
     const photos = media
-        .filter((m) => isImage(m) && (m.type === 'Still'))
+        .filter((m) => isImage(m) && (m.type === 'Still') && m.tag !== 'spectrogram')
         .map(createMultimedia)
         .filter((m) => m.identifier !== "");
 
