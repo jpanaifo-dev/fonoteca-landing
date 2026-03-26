@@ -51,7 +51,7 @@ export const Footer: React.FC<FooterProps> = ({ content, logoSrc }) => {
                         <h3 className="text-lg font-semibold mb-6 text-white">{content.links_title}</h3>
                         <ul className="space-y-4">
                             <li><a href="#" className="text-gray-400 hover:text-accent-green transition-colors">Inicio</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-accent-green transition-colors">La Fonoteca</a></li>
+                            <li><a href="#" className="text-gray-400 hover:text-accent-green transition-colors">{content.library}</a></li>
                             <li><a href="#" className="text-gray-400 hover:text-accent-green transition-colors">Especies</a></li>
                             <li><a href="#" className="text-gray-400 hover:text-accent-green transition-colors">Estadísticas</a></li>
                         </ul>

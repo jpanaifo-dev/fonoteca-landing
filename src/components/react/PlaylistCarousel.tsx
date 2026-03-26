@@ -24,7 +24,7 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
 
     // Data Prep: Multiplicamos para asegurar que el loop de Embla funcione suave
     const carouselItems = useMemo(() => {
-        if (!allSpecies || allSpecies.length === 0) return []
+        if (!Array.isArray(allSpecies) || allSpecies.length === 0) return []
         let items = [...allSpecies]
         // Embla requiere que el total de slides exceda el viewport para el loop continuo
         while (items.length < 12) {
@@ -66,7 +66,7 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
         audios: lang === 'es' ? 'audios' : 'audios',
     }
 
-    if (allSpecies.length === 0) return null
+    if (!Array.isArray(allSpecies) || allSpecies.length === 0) return null
 
     return (
         <section id="latest-recordings" className="w-full">
