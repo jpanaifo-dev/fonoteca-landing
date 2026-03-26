@@ -254,6 +254,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                 spectrogram: audio.spectrogramImage
             }
         });
+        console.log("🔊 SpeciesExplorer: Dispatching 'play-audio' for", audio.url);
         window.dispatchEvent(event);
     };
 
@@ -540,10 +541,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                             >
                                 {species.length > 0 ? (
                                     species.map(s => {
-                                        const firstAudioWithSpectrogram = s.audios.find(a => a.spectrogramImage);
-                                        const coverImage = (onlyWithAudio && firstAudioWithSpectrogram)
-                                            ? (firstAudioWithSpectrogram.spectrogramImage as string)
-                                            : (s.mainImage || '/images/logo-mini.webp');
+                                        const coverImage = s.mainImage || '/images/logo-mini.webp';
 
                                         return (
                                             <SpeciesCard
@@ -621,7 +619,8 @@ const MediaViewer: React.FC<{
     isLoaded: boolean;
     fallback?: string;
 }> = ({ src, alt, className, onLoaded, isLoaded, fallback = '/images/logo-mini.webp' }) => {
-    const isDrive = src.includes('drive.google.com/file/d/') && src.includes('/preview');
+    const driveIdMatch = src.match(/id=([a-zA-Z0-9_-]+)/) || src.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    const isDrive = src.includes('docs.google.com') || src.includes('drive.google.com');
     const [hasError, setHasError] = React.useState(false);
 
     // If no source or error detected, show fallback
@@ -636,30 +635,44 @@ const MediaViewer: React.FC<{
         );
     }
 
-    if (isDrive) {
+    if (isDrive && driveIdMatch) {
+        const driveId = driveIdMatch[1];
         return (
-            <div className="relative w-full h-full bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+            <div className="relative w-full h-full bg-gray-50 dark:bg-gray-900 flex items-center justify-center overflow-hidden">
+                {!isLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center z-10">
+                        <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                )}
                 <iframe
-                    src={src}
+                    src={`https://drive.google.com/file/d/${driveId}/preview`}
                     className={`${className} border-0 pointer-events-none transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                     allow="autoplay"
                     title={alt}
                     onLoad={onLoaded}
                     loading="lazy"
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                    scrolling="no"
                 />
             </div>
         );
     }
 
     return (
-        <img
-            src={src}
-            alt={alt}
-            className={`${className} transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-            onLoad={onLoaded}
-            onError={() => setHasError(true)}
-        />
+        <div className="relative w-full h-full overflow-hidden">
+            {!isLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                </div>
+            )}
+            <img
+                src={src}
+                alt={alt}
+                className={`${className} transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+                onLoad={onLoaded}
+                onError={() => setHasError(true)}
+            />
+        </div>
     );
 };
 
@@ -679,9 +692,9 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
         return (
             <motion.div
                 layout
-                className="bg-white dark:bg-[#121b28] p-3 rounded-2xl border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:border-accent-green/30 transition-shadow group"
+                className="bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:border-accent-green/30 hover:shadow-sm transition-all group flex-wrap md:flex-nowrap"
             >
-                <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-900 border border-gray-50 dark:border-gray-800 relative">
+                <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-900 border border-gray-50 dark:border-gray-800 relative">
                     <MediaViewer
                         src={coverImage}
                         alt=""
@@ -759,9 +772,9 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
                 </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-800">
-                    <div className="flex items-center gap-1.5 text-gray-500">
-                        <MapPin className="w-3.5 h-3.5" />
-                        <span className="text-[11px] truncate max-w-[140px]">{species.location}</span>
+                    <div className="flex items-center gap-1.5 text-gray-500 overflow-hidden">
+                        <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="text-[11px] truncate">{species.location}</span>
                     </div>
                     <a href={`/${lang}/species/${species.id}`} className="text-[11px] truncate font-medium text-accent-green hover:text-accent-green/80 flex items-center gap-1.5 transition-colors">
                         {lang === 'es' ? 'Ver más' : 'Details'}

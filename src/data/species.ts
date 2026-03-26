@@ -1,9 +1,85 @@
+// --- Database Interfaces (Supabase schema-aligned) ---
 
-export interface SpeciesAudio {
-    title: string;
-    url: string;
-    description?: string;
-    spectrogramImage?: string; // Optional static spectrogram image
+export interface DbMultimedia {
+    id: string;
+    identifier: string;
+    type: string;
+    format: string;
+    title: string | null;
+    description: string | null;
+    tag: string | null;
+    parent_multimedia_id: string | null;
+}
+
+export interface DbLocation {
+    id: string;
+    locationID: string | null;
+    continent: string | null;
+    country: string | null;
+    countryCode: string | null;
+    stateProvince: string | null;
+    county: string | null;
+    locality: string;
+    decimalLatitude: number | null;
+    decimalLongitude: number | null;
+    coordinateUncertaintyInMeters: number | null;
+    elevation: number | null;
+    elevationAccuracy: number | null;
+    habitat: string | null;
+    created_at: string;
+}
+
+export interface DbFamily {
+    name: string;
+    order: string;
+    class: string;
+}
+
+export interface DbGenus {
+    name: string;
+    family: DbFamily;
+}
+
+export interface DbTaxon {
+    scientificName: string;
+    vernacularName: string | null;
+    genus: DbGenus;
+}
+
+export interface DbOccurrence {
+    id: string;
+    occurrenceID: string;
+    taxon_id: string;
+    location_id: string;
+    basisOfRecord: string;
+    institutionCode: string | null;
+    collectionCode: string | null;
+    catalogNumber: string | null;
+    recordedBy: string;
+    identifiedBy: string | null;
+    eventDate: string;
+    eventTime: string | null;
+    lifeStage: string | null;
+    sex: string | null;
+    taxa: DbTaxon;
+    locations: DbLocation;
+    multimedia: DbMultimedia[];
+}
+
+export interface Multimedia {
+    id: string;
+    identifier: string;
+    url: string; // Formatted URL for display
+    type: string;
+    format: string;
+    title: string | null;
+    description: string | null;
+    tag: string | null;
+    parent_multimedia_id: string | null;
+}
+
+export interface SpeciesAudio extends Multimedia {
+    spectrogramImage: string | null | undefined; // URL of associated spectrogram
 }
 
 export type SpeciesCategory = 'Amphibians' | 'Birds' | 'Mammals' | 'Crickets' | 'Reptiles';
@@ -25,33 +101,33 @@ export interface Species {
         en: string[];
         pt: string[];
     };
-    mainImage: string;
-    galleryImages: string[];
-    spectrograms: string[];
+    galleryImages: Multimedia[];
+    spectrograms: Multimedia[];
     audios: SpeciesAudio[]; // List of audios
+    mainImage: string; // Principal image for preview
     location: string;
     genus?: string;
     family?: string;
     order?: string;
     class_name?: string;
     databaseDetails?: {
-        occurrenceID?: string;
-        basisOfRecord?: string;
-        institutionCode?: string;
-        collectionCode?: string;
-        catalogNumber?: string;
-        eventDate?: string;
-        eventTime?: string;
-        lifeStage?: string;
-        sex?: string;
-        identifiedBy?: string;
-        continent?: string;
-        country?: string;
-        stateProvince?: string;
-        locality?: string;
-        decimalLatitude?: number;
-        decimalLongitude?: number;
-        elevation?: number;
+        occurrenceID: string | null;
+        basisOfRecord: string | null;
+        institutionCode: string | null;
+        collectionCode: string | null;
+        catalogNumber: string | null;
+        eventDate: string | null;
+        eventTime: string | null;
+        lifeStage: string | null;
+        sex: string | null;
+        identifiedBy: string | null;
+        continent: string | null;
+        country: string | null;
+        stateProvince: string | null;
+        locality: string | null;
+        decimalLatitude: number | null;
+        decimalLongitude: number | null;
+        elevation: number | null;
     };
 }
 
@@ -84,10 +160,8 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
 
     const from = (page - 1) * limit;
     const to = from + limit - 1;
-
     // Base query for counting AND fetching
-    // To filter only with audio from backend, we use !inner join on multimedia when onlyWithAudio is true
-    const multimediaSelect = onlyWithAudio ? 'multimedia!inner(*)' : 'multimedia(*)';
+    const multimediaJoin = onlyWithAudio ? '!inner' : '';
 
     let query = supabase
         .from("occurrences")
@@ -109,8 +183,9 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
                 )
             ),
             locations!inner (*),
-            ${multimediaSelect}
+            multimedia${multimediaJoin}(*)
         `, { count: 'exact' });
+
 
     // 1. Search filter
     if (searchTerm) {
@@ -139,66 +214,83 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
         query = query.eq('locations.locality', location);
     }
 
-    // 4. Audio filter (Backend)
+    // 4. Audio filter (Backend via inner join)
     if (onlyWithAudio) {
         query = query.eq('multimedia.type', 'Sound');
     }
 
     // 5. Pagination
-    query = query.range(from, to);
+    query = query.range(from, to).order('created_at', { ascending: false });
 
-    const { data: occurrences, error, count } = await query;
-
+    const { data: occurrences, error, count } = await query as { data: DbOccurrence[] | null, error: any, count: number | null };
     if (error) {
         console.error("Error fetching species from Supabase:", error);
         return { species: [], totalCount: 0 };
     }
 
-    let speciesList = (occurrences as any[] || []).map((occ) => {
+    const speciesList: Species[] = (occurrences || []).map((occ) => {
         const taxon = occ.taxa;
         const loc = occ.locations;
         const media = occ.multimedia || [];
 
-        const isImage = (m: any) => (m.type === 'Still' || (m.type && m.type.toLowerCase().includes('image')) || m.format?.includes('image'));
-        const isAudio = (m: any) => (m.type === 'Sound' || (m.type && m.type.toLowerCase().includes('sound')) || m.format?.includes('audio'));
+        const isImage = (m: DbMultimedia) => (m.type === 'Still' || (m.format && m.format.includes('image')));
+        const isAudio = (m: DbMultimedia) => (m.type === 'Sound' || (m.format && m.format.includes('audio')));
 
         const formatMediaUrl = (identifier: string) => {
             if (!identifier) return "";
-            // If it's a Drive URL, use the preview viewer
+            if (identifier.includes('drive.google.com/drive/u/0/folders/') || identifier.includes('/folders/')) {
+                return "";
+            }
             if (identifier.includes('drive.google.com/file/d/')) {
                 const idMatch = identifier.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
                 if (idMatch && idMatch[1]) {
                     return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
                 }
             }
-            // If it's a local path or a full URL, return it as is
             return identifier;
         };
 
-        // Images are those with tag 'gallery' or no tag
-        const photos = media
-            .filter((m: any) => isImage(m) && (m.tag === 'gallery' || !m.tag))
-            .map((m: any) => formatMediaUrl(m.identifier));
+        const createMultimedia = (m: DbMultimedia): Multimedia => {
+            const url = formatMediaUrl(m.identifier);
+            return {
+                id: m.id,
+                identifier: m.identifier,
+                url: url,
+                type: m.type,
+                format: m.format,
+                title: m.title,
+                description: m.description,
+                tag: m.tag,
+                parent_multimedia_id: m.parent_multimedia_id
+            };
+        };
 
-        // Spectrograms are those with tag 'spectrogram'
+        const photos = media
+            .filter((m) => isImage(m) && (m.type === 'Still'))
+            .map(createMultimedia)
+            .filter((m) => m.identifier !== "");
+
         const spectrogramsList = media
-            .filter((m: any) => m.tag === 'spectrogram' && isImage(m));
+            .filter((m) => m.tag === 'spectrogram')
+            .map(createMultimedia)
+            .filter((m) => m.url !== "");
 
         const audios: SpeciesAudio[] = media
             .filter(isAudio)
-            .map((m: any) => {
-                // Find associated spectrogram: either by parent_multimedia_id OR by title match if same occurrence
-                let spectrogram = spectrogramsList.find(
-                    (s: any) => s.parent_multimedia_id === m.id || (s.title && m.title && s.title.includes(m.title))
+            .map((m): SpeciesAudio | null => {
+                const multim = createMultimedia(m);
+                if (multim.url === "") return null;
+
+                const spectrogram = spectrogramsList.find(
+                    (s) => s.parent_multimedia_id === m.id || (s.title && m.title && s.title.includes(m.title))
                 );
-                
+
                 return {
-                    title: m.title || "Audio",
-                    url: formatMediaUrl(m.identifier),
-                    description: m.description || "",
-                    spectrogramImage: spectrogram ? formatMediaUrl(spectrogram.identifier) : undefined,
+                    ...multim,
+                    spectrogramImage: spectrogram ? spectrogram.url : undefined,
                 };
-            });
+            })
+            .filter((a): a is SpeciesAudio => a !== null);
 
         const classToCategory: Record<string, SpeciesCategory> = {
             'Amphibia': "Amphibians",
@@ -212,6 +304,14 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
         const cat = classToCategory[class_name] || "Amphibians";
         const commonName = taxon?.vernacularName || "Sin Nombre";
 
+        const spectroUrl = spectrogramsList.length > 0 ? spectrogramsList[0].url : null;
+        const photoUrl = photos.length > 0 ? photos[0].url : null;
+        const fallbackUrl = '/images/logo-mini.webp';
+
+        const imageToDisplay = onlyWithAudio
+            ? (spectroUrl || photoUrl || fallbackUrl)
+            : (photoUrl || spectroUrl || fallbackUrl);
+
         return {
             id: occ.id || "unknown",
             scientificName: taxon?.scientificName || "Unknown",
@@ -224,46 +324,218 @@ export async function getAllSpecies(options: SpeciesFilterOptions = {}): Promise
                 en: "Record description.",
                 pt: "Descrição do registro.",
             },
-            mainImage: photos.length > 0 ? photos[0] : "https://upload.wikimedia.org/wikipedia/commons/b/ba/No_image_available_400_x_400.png",
             galleryImages: photos,
-            spectrograms: spectrogramsList.map((s: any) => formatMediaUrl(s.identifier)),
+            spectrograms: spectrogramsList,
             audios: audios,
+            mainImage: imageToDisplay,
             location: loc?.locality || "Unknown Location",
             genus: taxon?.genus?.name,
             family: taxon?.genus?.family?.name,
             order: taxon?.genus?.family?.order,
             class_name: taxon?.genus?.family?.class,
             databaseDetails: {
-                occurrenceID: occ?.occurrenceID,
-                basisOfRecord: occ?.basisOfRecord,
-                institutionCode: occ?.institutionCode,
-                collectionCode: occ?.collectionCode,
-                catalogNumber: occ?.catalogNumber,
-                eventDate: occ?.eventDate,
-                eventTime: occ?.eventTime,
-                lifeStage: occ?.lifeStage,
-                sex: occ?.sex,
-                identifiedBy: occ?.identifiedBy,
-                continent: loc?.continent,
-                country: loc?.country,
-                stateProvince: loc?.stateProvince,
-                locality: loc?.locality,
-                decimalLatitude: loc?.decimalLatitude,
-                decimalLongitude: loc?.decimalLongitude,
-                elevation: loc?.elevation,
+                occurrenceID: occ.occurrenceID,
+                basisOfRecord: occ.basisOfRecord,
+                institutionCode: occ.institutionCode,
+                collectionCode: occ.collectionCode,
+                catalogNumber: occ.catalogNumber,
+                eventDate: occ.eventDate,
+                eventTime: occ.eventTime,
+                lifeStage: occ.lifeStage,
+                sex: occ.sex,
+                identifiedBy: occ.identifiedBy,
+                continent: loc?.continent || null,
+                country: loc?.country || null,
+                stateProvince: loc?.stateProvince || null,
+                locality: loc?.locality || null,
+                decimalLatitude: loc?.decimalLatitude || null,
+                decimalLongitude: loc?.decimalLongitude || null,
+                elevation: loc?.elevation || null,
             }
         };
     });
 
-    return { 
-        species: speciesList, 
-        totalCount: count || 0 
+
+    return {
+        species: speciesList,
+        totalCount: count || 0
     };
 }
 
 export async function getSpeciesById(id: string): Promise<Species | undefined> {
-    const { species } = await getAllSpecies({ limit: 1000 }); // Heuristic for now
-    return species.find((s) => s.id === id);
+    const { data: occurrence, error } = await supabase
+        .from('occurrences')
+        .select(`
+            id,
+            occurrenceID,
+            basisOfRecord,
+            institutionCode,
+            collectionCode,
+            catalogNumber,
+            eventDate,
+            eventTime,
+            lifeStage,
+            sex,
+            identifiedBy,
+            taxa:taxa!inner(
+                scientificName,
+                vernacularName,
+                genus:genera!inner(
+                    name,
+                    family:families!inner(
+                        name,
+                        order,
+                        class
+                    )
+                )
+            ),
+            locations:locations!inner(
+                continent,
+                country,
+                stateProvince,
+                locality,
+                decimalLatitude,
+                decimalLongitude,
+                elevation
+            ),
+            multimedia:multimedia(
+                id,
+                identifier,
+                type,
+                format,
+                title,
+                description,
+                tag,
+                parent_multimedia_id
+            )
+        `)
+        .eq('id', id)
+        .single() as { data: DbOccurrence | null, error: any };
+
+    if (error || !occurrence) return undefined;
+
+    const taxon = occurrence.taxa;
+    const loc = occurrence.locations;
+    const media = occurrence.multimedia || [];
+
+    const isImage = (m: DbMultimedia) => (m.type === 'Still' || (m.format && m.format.includes('image')));
+    const isAudio = (m: DbMultimedia) => (m.type === 'Sound' || (m.format && m.format.includes('audio')));
+
+    const formatMediaUrl = (identifier: string) => {
+        if (!identifier) return "";
+        if (identifier.includes('drive.google.com/drive/u/0/folders/') || identifier.includes('/folders/')) {
+            return "";
+        }
+        if (identifier.includes('drive.google.com/file/d/')) {
+            const idMatch = identifier.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (idMatch && idMatch[1]) {
+                return `https://drive.google.com/file/d/${idMatch[1]}/preview`;
+            }
+        }
+        return identifier;
+    };
+
+    const createMultimedia = (m: DbMultimedia): Multimedia => {
+        const url = formatMediaUrl(m.identifier);
+        return {
+            id: m.id,
+            identifier: m.identifier,
+            url: url,
+            type: m.type,
+            format: m.format,
+            title: m.title,
+            description: m.description,
+            tag: m.tag,
+            parent_multimedia_id: m.parent_multimedia_id
+        };
+    };
+
+    const photos = media
+        .filter((m) => isImage(m) && (m.type === 'Still'))
+        .map(createMultimedia)
+        .filter((m) => m.identifier !== "");
+
+    const spectrogramsList = media
+        .filter((m) => m.tag === 'spectrogram')
+        .map(createMultimedia)
+        .filter((m) => m.url !== "");
+
+    const audios: SpeciesAudio[] = media
+        .filter(isAudio)
+        .map((m): SpeciesAudio | null => {
+            const multim = createMultimedia(m);
+            if (multim.url === "") return null;
+
+            const spectrogram = spectrogramsList.find(
+                (s) => s.parent_multimedia_id === m.id || (s.title && m.title && s.title.includes(m.title))
+            );
+
+            return {
+                ...multim,
+                spectrogramImage: spectrogram ? spectrogram.url : undefined,
+            };
+        })
+        .filter((a): a is SpeciesAudio => a !== null);
+
+    const classToCategory: Record<string, SpeciesCategory> = {
+        'Amphibia': "Amphibians",
+        'Aves': "Birds",
+        'Mammalia': "Mammals",
+        'Insecta': "Crickets",
+        'Reptilia': "Reptiles",
+    };
+
+    const class_name = taxon?.genus?.family?.class || "";
+    const cat = classToCategory[class_name] || "Amphibians";
+    const commonName = taxon?.vernacularName || "Sin Nombre";
+
+    const spectroUrl = spectrogramsList.length > 0 ? spectrogramsList[0].url : null;
+    const photoUrl = photos.length > 0 ? photos[0].url : null;
+    const fallbackUrl = '/images/logo-mini.webp';
+
+    const imageToDisplay = photoUrl || spectroUrl || fallbackUrl;
+
+    return {
+        id: occurrence.id || "unknown",
+        scientificName: taxon?.scientificName || "Unknown",
+        commonName_es: commonName,
+        commonName_en: commonName,
+        commonName_pt: commonName,
+        category: cat,
+        description: {
+            es: "Descripción del registro.",
+            en: "Record description.",
+            pt: "Descrição do registro.",
+        },
+        galleryImages: photos,
+        spectrograms: spectrogramsList,
+        audios: audios,
+        mainImage: imageToDisplay,
+        location: loc?.locality || "Unknown Location",
+        genus: taxon?.genus?.name,
+        family: taxon?.genus?.family?.name,
+        order: taxon?.genus?.family?.order,
+        class_name: taxon?.genus?.family?.class,
+        databaseDetails: {
+            occurrenceID: occurrence.occurrenceID,
+            basisOfRecord: occurrence.basisOfRecord,
+            institutionCode: occurrence.institutionCode,
+            collectionCode: occurrence.collectionCode,
+            catalogNumber: occurrence.catalogNumber,
+            eventDate: occurrence.eventDate,
+            eventTime: occurrence.eventTime,
+            lifeStage: occurrence.lifeStage,
+            sex: occurrence.sex,
+            identifiedBy: occurrence.identifiedBy,
+            continent: loc?.continent || null,
+            country: loc?.country || null,
+            stateProvince: loc?.stateProvince || null,
+            locality: loc?.locality || null,
+            decimalLatitude: loc?.decimalLatitude || null,
+            decimalLongitude: loc?.decimalLongitude || null,
+            elevation: loc?.elevation || null,
+        }
+    };
 }
 
 // Helper to fetch unique filter values directly from Supabase
@@ -281,15 +553,15 @@ export async function getFilterMetaData() {
                     class
                 )
             )
-        `) as { data: any[] | null };
-        
-    const { data: locs } = await supabase.from('locations').select('locality') as { data: any[] | null };
+        `) as { data: DbTaxon[] | null };
 
-    const classes = Array.from(new Set(taxa?.map(t => t.genus?.family?.class).filter(Boolean))).sort();
-    const orders = Array.from(new Set(taxa?.map(t => t.genus?.family?.order).filter(Boolean))).sort();
-    const families = Array.from(new Set(taxa?.map(t => t.genus?.family?.name).filter(Boolean))).sort();
-    const genera = Array.from(new Set(taxa?.map(t => t.genus?.name).filter(Boolean))).sort();
-    const localities = Array.from(new Set(locs?.map(l => l.locality).filter(Boolean))).sort();
+    const { data: locs } = await supabase.from('locations').select('locality') as { data: { locality: string }[] | null };
+
+    const classes = Array.from(new Set(taxa?.map(t => t.genus?.family?.class).filter(Boolean) as string[])).sort();
+    const orders = Array.from(new Set(taxa?.map(t => t.genus?.family?.order).filter(Boolean) as string[])).sort();
+    const families = Array.from(new Set(taxa?.map(t => t.genus?.family?.name).filter(Boolean) as string[])).sort();
+    const genera = Array.from(new Set(taxa?.map(t => t.genus?.name).filter(Boolean) as string[])).sort();
+    const localities = Array.from(new Set(locs?.map(l => l.locality).filter(Boolean) as string[])).sort();
 
     return { classes, orders, families, genera, localities };
 }
