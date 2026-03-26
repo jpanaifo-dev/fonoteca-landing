@@ -25,6 +25,7 @@ export const PersistentPlayer = () => {
         // Listen for custom events to play audio
         const handlePlayAudio = (event: CustomEvent<AudioTrack>) => {
             const newTrack = event.detail;
+            console.log("📥 PersistentPlayer: Received 'play-audio' event", newTrack);
             setIsVisible(true);
             playOnLoad.current = true; // User interaction always implies play
             setTrack(newTrack);
@@ -43,7 +44,7 @@ export const PersistentPlayer = () => {
             setPlaylist(newPlaylist);
             if (newPlaylist.length > 0) {
                 const startTrack = newPlaylist[startAtIndex];
-                
+
                 if (!track || track.url !== startTrack.url) {
                     setTrack(startTrack);
                     setCurrentIndex(startAtIndex);
@@ -122,12 +123,12 @@ export const PersistentPlayer = () => {
     if (!track || !isVisible) return null;
 
     return (
-        <AudioPlayer 
+        <AudioPlayer
             key={trackKey || track.url}
-            audioUrl={track.url} 
-            title={track.title} 
-            artist={track.artist} 
-            spectrogramImage={track.spectrogram || track.image} 
+            audioUrl={track.url}
+            title={track.title}
+            artist={track.artist}
+            spectrogramImage={track.spectrogram || track.image}
             autoplay={playOnLoad.current}
             onFinish={playNext}
             isModalContainer={true}

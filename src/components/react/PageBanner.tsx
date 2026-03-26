@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 interface PageBannerProps {
     title: string;
     subtitle: string;
-    image: string;
+    image?: string;
     breadcrumbs?: {
         backLink: string;
         backText: string;

@@ -3,7 +3,6 @@ import { persist } from 'zustand/middleware';
 
 interface SpeciesState {
     searchTerm: string;
-    selectedCategory: string;
     selectedLocation: string;
     selectedClass: string;
     selectedOrder: string;
@@ -14,7 +13,6 @@ interface SpeciesState {
     isSidebarCollapsed: boolean;
     page: number;
     setSearchTerm: (s: string) => void;
-    setSelectedCategory: (c: string) => void;
     setSelectedLocation: (l: string) => void;
     setSelectedClass: (c: string) => void;
     setSelectedOrder: (o: string) => void;
@@ -30,7 +28,6 @@ export const useSpeciesStore = create<SpeciesState>()(
     persist(
         (set) => ({
             searchTerm: '',
-            selectedCategory: 'All',
             selectedLocation: 'All',
             selectedClass: 'All',
             selectedOrder: 'All',
@@ -41,7 +38,6 @@ export const useSpeciesStore = create<SpeciesState>()(
             isSidebarCollapsed: false,
             page: 1,
             setSearchTerm: (searchTerm) => set({ searchTerm, page: 1 }),
-            setSelectedCategory: (selectedCategory) => set({ selectedCategory, page: 1 }),
             setSelectedLocation: (selectedLocation) => set({ selectedLocation, page: 1 }),
             setSelectedClass: (selectedClass) => set({ selectedClass, selectedOrder: 'All', selectedFamily: 'All', selectedGenus: 'All', page: 1 }),
             setSelectedOrder: (selectedOrder) => set({ selectedOrder, selectedFamily: 'All', selectedGenus: 'All', page: 1 }),
@@ -53,7 +49,11 @@ export const useSpeciesStore = create<SpeciesState>()(
             setPage: (page) => set({ page }),
         }),
         {
-            name: 'species-filters-storage', // name of the item in the storage (must be unique)
+            name: 'species-ui-storage',
+            partialize: (state) => ({ 
+                isSidebarCollapsed: state.isSidebarCollapsed,
+                viewMode: state.viewMode
+            }),
         }
     )
 );

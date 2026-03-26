@@ -21,11 +21,11 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params;
 const content = translations[lang as keyof typeof translations];
-const allSpecies = await getAllSpecies();
+const { species: allSpecies } = await getAllSpecies();
 ---
 
 <Layout
-    title="Fonoteca - Instituto de Investigaciones de la Amazonía Peruana"
+    title="Biblioteca Acústica de fauna Amazónica - Instituto de Investigaciones de la Amazonía Peruana"
     lang={lang}
 >
     <Header

@@ -1,4 +1,4 @@
-# Astro Starter Kit: Basics
+# Biblioteca Acústica de fauna - Landing Page
 
 ```sh
 npm create astro@latest -- --template basics

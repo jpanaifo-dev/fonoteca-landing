@@ -10,12 +10,12 @@ import { getAllSpecies, type Species } from "../../../data/species";
 import logoIiap from "../../../assets/logo_iiap.png";
 
 export async function getStaticPaths() {
-    const speciesList = await getAllSpecies();
+    const { species } = await getAllSpecies({ limit: 1000 });
 
     return LANGUAGES.flatMap((lang) =>
-        speciesList.map((species) => ({
-            params: { lang, id: species.id },
-            props: { species },
+        species.map((s: Species) => ({
+            params: { lang, id: s.id },
+            props: { species: s },
         })),
     );
 }
@@ -140,12 +140,17 @@ const taxonomy =
                     </div>
 
                     {/* Gallery Section - Centered */}
-                    <div class="mb-16">
-                        <SpeciesGallery
-                            client:load
-                            images={species.galleryImages}
-                        />
-                    </div>
+                    {
+                        species.galleryImages &&
+                            species.galleryImages.length > 0 && (
+                                <div class="mb-16">
+                                    <SpeciesGallery
+                                        client:load
+                                        images={species.galleryImages.map((img) => img.url)}
+                                    />
+                                </div>
+                            )
+                    }
                 </div>
 
                 <div class="mb-16 w-full max-w-5xl mx-auto">
@@ -167,11 +172,11 @@ const taxonomy =
                                     <AudioPlayer
                                         client:only="react"
                                         audioUrl={audio.url}
-                                        title={audio.title}
+                                        title={audio.title ?? undefined}
                                         artist={commonName}
-                                        description={audio.description}
+                                        description={audio.description ?? undefined}
                                         spectrogramImage={
-                                            audio.spectrogramImage
+                                            audio.spectrogramImage ?? undefined
                                         }
                                     />
                                 </div>
@@ -194,7 +199,7 @@ const taxonomy =
                             <div class="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-3xl">
                                 <SpeciesGallery
                                     client:load
-                                    images={species.spectrograms}
+                                    images={species.spectrograms.map((img) => img.url)}
                                 />
                             </div>
                         </div>
@@ -490,11 +495,11 @@ const taxonomy =
         function initPlaylist() {
             if (species.audios && species.audios.length > 0) {
                 const playlist = species.audios.map((audio) => ({
-                    title: audio.title,
+                    title: audio.title || "Canto",
                     artist: commonName,
                     url: audio.url,
                     image: species.mainImage || "/images/logo-mini.webp", // Using main image as fallback, but spectrogram is primary for thumbnail
-                    spectrogram: audio.spectrogramImage,
+                    spectrogram: audio.spectrogramImage ?? undefined,
                 }));
 
                 const playlistData = {
