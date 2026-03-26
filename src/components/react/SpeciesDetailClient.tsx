@@ -350,7 +350,7 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                         <section id="characteristics" className="scroll-mt-24 space-y-8 border-t border-gray-100 pt-16">
                             <h3 className="text-2xl font-black text-gray-900">Ecology & Description</h3>
                             <div className="prose prose-lg text-gray-700 leading-relaxed max-w-none">
-                                <p className="mb-8 p-8 bg-gray-50 rounded-[2rem] italic border-l-8 border-accent-green font-medium">
+                                <p className="mb-8 p-8 bg-gray-50 rounded-sm italic border-l-8 border-accent-green font-medium">
                                     {description}
                                 </p>
                             </div>
@@ -368,8 +368,8 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                         </section>
 
                         {/* Section: Taxonomy */}
-                        <section id="taxonomy" className="scroll-mt-24 space-y-8 border-t border-gray-100 pt-16">
-                            <div className="p-8 bg-primary-dark rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
+                        <section id="taxonomy" className="scroll-mt-24 space-y-8 pt-16">
+                            <div className="p-8 bg-primary-dark rounded-lg relative overflow-hidden group">
                                 <h3 className="text-2xl font-black text-white mb-8 relative z-10">Scientific Taxonomy</h3>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 relative z-10">
                                     {[
