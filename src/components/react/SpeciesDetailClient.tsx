@@ -197,12 +197,12 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
 
                         {/* Title & Scientific Information */}
                         <div className="flex-1 text-center md:text-left space-y-4">
-                            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black text-gray-900 leading-tight">
-                                {commonName}
+                            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-serif italic text-gray-900 leading-tight">
+                                {species.scientificName}
                             </h1>
                             <div className="space-y-1">
-                                <h2 className="text-2xl lg:text-3xl font-serif italic text-gray-700">
-                                    {species.scientificName}
+                                <h2 className="text-xl text-gray-700">
+                                    {commonName}
                                 </h2>
                                 <p className="text-sm font-bold text-accent-green uppercase tracking-widest">
                                     {species.family} ({species.order})
@@ -247,8 +247,8 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                     <aside className="lg:w-64 shrink-0 lg:sticky lg:top-24 mt-2">
                         <div className="space-y-6">
                             {/* Back to list Link */}
-                            <a 
-                                href={`/${lang}/species`} 
+                            <a
+                                href={`/${lang}/species`}
                                 className="inline-flex items-center gap-2 text-[10px] font-black tracking-widest text-accent-green hover:text-accent-green-dark transition-colors mb-4 group px-2"
                             >
                                 <ChevronRight size={14} className="rotate-180 group-hover:-translate-x-1 transition-transform" />

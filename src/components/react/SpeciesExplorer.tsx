@@ -22,6 +22,7 @@ import {
 import type { Species } from '../../data/species';
 import { getAllSpecies, getFilterMetaData } from '../../data/species';
 import { useSpeciesStore } from '../../store/useSpeciesStore';
+import { SpeciesCard } from './SpeciesCard';
 
 interface SpeciesExplorerProps {
     initialData: { species: Species[], totalCount: number };
@@ -243,19 +244,7 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
     const genera = useMemo(() => ['All', ...(filterMeta?.genera || [])], [filterMeta]);
 
     const playAudio = (species: Species) => {
-        if (species.audios.length === 0) return;
-        const audio = species.audios[0];
-        const event = new CustomEvent('play-audio', {
-            detail: {
-                title: audio.title || 'Canto',
-                artist: `${species.commonName_es} (${species.scientificName})`,
-                url: audio.url,
-                image: species.mainImage || '/images/logo-mini.webp',
-                spectrogram: audio.spectrogramImage
-            }
-        });
-        console.log("🔊 SpeciesExplorer: Dispatching 'play-audio' for", audio.url);
-        window.dispatchEvent(event);
+        // Handled directly inside SpeciesCard via custom events to trigger PersistentPlayer
     };
 
     const categoryTitles: Record<string, string> = {
@@ -540,20 +529,14 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
                                 }
                             >
                                 {species.length > 0 ? (
-                                    species.map(s => {
-                                        const coverImage = s.mainImage || '/images/logo-mini.webp';
-
-                                        return (
-                                            <SpeciesCard
-                                                key={s.id}
-                                                species={s}
-                                                coverImage={coverImage}
-                                                viewMode={viewMode}
-                                                onPlay={() => playAudio(s)}
-                                                lang={lang}
-                                            />
-                                        );
-                                    })
+                                    species.map(s => (
+                                        <SpeciesCard
+                                            key={s.id}
+                                            species={s}
+                                            viewMode={viewMode}
+                                            lang={lang}
+                                        />
+                                    ))
                                 ) : (
                                     <div className="col-span-full py-32 flex flex-col items-center justify-center text-center space-y-4">
                                         <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-3xl flex items-center justify-center">
@@ -608,20 +591,6 @@ const SpeciesExplorerContent: React.FC<SpeciesExplorerProps> = ({ initialData, l
             </div>
         </div>
     );
-};
-
-// Component to handle both regular images and Google Drive iframes
-const MediaViewer: React.FC<{
-    src: string;
-    alt: string;
-    className: string;
-    onLoaded: () => void;
-    isLoaded: boolean;
-    fallback?: string;
-}> = ({ src, alt, className, onLoaded, isLoaded, fallback = '/images/logo-mini.webp' }) => {
-    const driveIdMatch = src.match(/id=([a-zA-Z0-9_-]+)/) || src.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-    const isDrive = src.includes('docs.google.com') || src.includes('drive.google.com');
-    const [hasError, setHasError] = React.useState(false);
 
     // If no source or error detected, show fallback
     if (!src || hasError) {
@@ -763,12 +732,9 @@ const SpeciesCard: React.FC<{ species: Species; coverImage: string; viewMode: 'g
                     <span className="text-xs font-medium text-accent-green mb-1 block">
                         {categoryTitles[species.category] || species.category}
                     </span>
-                    <h4 className="font-bold text-gray-900 dark:text-white group-hover:text-accent-green transition-colors leading-tight mb-1 text-base">
-                        {species.commonName_es}
-                    </h4>
-                    <p className="text-[11px] text-gray-400 italic">
+                    <h4 className="text-gray-900 italic dark:text-white group-hover:text-accent-green transition-colors leading-tight mb-1 text-base">
                         {species.scientificName}
-                    </p>
+                    </h4>
                 </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-800">
