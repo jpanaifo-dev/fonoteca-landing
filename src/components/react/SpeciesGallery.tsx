@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface SpeciesGalleryProps {
     images: string[];
+    contain?: boolean;
 }
 
-export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
+export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images, contain = false }) => {
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
     // Filter out invalid images if needed, but we trust the data layer for now
@@ -44,12 +45,12 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
 
     const renderGrid = () => {
         const count = images.length;
-        const imgClass = "w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 p-2 md:p-4";
-        const cellClass = "cursor-pointer overflow-hidden group bg-[#0a0a0a] border border-white/5 relative flex items-center justify-center";
+        const imgClass = `w-full h-full ${contain ? 'object-contain p-4' : 'object-cover'} group-hover:scale-110 transition-transform duration-1000`;
+        const cellClass = "cursor-pointer overflow-hidden group bg-[#111] relative flex items-center justify-center";
 
         if (count === 1) {
             return (
-                <div className={`${cellClass} w-full aspect-video rounded-3xl`} onClick={() => openLightbox(0)}>
+                <div className={`${cellClass} w-full aspect-video rounded-3xl shadow-xl overflow-hidden`} onClick={() => openLightbox(0)}>
                     <img src={images[0]} className={imgClass} alt="Gallery 1" />
                 </div>
             );
@@ -57,10 +58,10 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
 
         if (count === 2) {
             return (
-                <div className="grid grid-cols-2 gap-3 h-[300px] md:h-[400px] rounded-3xl overflow-hidden">
+                <div className="grid grid-cols-2 gap-3 h-[300px] md:h-[400px] rounded-3xl overflow-hidden shadow-xl">
                     {images.slice(0, 2).map((img, i) => (
-                        <div key={i} className={`${cellClass} rounded-2xl`} onClick={() => openLightbox(i)}>
-                            <img src={img} className={imgClass} alt={`Gallery ${i+1}`} />
+                        <div key={i} className={`${cellClass} h-full`} onClick={() => openLightbox(i)}>
+                            <img src={img} className={imgClass} alt={`Gallery ${i + 1}`} />
                         </div>
                     ))}
                 </div>
@@ -69,13 +70,13 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
 
         if (count === 3) {
             return (
-                <div className="grid grid-cols-2 grid-rows-2 gap-3 h-[400px] md:h-[500px]">
-                    <div className={`${cellClass} row-span-2 rounded-3xl`} onClick={() => openLightbox(0)}>
+                <div className="grid grid-cols-2 grid-rows-2 gap-3 h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-xl">
+                    <div className={`${cellClass} row-span-2 h-full`} onClick={() => openLightbox(0)}>
                         <img src={images[0]} className={imgClass} alt="Gallery 1" />
                     </div>
                     {images.slice(1, 3).map((img, i) => (
-                        <div key={i+1} className={`${cellClass} rounded-2xl`} onClick={() => openLightbox(i+1)}>
-                            <img src={img} className={imgClass} alt={`Gallery ${i+2}`} />
+                        <div key={i + 1} className={`${cellClass} h-full`} onClick={() => openLightbox(i + 1)}>
+                            <img src={img} className={imgClass} alt={`Gallery ${i + 2}`} />
                         </div>
                     ))}
                 </div>
@@ -84,14 +85,14 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
 
         if (count === 4) {
             return (
-                <div className="grid grid-cols-2 grid-rows-2 gap-3 h-[400px] md:h-[500px]">
-                    <div className={`${cellClass} row-span-2 rounded-3xl`} onClick={() => openLightbox(0)}>
+                <div className="grid grid-cols-2 gap-3 h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
+                    <div className={`${cellClass} h-full`} onClick={() => openLightbox(0)}>
                         <img src={images[0]} className={imgClass} alt="Gallery 1" />
                     </div>
                     <div className="grid grid-rows-3 gap-3 h-full">
-                         {images.slice(1, 4).map((img, i) => (
-                            <div key={i+1} className={`${cellClass} rounded-xl`} onClick={() => openLightbox(i+1)}>
-                                <img src={img} className={imgClass} alt={`Gallery ${i+2}`} />
+                        {images.slice(1, 4).map((img, i) => (
+                            <div key={i + 1} className={`${cellClass} h-full`} onClick={() => openLightbox(i + 1)}>
+                                <img src={img} className={imgClass} alt={`Gallery ${i + 2}`} />
                             </div>
                         ))}
                     </div>
@@ -99,31 +100,33 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
             );
         }
 
-        // 5 or more
+        // 5 or more (Facebook Style: 2 top, 3 bottom)
         return (
-            <div className="grid grid-cols-2 gap-3 h-[400px] md:h-[500px]">
-                {/* Left Column (2 images) */}
-                <div className="grid grid-rows-2 gap-3 h-full">
+            <div className="flex flex-col gap-3 h-[500px] md:h-[600px] rounded-3xl overflow-hidden shadow-2xl bg-[#080808]">
+                {/* Top Row: 2 images */}
+                <div className="grid grid-cols-2 gap-3 h-[60%]">
                     {images.slice(0, 2).map((img, i) => (
-                        <div key={i} className={`${cellClass} rounded-2xl`} onClick={() => openLightbox(i)}>
-                            <img src={img} className={imgClass} alt={`Gallery ${i+1}`} />
+                        <div key={i} className={`${cellClass} h-full`} onClick={() => openLightbox(i)}>
+                            <img src={img} className={imgClass} alt={`Gallery ${i + 1}`} />
                         </div>
                     ))}
                 </div>
 
-                {/* Right Column (3 images) */}
-                <div className="grid grid-rows-3 gap-3 h-full">
+                {/* Bottom Row: 3 images */}
+                <div className="grid grid-cols-3 gap-3 h-[40%]">
                     {images.slice(2, 4).map((img, i) => (
-                        <div key={i+2} className={`${cellClass} rounded-xl`} onClick={() => openLightbox(i+2)}>
-                            <img src={img} className={imgClass} alt={`Gallery ${i+3}`} />
+                        <div key={i + 2} className={`${cellClass} h-full`} onClick={() => openLightbox(i + 2)}>
+                            <img src={img} className={imgClass} alt={`Gallery ${i + 3}`} />
                         </div>
                     ))}
                     {/* The 5th item with the +X overlay */}
-                    <div className={`${cellClass} rounded-xl`} onClick={() => openLightbox(4)}>
+                    <div className={`${cellClass} h-full`} onClick={() => openLightbox(4)}>
                         <img src={images[4]} className={imgClass} alt="Gallery 5" />
                         {images.length > 5 && (
-                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center group-hover:bg-black/40 transition-colors pointer-events-none">
-                                <span className="text-white text-3xl font-bold">+{images.length - 4}</span>
+                            <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center z-30 pointer-events-none">
+                                <div className="text-center drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]">
+                                    <span className="text-white text-5xl block leading-none">+{images.length - 5}</span>
+                                </div>
                             </div>
                         )}
                     </div>
@@ -139,7 +142,7 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
             {/* Lightbox / Facebook Style Viewer */}
             <AnimatePresence>
                 {lightboxIndex !== null && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -147,7 +150,7 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                         onClick={closeLightbox}
                     >
                         {/* Close Button */}
-                        <button 
+                        <button
                             className="absolute top-6 right-6 z-10 p-3 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all border border-white/5 backdrop-blur-md"
                             onClick={closeLightbox}
                         >
@@ -159,7 +162,7 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                         {/* Navigation */}
                         {images.length > 1 && (
                             <>
-                                <button 
+                                <button
                                     className="absolute left-6 top-1/2 -translate-y-1/2 z-10 p-4 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all backdrop-blur-md"
                                     onClick={prevImage}
                                 >
@@ -167,7 +170,7 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                                     </svg>
                                 </button>
-                                <button 
+                                <button
                                     className="absolute right-6 top-1/2 -translate-y-1/2 z-10 p-4 rounded-full bg-white/5 hover:bg-white/10 text-white transition-all backdrop-blur-md"
                                     onClick={nextImage}
                                 >
@@ -184,7 +187,7 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                         </div>
 
                         {/* Image Container with fixed height vs responsive width logic */}
-                        <motion.div 
+                        <motion.div
                             key={lightboxIndex}
                             initial={{ scale: 0.98, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -192,13 +195,13 @@ export const SpeciesGallery: React.FC<SpeciesGalleryProps> = ({ images }) => {
                             className="relative w-full h-full flex flex-col items-center justify-center pointer-events-none"
                         >
                             <div className="relative bg-[#050505] p-2 md:p-3 rounded-2xl border border-white/10 flex items-center justify-center max-w-[95vw] max-h-[85vh] overflow-hidden pointer-events-auto">
-                                <img 
-                                    src={images[lightboxIndex]} 
+                                <img
+                                    src={images[lightboxIndex]}
                                     className="max-w-full max-h-[70vh] md:max-h-[75vh] w-auto h-auto object-contain transition-all rounded-lg"
                                     alt={`Gallery ${lightboxIndex + 1}`}
                                 />
                             </div>
-                            
+
                             {/* Metadata/Caption Placeholder Area */}
                             <div className="mt-6 text-white/20 text-[9px] tracking-[0.4em] uppercase pointer-events-none font-medium">
                                 Visualización de Registro

@@ -391,7 +391,7 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                                         <hr className="flex-1 border-gray-100" />
                                     </div>
                                     <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100">
-                                        <SpeciesGallery images={species.spectrograms.map(img => img.url)} />
+                                        <SpeciesGallery images={species.spectrograms.map(img => img.url)} contain />
                                     </div>
                                 </div>
                             )}
