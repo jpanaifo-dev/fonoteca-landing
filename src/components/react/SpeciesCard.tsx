@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCw, Play, Info, MapPin, ArrowRight } from 'lucide-react';
-import type { Species } from '../data/species';
+import type { Species } from '../../data/species';
 
 interface SpeciesCardProps {
     species: Species;
@@ -80,20 +80,37 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
         Reptiles: 'Reptiles'
     };
 
+    const commonName = useMemo(() => {
+        if (lang === 'en') return species.commonName_en;
+        if (lang === 'pt') return species.commonName_pt;
+        return species.commonName_es;
+    }, [species, lang]);
+
     const onPlay = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if (species.audios.length === 0) return;
+        console.log("🖱️ SpeciesCard: Play button clicked for", species.scientificName);
+        if (species.audios.length === 0) {
+            console.warn("⚠️ SpeciesCard: No audios available for this species.");
+            return;
+        }
         const audio = species.audios[0];
+        const allMediaImages = [
+            ...(species.galleryImages?.map(img => img.url) || []),
+            ...(species.spectrograms?.map(img => img.url) || [])
+        ].filter(Boolean);
+
         const event = new CustomEvent('play-audio', {
             detail: {
                 title: audio.title || 'Canto',
-                artist: `${species[`commonName_${lang as 'es'|'en'|'pt'}` as keyof Species] || species.commonName_es} (${species.scientificName})`,
+                artist: `${commonName} (${species.scientificName})`,
                 url: audio.url,
                 image: species.mainImage || '/images/logo-mini.webp',
-                spectrogram: audio.spectrogramImage
+                spectrogram: audio.spectrogramImage,
+                images: allMediaImages
             }
         });
+        console.log("📡 SpeciesCard: Dispatching 'play-audio' event...");
         window.dispatchEvent(event);
     };
 
@@ -101,7 +118,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
         return (
             <motion.div
                 layout
-                className="bg-white dark:bg-[#121b28] p-3 rounded-xl border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:border-accent-green/30 hover:shadow-sm transition-all group flex-wrap md:flex-nowrap"
+                className="bg-white dark:bg-[#121b28] p-3 rounded-lg border border-gray-100 dark:border-gray-800 flex items-center gap-4 hover:border-accent-green/30 hover:shadow-sm transition-all group flex-wrap md:flex-nowrap"
             >
                 <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 dark:bg-gray-900 border border-gray-50 dark:border-gray-800 relative">
                     <MediaViewer
@@ -114,8 +131,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
                 </div>
                 <div className="flex-1 min-w-0">
                     <span className="text-[10px] font-bold text-accent-green uppercase tracking-widest">{categoryTitles[species.category] || species.category}</span>
-                    <h4 className="font-bold truncate text-sm">{species[`commonName_${lang as 'es'|'en'|'pt'}` as keyof Species] || species.commonName_es}</h4>
-                    <p className="text-[11px] text-gray-500 italic truncate">{species.scientificName}</p>
+                    <p className=" italic truncate">{species.scientificName}</p>
                 </div>
                 <div className="flex items-center gap-2 pr-2">
                     {species.audios.length > 0 && (
@@ -134,7 +150,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
     return (
         <motion.div
             layout
-            className="group bg-white dark:bg-[#121b28] rounded-3xl border border-gray-100 dark:border-gray-800 hover:border-accent-green/30 transition-all duration-500 relative flex flex-col overflow-hidden shadow-sm hover:shadow-xl"
+            className="group bg-white dark:bg-[#121b28] rounded-xl border border-gray-100 dark:border-gray-800 hover:border-accent-green/30 transition-all duration-500 relative flex flex-col overflow-hidden shadow-sm hover:shadow-xl"
         >
             <div className="aspect-[6/5] relative bg-gray-50 dark:bg-gray-900 overflow-hidden">
                 {!isLoaded && (
@@ -170,9 +186,6 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
                     <h4 className="text-gray-900 italic font-serif dark:text-white group-hover:text-accent-green transition-colors leading-tight mb-1 text-lg">
                         {species.scientificName}
                     </h4>
-                    <p className="text-xs text-gray-400 font-medium tracking-wide">
-                        {species[`commonName_${lang as 'es'|'en'|'pt'}` as keyof Species] || species.commonName_es}
-                    </p>
                 </div>
 
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-800">
@@ -188,4 +201,5 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
             </div>
         </motion.div>
     );
+
 };

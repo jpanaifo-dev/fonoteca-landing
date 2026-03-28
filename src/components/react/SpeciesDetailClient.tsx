@@ -62,12 +62,18 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                     // Trigger the playlist event for the persistent player
                     if (data.audios && data.audios.length > 0) {
                         const commonName = data[`commonName_${currentLang}` as keyof Species] as string;
+                        const allMediaImages = [
+                            ...(data.galleryImages?.map(img => img.url) || []),
+                            ...(data.spectrograms?.map(img => img.url) || [])
+                        ].filter(Boolean);
+
                         const playlist = data.audios.map((audio) => ({
                             title: audio.title || "Canto",
                             artist: commonName,
                             url: audio.url,
                             image: data.mainImage || "/images/logo-mini.webp",
                             spectrogram: audio.spectrogramImage ?? undefined,
+                            images: allMediaImages
                         }));
 
                         const playlistData = {
@@ -376,6 +382,8 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                                                 artist={commonName}
                                                 description={audio.description ?? undefined}
                                                 spectrogramImage={audio.spectrogramImage ?? undefined}
+                                                spectrogramImages={species.galleryImages?.map(img => img.url).concat(species.spectrograms?.map(img => img.url) || [])}
+                                                layoutMode="expandable"
                                             />
                                         )}
                                     </div>
