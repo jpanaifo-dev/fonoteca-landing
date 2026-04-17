@@ -9,7 +9,7 @@ interface HeroProps {
 
 const SPECTRO_DATA = [
     35, 60, 45, 80, 50, 95, 75, 40, 65, 85, 30, 55, 70, 90, 45, 60, 80, 50, 40, 75,
-    60, 85, 45, 70, 90, 55, 35, 80, 50, 65, 95, 40, 75, 60, 85, 45, 70, 50, 90, 60, 
+    60, 85, 45, 70, 90, 55, 35, 80, 50, 65, 95, 40, 75, 60, 85, 45, 70, 50, 90, 60,
     35, 65, 80, 45, 90, 60, 40, 75, 50, 85, 35, 60, 45, 80, 50, 95, 75, 40, 65, 85
 ];
 
@@ -29,17 +29,17 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
     };
 
     return (
-        <section className="relative h-screen min-h-[600px] flex items-center justify-center bg-[#04070a] overflow-hidden">
+        <section className="relative h-screen min-h-[600px] lg:max-h-[920px] flex items-center justify-center bg-[#04070a] overflow-hidden">
             {/* Background subtle effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#0a0f16] via-[#04070a] to-[#010203] z-0"></div>
 
             {/* Background Animated Spectrogram */}
             <div className="absolute inset-0 z-0 flex items-end justify-evenly opacity-15 overflow-hidden pb-10">
                 {SPECTRO_DATA.map((height, i) => (
-                    <div 
-                        key={i} 
+                    <div
+                        key={i}
                         className="w-1 md:w-3 bg-accent-green rounded-t-full opacity-60"
-                        style={{ 
+                        style={{
                             height: `${height}%`,
                             animation: `spectro-bg ${1.5 + (i % 3) * 0.4}s ease-in-out infinite ${(i % 5) * 0.2}s alternate`,
                             transformOrigin: 'bottom'
@@ -47,7 +47,7 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
                     />
                 ))}
             </div>
-            
+
             {/* Gradient overlay to fade the spectrogram gently at the bottom/top */}
             <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#04070a] via-transparent to-[#04070a]"></div>
             <div className="absolute inset-0 z-0 bg-[#04070a]/40 backdrop-blur-[2px]"></div>
@@ -57,7 +57,7 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
                 <span className="text-accent-green font-bold text-xs md:text-sm uppercase tracking-[0.4em] mb-4 animate-fade-in relative shadow-sm">
                     {lang === 'es' ? 'Bienvenido a la' : lang === 'pt' ? 'Bem-vindo à' : 'Welcome to'}
                 </span>
-                
+
                 <div className="min-h-[160px] md:min-h-[120px] mb-8 flex items-center justify-center">
                     <h1
                         key={currentTitleIndex}
@@ -72,7 +72,7 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
                 </div>
 
                 {/* Omnibox / Prominent Search */}
-                <form 
+                <form
                     onSubmit={handleSearch}
                     className="w-full max-w-3xl relative animate-fade-in delay-200 mb-16"
                 >
