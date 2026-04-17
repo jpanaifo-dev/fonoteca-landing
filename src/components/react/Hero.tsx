@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { type translations } from '../../i18n/data';
 import { Search } from 'lucide-react';
 
@@ -14,15 +14,6 @@ const SPECTRO_DATA = [
 ];
 
 export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
-    const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentTitleIndex((prev) => (prev + 1) % content.titles_animate.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [content.titles_animate.length]);
-
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         window.location.href = `/${lang}/species`;
@@ -60,10 +51,9 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
 
                 <div className="min-h-[160px] md:min-h-[120px] mb-8 flex items-center justify-center">
                     <h1
-                        key={currentTitleIndex}
                         className="text-4xl md:text-6xl lg:text-7xl font-light text-white tracking-wide animate-fade-up leading-none flex flex-col gap-1 drop-shadow-md"
                     >
-                        {content.titles_animate[currentTitleIndex].split('|').map((part, i) => (
+                        {content.titles_animate[0].split('|').map((part, i) => (
                             <span key={i} className="block mt-1 font-extralight tracking-tight">
                                 {part.trim()}
                             </span>
