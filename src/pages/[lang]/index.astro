@@ -42,7 +42,7 @@ const statsContent = {
         lang={lang}
     />
     <main>
-        <Hero client:load content={content.hero} lang={lang as string} />
+        <Hero client:load content={content.hero} lang={lang as string} stats={realStats} />
         
         {/* Audio Archive Section - Últimas Colecciones */}
         <section
