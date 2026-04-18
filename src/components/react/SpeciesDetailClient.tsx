@@ -207,9 +207,6 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                                 {species.scientificName}
                             </h1>
                             <div className="space-y-1">
-                                <h2 className="text-xl text-gray-700">
-                                    {commonName}
-                                </h2>
                                 <p className="text-sm font-bold text-accent-green uppercase tracking-widest">
                                     {species.family} ({species.order})
                                 </p>
