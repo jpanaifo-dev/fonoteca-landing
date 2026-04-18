@@ -97,18 +97,18 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" })
 
                 {/* Menu Content */}
                 <div
-                    className={`absolute right-0 top-0 h-full w-full md:w-1/2 lg:w-1/3 bg-white text-primary-dark shadow-2xl transform transition-transform duration-500 delay-100 ${isMenuOpen ? "translate-x-0" : "translate-x-full"
+                    className={`absolute right-0 top-0 h-full w-full md:w-1/2 lg:w-1/3 bg-white dark:bg-[#0f172a] text-primary-dark dark:text-white shadow-2xl transform transition-transform duration-500 delay-100 ${isMenuOpen ? "translate-x-0" : "translate-x-full"
                         }`}
                 >
                     {/* Organic Edge */}
                     <div className="absolute top-0 left-0 w-24 h-full -translate-x-1/2 overflow-hidden pointer-events-none hidden md:block">
-                        <div className="w-[200%] h-full bg-white rounded-l-[100%] absolute right-0"></div>
+                        <div className="w-[200%] h-full bg-white dark:bg-[#0f172a] rounded-l-[100%] absolute right-0"></div>
                     </div>
 
                     <div className="relative z-10 h-full flex flex-col p-12 justify-center">
                         <button
                             onClick={toggleMenu}
-                            className="absolute top-8 right-8 text-primary-dark hover:text-accent-green transition-colors"
+                            className="absolute top-8 right-8 text-primary-dark dark:text-white hover:text-accent-green transition-colors"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +131,7 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" })
                                 <a
                                     key={key}
                                     href={getHref(key)}
-                                    className="block hover:text-accent-green hover:translate-x-2 transition-all"
+                                    className="block hover:text-accent-green hover:translate-x-2 transition-all transition-colors"
                                     onClick={() => {
                                         setIsMenuOpen(false);
                                         document.body.style.overflow = "";
@@ -142,8 +142,8 @@ export const Header: React.FC<HeaderProps> = ({ content, logoSrc, lang = "es" })
                             ))}
                         </nav>
 
-                        <div className="mt-12 pt-12 border-t border-gray-100">
-                            <p className="text-sm text-gray-500">
+                        <div className="mt-12 pt-12 border-t border-gray-100 dark:border-gray-800">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
                                 © 2025 Instituto de Investigaciones de la Amazonía Peruana
                             </p>
                         </div>
