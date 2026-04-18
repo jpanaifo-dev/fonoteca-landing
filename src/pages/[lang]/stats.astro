@@ -48,7 +48,7 @@ const statsData = {
             image={landingImages.pageBanner.default}
         />
         
-        <StatsExplorer client:load data={statsData} lang={lang as string} translations={content.stats} />
+        <StatsExplorer client:load data={statsData} lang={lang as string} translations={content.stats} chartTranslations={content.chart} />
     </main>
     <Footer content={content.footer} logoSrc={logoIiap.src} />
 </Layout>

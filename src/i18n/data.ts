@@ -50,7 +50,13 @@ export const translations = {
             title_sm: "Resumen Analítico",
             title: "Descubre la distribución de nuestra biblioteca sonora",
             desc: "Explora el desglose de la biodiversidad y descubre las especies que dan forma a nuestro archivo acústico.",
-            button: "Ver Directorio Completo"
+            button: "Ver Directorio Completo",
+            classes_title: "Distribución por Clases",
+            classes_desc: "Organización taxonómica de nuestra colección, permitiendo un análisis detallado de la representatividad de cada grupo en el ecosistema.",
+            growth_title: "Crecimiento de la Colección",
+            growth_desc: "Evolución temporal del archivo acústico, reflejando el esfuerzo constante de investigación y catalogación de la biodiversidad amazónica.",
+            composition_title: "Composición Bioacústica",
+            composition_desc: "Nuestra base de datos se especializa en la captura de firmas sonoras a través de diversos órdenes taxonómicos, priorizando especies con roles críticos en el ecosistema amazónico."
         },
         cta: {
             title_start: "Suscríbete para",
@@ -221,7 +227,13 @@ export const translations = {
             title_sm: "Analytics Overview",
             title: "Discover the distribution of our sound library",
             desc: "Explore the biodiversity breakdown and uncover the species shaping our acoustic archive.",
-            button: "View Complete Directory"
+            button: "View Complete Directory",
+            classes_title: "Distribution by Classes",
+            classes_desc: "Taxonomic organization of our collection, allowing a detailed analysis of the representativeness of each group in the ecosystem.",
+            growth_title: "Collection Growth",
+            growth_desc: "Temporal evolution of the acoustic archive, reflecting the constant effort of research and cataloging of Amazonian biodiversity.",
+            composition_title: "Bioacoustic Composition",
+            composition_desc: "Our database specializes in capturing sound signatures across various taxonomic orders, prioritizing species with critical roles in the Amazonian ecosystem."
         },
         cta: {
             title_start: "Subscribe for",
@@ -392,7 +404,13 @@ export const translations = {
             title_sm: "Visão Geral Analítica",
             title: "Descubra a distribuição de nossa biblioteca sonora",
             desc: "Explore a divisão da biodiversidade e descubra as espécies que moldam nosso arquivo acústico.",
-            button: "Ver Diretório Completo"
+            button: "Ver Diretório Completo",
+            classes_title: "Distribuição por Classes",
+            classes_desc: "Organização taxonômica de nossa coleção, permitindo uma análise detalhada da representatividade de cada grupo no ecossistema.",
+            growth_title: "Crescimento da Coleção",
+            growth_desc: "Evolução temporal do arquivo acústico, refletindo o esforço constante de pesquisa e catalogação da biodiversidade amazônica.",
+            composition_title: "Composição Bioacústica",
+            composition_desc: "Nossa base de dados se especializa na captura de assinaturas sonoras através de diversos ordens taxonômicas, priorizando espécies com papéis críticos no ecossistema amazônico."
         },
         cta: {
             title_start: "Inscreva-se para",
