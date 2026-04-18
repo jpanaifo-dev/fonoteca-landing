@@ -7,6 +7,7 @@ interface SpeciesCardProps {
     species: Species;
     viewMode?: 'grid' | 'list';
     lang: string;
+    linkToFilter?: boolean;
 }
 
 // Sub-component for media display (images/iframes)
@@ -18,59 +19,51 @@ const MediaViewer: React.FC<{
     isLoaded: boolean;
     fallback?: string;
 }> = ({ src, alt, className, onLoaded, isLoaded, fallback = '/images/logo-mini.webp' }) => {
-    const driveIdMatch = src.match(/id=([a-zA-Z0-9_-]+)/) || src.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-    const isDrive = src.includes('docs.google.com') || src.includes('drive.google.com');
     const [hasError, setHasError] = React.useState(false);
+    
+    // Auto-detect and fix drive links that might have slipped through without conversion
+    const processedSrc = React.useMemo(() => {
+        if (!src) return '';
+        if (src.includes('drive.google.com') || src.includes('docs.google.com')) {
+            const driveIdMatch = src.match(/id=([a-zA-Z0-9_-]+)/) || src.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            if (driveIdMatch && driveIdMatch[1]) {
+                return `https://drive.google.com/thumbnail?id=${driveIdMatch[1]}&sz=w800`;
+            }
+        }
+        return src;
+    }, [src]);
 
-    if (!src || hasError) {
+    if (!processedSrc || hasError) {
         return (
-            <img src={fallback} className={className} alt="Fallback" onLoad={onLoaded} />
-        );
-    }
-
-    if (isDrive && driveIdMatch) {
-        const driveId = driveIdMatch[1];
-        return (
-            <div className="relative w-full h-full bg-gray-50 dark:bg-gray-900 flex items-center justify-center overflow-hidden">
-                {!isLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center z-10">
-                        <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                )}
-                <iframe
-                    src={`https://drive.google.com/file/d/${driveId}/preview`}
-                    className={`${className} border-0 pointer-events-none transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-                    allow="autoplay"
-                    title={alt}
-                    onLoad={onLoaded}
-                    loading="lazy"
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-                />
+            <div className={`${className} bg-slate-100 dark:bg-slate-800 flex items-center justify-center`}>
+                 <img src={fallback} className="w-12 h-12 opacity-20 filter grayscale" alt="Fallback" onLoad={onLoaded} />
             </div>
         );
     }
 
     return (
-        <div className="relative w-full h-full overflow-hidden">
+        <div className="relative w-full h-full overflow-hidden bg-slate-50 dark:bg-slate-900/50">
             {!isLoaded && (
                 <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <div className="w-3 h-3 border border-accent-green border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-4 h-4 border-2 border-accent-green border-t-transparent rounded-full animate-spin"></div>
                 </div>
             )}
             <img
-                src={src}
+                src={processedSrc}
                 alt={alt}
-                className={`${className} transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+                className={`${className} transition-all duration-1000 ${isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'}`}
                 onLoad={onLoaded}
                 onError={() => setHasError(true)}
+                loading="lazy"
             />
         </div>
     );
 };
 
-export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'grid', lang }) => {
+export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'grid', lang, linkToFilter = false }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const coverImage = species.mainImage || '/images/logo-mini.webp';
+    const detailLink = linkToFilter ? `/${lang}/species?q=${encodeURIComponent(species.scientificName)}` : `/${lang}/species/${species.id}`;
 
     const categoryTitles: Record<string, string> = {
         Amphibians: lang === 'es' ? 'Anfibios' : lang === 'pt' ? 'Anfíbios' : 'Amphibians',
@@ -139,7 +132,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
                             <Play className="w-4 h-4 fill-current" />
                         </button>
                     )}
-                    <a href={`/${lang}/species/${species.id}`} className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-accent-green transition-all">
+                    <a href={detailLink} className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-accent-green transition-all">
                         <Info className="w-4 h-4" />
                     </a>
                 </div>
@@ -193,7 +186,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
                         <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                         <span className="text-[10px] font-bold tracking-tight truncate uppercase">{species.location}</span>
                     </div>
-                    <a href={`/${lang}/species/${species.id}`} className="text-[10px] font-black uppercase tracking-widest text-accent-green hover:text-accent-green/80 flex items-center gap-1.5 transition-colors">
+                    <a href={detailLink} className="text-[10px] font-black uppercase tracking-widest text-accent-green hover:text-accent-green/80 flex items-center gap-1.5 transition-colors">
                         {lang === 'es' ? 'Detalles' : lang === 'pt' ? 'Detalhes' : 'Details'}
                         <ArrowRight className="w-3.5 h-3.5" />
                     </a>

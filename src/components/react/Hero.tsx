@@ -1,107 +1,105 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { type translations } from '../../i18n/data';
+import { Search } from 'lucide-react';
 
 interface HeroProps {
     content: typeof translations.es.hero;
     lang: string;
 }
 
-export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
-    const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
+const SPECTRO_DATA = [
+    35, 60, 45, 80, 50, 95, 75, 40, 65, 85, 30, 55, 70, 90, 45, 60, 80, 50, 40, 75,
+    60, 85, 45, 70, 90, 55, 35, 80, 50, 65, 95, 40, 75, 60, 85, 45, 70, 50, 90, 60,
+    35, 65, 80, 45, 90, 60, 40, 75, 50, 85, 35, 60, 45, 80, 50, 95, 75, 40, 65, 85
+];
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentTitleIndex((prev) => (prev + 1) % content.titles_animate.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [content.titles_animate.length]);
+export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        window.location.href = `/${lang}/species`;
+    };
 
     return (
-        <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
-            {/* Background Image Overlay */}
-            <div className="absolute inset-0 z-0">
-                <img
-                    src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop"
-                    alt="Forest Background"
-                    onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/images/logo-mini.webp';
-                    }}
-                    className="object-cover w-full h-full"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-[#04070a]"></div>
+        <section className="relative h-screen min-h-[600px] lg:max-h-[920px] flex items-center justify-center bg-[#04070a] overflow-hidden">
+            {/* Background subtle effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0f16] via-[#04070a] to-[#010203] z-0"></div>
+
+            {/* Background Animated Spectrogram */}
+            <div className="absolute inset-0 z-0 flex items-end justify-evenly opacity-15 overflow-hidden pb-10">
+                {SPECTRO_DATA.map((height, i) => (
+                    <div
+                        key={i}
+                        className="w-1 md:w-3 bg-accent-green rounded-t-full opacity-60"
+                        style={{
+                            height: `${height}%`,
+                            animation: `spectro-bg ${1.5 + (i % 3) * 0.4}s ease-in-out infinite ${(i % 5) * 0.2}s alternate`,
+                            transformOrigin: 'bottom'
+                        }}
+                    />
+                ))}
             </div>
+
+            {/* Gradient overlay to fade the spectrogram gently at the bottom/top */}
+            <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#04070a] via-transparent to-[#04070a]"></div>
+            <div className="absolute inset-0 z-0 bg-[#04070a]/40 backdrop-blur-[2px]"></div>
 
             {/* Content centered */}
-            <div className="relative z-10 container mx-auto px-6 text-center mt-[-40px]">
-                <div className="max-w-9xl mx-auto flex flex-col items-center">
-                    <span className="text-accent-green font-bold text-xs md:text-sm uppercase tracking-[0.4em] mb-4 animate-fade-in">
-                        {lang === 'es' ? 'Bienvenido a la' : lang === 'pt' ? 'Bem-vindo à' : 'Welcome to'}
-                    </span>
-                    <div className="min-h-[160px] md:min-h-[120px] mb-4 flex items-center justify-center">
-                        <h1
-                            key={currentTitleIndex}
-                            className="text-4xl md:text-6xl lg:text-7xl font-light text-white tracking-wide animate-fade-up leading-none flex flex-col gap-1"
-                        >
-                            {content.titles_animate[currentTitleIndex].split('|').map((part, i) => (
-                                <span key={i} className="block mt-1 font-extralight tracking-tight">
-                                    {part.trim()}
-                                </span>
-                            ))}
-                        </h1>
-                    </div>
+            <div className="relative z-10 w-full max-w-5xl mx-auto px-6 text-center flex flex-col items-center mt-[-40px]">
+                <span className="text-accent-green font-bold text-xs md:text-sm uppercase tracking-[0.4em] mb-4 animate-fade-in relative shadow-sm">
+                    {lang === 'es' ? 'Bienvenido a la' : lang === 'pt' ? 'Bem-vindo à' : 'Welcome to'}
+                </span>
 
-                    <p className="text-base text-gray-300/90 mb-8 max-w-2xl font-light animate-fade-in delay-200 mt-2 px-4">
-                        {content.description}
-                    </p>
-
-                    <a
-                        href={`/${lang}/species`}
-                        className="flex flex-col items-center gap-8 animate-fade-in delay-300 group mt-10 md:mt-12"
+                <div className="min-h-[160px] md:min-h-[120px] mb-8 flex items-center justify-center">
+                    <h1
+                        className="text-4xl md:text-6xl lg:text-7xl font-light text-white tracking-wide animate-fade-up leading-none flex flex-col gap-1 drop-shadow-md"
                     >
-                        <div className="flex items-center gap-8 md:gap-12">
-                            {/* Left Spectrogram */}
-                            <div className="flex items-end gap-2 md:gap-3 h-20 opacity-50 group-hover:opacity-100 transition-opacity">
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1"></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3"></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{ animationDelay: '0.5s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{ animationDelay: '0.2s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2"></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3" style={{ animationDelay: '0.1s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{ animationDelay: '0.4s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{ animationDelay: '0.3s' }}></div>
-                            </div>
-
-                            {/* Play Button */}
-                            <div className="w-32 h-32 md:w-32 rounded-full bg-accent-green/20 border-2 border-accent-green/50 backdrop-blur-md flex items-center justify-center group-hover:bg-accent-green group-hover:scale-110 transition-all duration-500 shadow-[0_0_50px_rgba(29,185,84,0.5)]">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 md:w-20 md:h-20 text-white ml-2 md:ml-4">
-                                    <path fillRule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clipRule="evenodd" />
-                                </svg>
-                            </div>
-
-                            {/* Right Spectrogram */}
-                            <div className="flex items-end gap-2 md:gap-3 h-20 md:h-24 opacity-50 group-hover:opacity-100 transition-opacity">
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{ animationDelay: '0.3s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{ animationDelay: '0.4s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3" style={{ animationDelay: '0.1s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2"></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1" style={{ animationDelay: '0.2s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-2" style={{ animationDelay: '0.5s' }}></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-3"></div>
-                                <div className="w-2 md:w-3 h-full bg-accent-green rounded-full animate-spectro-1"></div>
-                            </div>
-                        </div>
-                        <span className="text-xl md:text-2xl mt-4 border-b-2 border-white/0 group-hover:border-white/50 pb-1 font-bold text-white/80 group-hover:text-white transition-colors tracking-[0.25em] uppercase">
-                            {content.cta}
-                        </span>
-                    </a>
+                        {content.titles_animate[0].split('|').map((part, i) => (
+                            <span key={i} className="block mt-1 font-extralight tracking-tight">
+                                {part.trim()}
+                            </span>
+                        ))}
+                    </h1>
                 </div>
-            </div>
 
-            {/* Aesthetic Mouse Scroll Indicator */}
-            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-                <div className="w-6 h-10 border border-white/30 rounded-full flex items-start justify-center p-1 backdrop-blur-sm">
-                    <div className="w-1 h-2 bg-accent-green rounded-full animate-scroll-dot"></div>
+                {/* Omnibox / Prominent Search */}
+                <form
+                    onSubmit={handleSearch}
+                    className="w-full max-w-3xl relative animate-fade-in delay-200 mb-16"
+                >
+                    <div className="relative flex items-center w-full h-16 bg-white/5 backdrop-blur-md rounded-2xl border border-white/20 shadow-2xl overflow-hidden focus-within:ring-2 focus-within:ring-accent-green focus-within:bg-white/10 transition-all duration-300">
+                        <div className="pl-6 flex items-center justify-center text-gray-400">
+                            <Search className="w-6 h-6 drop-shadow-sm" />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder={lang === 'es' ? "Buscar especies, cantos, audios..." : lang === 'pt' ? "Pesquisar espécies, cantos..." : "Search species, calls..."}
+                            className="w-full h-full pl-4 pr-32 bg-transparent text-white text-lg focus:outline-none placeholder-gray-500 font-medium"
+                        />
+                        <button
+                            type="submit"
+                            className="absolute right-2 top-2 bottom-2 px-8 bg-accent-green hover:bg-[#19a54a] text-white font-semibold rounded-xl transition-colors duration-300 flex items-center justify-center shadow-lg"
+                        >
+                            {lang === 'es' ? 'Buscar' : lang === 'pt' ? 'Buscar' : 'Search'}
+                        </button>
+                    </div>
+                </form>
+
+                {/* Data Indicators */}
+                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 text-white/70 animate-fade-in delay-300 backdrop-blur-xs">
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm">1,250</span>
+                        <span className="text-xs md:text-sm uppercase tracking-[0.2em] mt-2 font-medium text-accent-green drop-shadow-sm">{lang === 'es' ? 'Audios' : 'Audios'}</span>
+                    </div>
+                    <div className="w-px h-12 bg-white/20 hidden sm:block"></div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm">450</span>
+                        <span className="text-xs md:text-sm uppercase tracking-[0.2em] mt-2 font-medium text-accent-green drop-shadow-sm">{lang === 'es' ? 'Especies' : 'Species'}</span>
+                    </div>
+                    <div className="w-px h-12 bg-white/20 hidden sm:block"></div>
+                    <div className="flex flex-col items-center">
+                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm">IIAP</span>
+                        <span className="text-xs md:text-sm uppercase tracking-[0.2em] mt-2 font-medium text-accent-green drop-shadow-sm">{lang === 'es' ? 'Respaldado por' : 'Backed by'}</span>
+                    </div>
                 </div>
             </div>
 
@@ -114,22 +112,14 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
                     from { opacity: 0; }
                     to { opacity: 1; }
                 }
-                @keyframes scroll-dot {
-                    0% { transform: translateY(0); opacity: 1; }
-                    100% { transform: translateY(12px); opacity: 0; }
-                }
-                @keyframes spectro {
-                    0%, 100% { transform: scaleY(0.3); }
-                    50% { transform: scaleY(1); }
+                @keyframes spectro-bg {
+                    0% { transform: scaleY(0.4); opacity: 0.3; }
+                    100% { transform: scaleY(1); opacity: 1; }
                 }
                 .animate-fade-up { animation: fade-up 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
                 .animate-fade-in { animation: fade-in 1.2s ease-out forwards; }
-                .animate-scroll-dot { animation: scroll-dot 1.5s ease-in-out infinite; }
-                .animate-spectro-1 { animation: spectro 1.2s ease-in-out infinite; transform-origin: bottom; }
-                .animate-spectro-2 { animation: spectro 0.9s ease-in-out infinite 0.2s; transform-origin: bottom; }
-                .animate-spectro-3 { animation: spectro 1.5s ease-in-out infinite 0.4s; transform-origin: bottom; }
-                .delay-200 { animation-delay: 0.3s; }
-                .delay-300 { animation-delay: 0.6s; }
+                .delay-200 { animation-delay: 0.2s; }
+                .delay-300 { animation-delay: 0.4s; }
             `}</style>
         </section>
     );
