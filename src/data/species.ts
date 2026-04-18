@@ -166,8 +166,8 @@ export const formatMediaUrl = (identifier: string, isAudio: boolean = false) => 
                 // docs.google.com/uc works better for audio streaming in Wavesurfer
                 return `https://docs.google.com/uc?export=download&id=${fileId}`;
             }
-            // lh3 works best for direct image embedding (spectrograms, photos)
-            return `https://lh3.googleusercontent.com/d/${fileId}`;
+            // Use Google Drive thumbnail endpoint to avoid 403 Forbidden errors with lh3
+            return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
         }
     }
 

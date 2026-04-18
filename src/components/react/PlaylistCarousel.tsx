@@ -25,9 +25,13 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
 
     const carouselItems = useMemo(() => {
         if (!Array.isArray(allSpecies) || allSpecies.length === 0) return []
-        let items = [...allSpecies]
-        while (items.length < 12) {
-            items = [...items, ...allSpecies]
+        // Only take the first 10 items as requested
+        const top10 = allSpecies.slice(0, 10);
+        
+        let items = [...top10]
+        // Repeat items to fill up the carousel nicely if needed
+        while (items.length < 10) {
+            items = [...items, ...top10]
         }
         return items
     }, [allSpecies])

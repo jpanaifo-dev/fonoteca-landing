@@ -1,108 +1,121 @@
 import React, { useEffect, useState } from 'react';
+import { 
+  PieChart, 
+  Pie, 
+  Tooltip, 
+  ResponsiveContainer,
+  Cell,
+  Legend
+} from 'recharts';
 
-const rawData = [
-    { category: 'Anfibios', active: 485, library: 40 },
-    { category: 'Aves', active: 132, library: 70 },
-    { category: 'Murciélagos', active: 100, library: 5 },
-    { category: 'Grillos', active: 56, library: 16 },
+const data = [
+    { name: 'Anfibios', value: 485, color: '#3b82f6' },      // Blue
+    { name: 'Aves', value: 132, color: '#8b5cf6' },          // Purple
+    { name: 'Murciélagos', value: 100, color: '#ec4899' },   // Pink
+    { name: 'Grillos', value: 56, color: '#14b8a6' },        // Teal
+    { name: 'Reptiles', value: 42, color: '#6366f1' },       // Indigo
 ];
 
-const maxVal = 500;
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#050514]/90 border border-indigo-500/30 p-4 rounded-xl shadow-2xl backdrop-blur-md">
+        <p className="text-[10px] font-mono text-indigo-400 mb-1 uppercase tracking-widest leading-none">Category</p>
+        <p className="text-white font-medium text-lg mb-2">
+          {payload[0].name}
+        </p>
+        <div className="flex items-end gap-2">
+            <span className="text-2xl font-light text-white">{payload[0].value}</span>
+            <span className="text-[10px] text-gray-500 uppercase tracking-widest mb-1.5">Records</span>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
+// Custom Legend
+const renderLegend = (props: any) => {
+  const { payload } = props;
+  return (
+    <ul className="flex flex-col gap-3">
+      {payload.map((entry: any, index: number) => (
+        <li key={`item-${index}`} className="flex items-center justify-between text-sm">
+            <div className="flex items-center gap-3">
+                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                <span className="text-gray-300 font-medium">{entry.value}</span>
+            </div>
+            <span className="text-white font-mono">{entry.payload.value}</span>
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 export const StatsChart: React.FC = () => {
-    const [isVisible, setIsVisible] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        setIsVisible(true);
+        setIsMounted(true);
     }, []);
 
+    if (!isMounted) return <div className="h-[450px] w-full bg-[#050515]/50 animate-pulse rounded-3xl" />;
+
     return (
-        <div className="w-full mx-auto container">
-            <div className="p-8 md:p-12 rounded-3xl transition-colors duration-300">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-                    <div className="w-full">
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl text-primary-dark dark:text-white font-light leading-tight mb-2">
-                            Biblioteca vs. Grabaciones Activas
-                        </h2>
-                        <p className="text-gray-500 dark:text-gray-400">
-                            Comparativa de registros por grupo taxonómico
-                        </p>
-                    </div>
+        <div className="w-full mx-auto container py-12 px-6">
+            <div className="bg-[#050514] border border-[#1e1b4b] p-8 md:p-12 rounded-[2rem] shadow-2xl relative overflow-hidden flex flex-col md:flex-row gap-12 items-center">
+                {/* Decorative Glowing Orbs behind the chart */}
+                <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-fuchsia-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-                    <div className="flex gap-6 text-sm font-medium">
-                        <div className="flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-full bg-[#E49E00] ring-4 ring-[#E49E00]/20"></span>
-                            <span className="text-gray-700 dark:text-gray-300">Grabaciones activas</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-full bg-[#56B4E9] ring-4 ring-[#56B4E9]/20"></span>
-                            <span className="text-gray-700 dark:text-gray-300">En biblioteca</span>
-                        </div>
-                    </div>
+                <div className="w-full md:w-1/2 relative z-10">
+                    <span className="text-indigo-400 font-semibold text-xs uppercase tracking-[0.2em] mb-4 block">
+                        Analytics Overview
+                    </span>
+                    <h2 className="text-4xl md:text-5xl text-white font-light tracking-tight leading-tight mb-6">
+                        Discover the distribution of our sound library
+                    </h2>
+                    <p className="text-indigo-200/60 text-lg font-light max-w-md mb-8">
+                        Explore the biodiversity breakdown and uncover the species shaping our acoustic archive.
+                    </p>
+                    
+                    <button className="px-6 py-3 bg-[#11112b] border border-[#2e2b6b] text-white rounded-full text-sm font-medium hover:bg-white hover:text-black transition-colors cursor-pointer">
+                        View Complete Directory
+                    </button>
                 </div>
 
-                <div className="relative h-[450px] w-full mt-8 px-6 max-w-7xl mx-auto">
-                    {/* Grid Lines */}
-                    {[0, 100, 200, 300, 400, 500].map((val) => (
-                        <div
-                            key={val}
-                            className="absolute w-full flex items-center group"
-                            style={{ bottom: `${(val / maxVal) * 100}%` }}
-                        >
-                            <span className="absolute -left-12 text-xs font-medium text-gray-400 w-8 text-right group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors">
-                                {val}
-                            </span>
-                            <div className="w-full border-t border-gray-100 dark:border-gray-700 border-dashed group-hover:border-gray-300 dark:group-hover:border-gray-600 transition-colors"></div>
+                <div className="h-[350px] w-full md:w-1/2 relative z-10 flex">
+                    <div className="w-full h-full relative">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={data}
+                                    cx="40%"
+                                    cy="50%"
+                                    innerRadius={90}
+                                    outerRadius={130}
+                                    paddingAngle={3}
+                                    dataKey="value"
+                                    stroke="none"
+                                >
+                                    {data.map((entry, index) => (
+                                        <Cell 
+                                            key={`cell-${index}`} 
+                                            fill={entry.color} 
+                                            className="hover:opacity-80 transition-opacity outline-none"
+                                        />
+                                    ))}
+                                </Pie>
+                                <Tooltip content={<CustomTooltip />} />
+                                <Legend content={renderLegend} layout="vertical" verticalAlign="middle" align="right" />
+                            </PieChart>
+                        </ResponsiveContainer>
+                        {/* Center text for Doughnut */}
+                        <div className="absolute top-1/2 left-[40%] -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
+                            <span className="block text-3xl font-light text-white">773+</span>
+                            <span className="block text-[10px] text-gray-400 uppercase tracking-widest mt-1">Total Audio</span>
                         </div>
-                    ))}
-
-                    {/* Bars Container */}
-                    <div className="absolute inset-x-0 bottom-0 top-0 flex justify-around items-end pl-0 md:pl-4">
-                        {rawData.map((item, index) => (
-                            <div key={item.category} className="flex flex-col items-center gap-4 w-full max-w-[140px] h-full justify-end group">
-                                <div className="flex gap-2 sm:gap-4 items-end justify-center w-full h-full pb-[1px]">
-                                    {/* Active Bar */}
-                                    <div
-                                        className="w-8 sm:w-12 bg-[#E49E00] rounded-t-lg relative transition-all duration-1000 ease-out hover:shadow-[0_0_20px_rgba(228,158,0,0.3)] hover:brightness-110"
-                                        style={{
-                                            height: isVisible ? `${(item.active / maxVal) * 100}%` : '0%',
-                                            transitionDelay: `${index * 100}ms`
-                                        }}
-                                    >
-                                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
-                                            {item.active}
-                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-                                        </div>
-                                    </div>
-
-                                    {/* Library Bar */}
-                                    <div
-                                        className="w-8 sm:w-12 bg-[#56B4E9] rounded-t-lg relative transition-all duration-1000 ease-out hover:shadow-[0_0_20px_rgba(86,180,233,0.3)] hover:brightness-110"
-                                        style={{
-                                            height: isVisible ? `${(item.library / maxVal) * 100}%` : '0%',
-                                            transitionDelay: `${index * 100 + 100}ms`
-                                        }}
-                                    >
-                                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">
-                                            {item.library}
-                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
                     </div>
-                </div>
-
-                {/* X Axis Labels */}
-                <div className="flex justify-around mt-6 border-t border-gray-100 dark:border-gray-700 pt-6">
-                    {rawData.map((item) => (
-                        <div key={item.category} className="text-center w-full">
-                            <span className="block font-semibold text-primary-dark dark:text-white text-sm md:text-base">
-                                {item.category}
-                            </span>
-                        </div>
-                    ))}
                 </div>
             </div>
         </div>

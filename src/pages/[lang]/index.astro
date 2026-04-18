@@ -8,6 +8,7 @@ import { Stats } from "../../components/react/Stats";
 import { StatsChart } from "../../components/react/StatsChart";
 import { CTA } from "../../components/react/CTA";
 import { PlaylistCarousel } from "../../components/react/PlaylistCarousel";
+import { NetworkMap } from "../../components/react/NetworkMap";
 import { getAllSpecies } from "../../data/species";
 import { translations, LANGUAGES } from "../../i18n/data";
 import logoIiap from "../../assets/logo_iiap.png";
@@ -71,6 +72,9 @@ const speciesContent = {
         <StatsChart client:visible />
 
         <Stats client:visible content={statsContent} />
+
+        <NetworkMap client:visible />
+
         <FeatureGrid client:visible data={content.features} />
         <CTA content={content.cta} />
     </main>
