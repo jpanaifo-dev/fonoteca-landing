@@ -5,6 +5,11 @@ import { Search } from 'lucide-react';
 interface HeroProps {
     content: typeof translations.es.hero;
     lang: string;
+    stats?: {
+        recordings: number;
+        species: number;
+        families: number;
+    };
 }
 
 const SPECTRO_DATA = [
@@ -13,7 +18,7 @@ const SPECTRO_DATA = [
     35, 65, 80, 45, 90, 60, 40, 75, 50, 85, 35, 60, 45, 80, 50, 95, 75, 40, 65, 85
 ];
 
-export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
+export const Hero: React.FC<HeroProps> = ({ content, lang, stats }) => {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         window.location.href = `/${lang}/species`;
@@ -87,18 +92,26 @@ export const Hero: React.FC<HeroProps> = ({ content, lang }) => {
                 {/* Data Indicators */}
                 <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 text-white/70 animate-fade-in delay-300 backdrop-blur-xs">
                     <div className="flex flex-col items-center">
-                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm">1,250</span>
+                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm">
+                            {stats?.recordings.toLocaleString() || '1,250'}
+                        </span>
                         <span className="text-xs md:text-sm uppercase tracking-[0.2em] mt-2 font-medium text-accent-green drop-shadow-sm">{lang === 'es' ? 'Audios' : 'Audios'}</span>
                     </div>
                     <div className="w-px h-12 bg-white/20 hidden sm:block"></div>
                     <div className="flex flex-col items-center">
-                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm">450</span>
+                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm">
+                            {stats?.species.toLocaleString() || '450'}
+                        </span>
                         <span className="text-xs md:text-sm uppercase tracking-[0.2em] mt-2 font-medium text-accent-green drop-shadow-sm">{lang === 'es' ? 'Especies' : 'Species'}</span>
                     </div>
                     <div className="w-px h-12 bg-white/20 hidden sm:block"></div>
                     <div className="flex flex-col items-center">
-                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm">IIAP</span>
-                        <span className="text-xs md:text-sm uppercase tracking-[0.2em] mt-2 font-medium text-accent-green drop-shadow-sm">{lang === 'es' ? 'Respaldado por' : 'Backed by'}</span>
+                        <span className="text-4xl md:text-5xl font-light text-white drop-shadow-sm text-balance max-w-[120px] text-center leading-none">
+                            {stats?.families.toLocaleString() || 'IIAP'}
+                        </span>
+                        <span className="text-xs md:text-sm uppercase tracking-[0.2em] mt-2 font-medium text-accent-green drop-shadow-sm">
+                            {stats ? (lang === 'es' ? 'Familias' : 'Families') : (lang === 'es' ? 'Respaldado por' : 'Backed by')}
+                        </span>
                     </div>
                 </div>
             </div>
