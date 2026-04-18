@@ -46,6 +46,12 @@ export const translations = {
             s2: { count: "281", label: "Especies", desc: "Catalogadas en la colección" },
             s3: { count: "48", label: "Familias", desc: "Grupos taxonómicos representados" }
         },
+        chart: {
+            title_sm: "Resumen Analítico",
+            title: "Descubre la distribución de nuestra biblioteca sonora",
+            desc: "Explora el desglose de la biodiversidad y descubre las especies que dan forma a nuestro archivo acústico.",
+            button: "Ver Directorio Completo"
+        },
         cta: {
             title_start: "Suscríbete para",
             title_strong: "Novedades Sonoras",
@@ -211,6 +217,12 @@ export const translations = {
             s2: { count: "281", label: "Species", desc: "Cataloged in the collection" },
             s3: { count: "48", label: "Families", desc: "Taxonomic groups represented" }
         },
+        chart: {
+            title_sm: "Analytics Overview",
+            title: "Discover the distribution of our sound library",
+            desc: "Explore the biodiversity breakdown and uncover the species shaping our acoustic archive.",
+            button: "View Complete Directory"
+        },
         cta: {
             title_start: "Subscribe for",
             title_strong: "Sound News",
@@ -375,6 +387,12 @@ export const translations = {
             s1: { count: "773", label: "Gravações", desc: "Total de registros de áudio" },
             s2: { count: "281", label: "Espécies", desc: "Catalogadas na coleção" },
             s3: { count: "48", label: "Famílias", desc: "Grupos taxonômicos representados" }
+        },
+        chart: {
+            title_sm: "Visão Geral Analítica",
+            title: "Descubra a distribuição de nossa biblioteca sonora",
+            desc: "Explore a divisão da biodiversidade e descubra as espécies que moldam nosso arquivo acústico.",
+            button: "Ver Diretório Completo"
         },
         cta: {
             title_start: "Inscreva-se para",

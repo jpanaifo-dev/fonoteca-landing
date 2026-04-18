@@ -3,7 +3,6 @@ import Layout from "../../layouts/Layout.astro";
 import { Header } from "../../components/react/Header";
 import { Footer } from "../../components/react/Footer";
 import { Hero } from "../../components/react/Hero";
-import { Stats } from "../../components/react/Stats";
 import { StatsChart } from "../../components/react/StatsChart";
 import { PlaylistCarousel } from "../../components/react/PlaylistCarousel";
 import { getAllSpecies } from "../../data/species";
@@ -60,9 +59,9 @@ const statsContent = {
             </div>
         </section>
 
-        <StatsChart client:visible />
-
-        <Stats client:visible content={statsContent} />
+        <section class="bg-gray-50 dark:bg-[#0c141d]">
+            <StatsChart client:visible statsContent={statsContent} chartContent={content.chart} lang={lang as string} />
+        </section>
 
         {/* Especies de la colección */}
         <section
