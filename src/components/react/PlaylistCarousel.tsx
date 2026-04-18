@@ -17,9 +17,10 @@ interface PlaylistCarouselProps {
     allSpecies: Species[];
     lang: 'es' | 'en' | 'pt';
     title?: string;
+    linkToFilter?: boolean;
 }
 
-export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, lang, title: propTitle }) => {
+export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, lang, title: propTitle, linkToFilter = false }) => {
     const [api, setApi] = useState<CarouselApi>()
     const [autoplayEnabled, setAutoplayEnabled] = useState(true)
 
@@ -99,6 +100,7 @@ export const PlaylistCarousel: React.FC<PlaylistCarouselProps> = ({ allSpecies, 
                                     species={species}
                                     lang={lang}
                                     viewMode="grid"
+                                    linkToFilter={linkToFilter}
                                 />
                             </CarouselItem>
                         ))}

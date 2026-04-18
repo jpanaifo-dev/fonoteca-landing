@@ -3,12 +3,9 @@ import Layout from "../../layouts/Layout.astro";
 import { Header } from "../../components/react/Header";
 import { Footer } from "../../components/react/Footer";
 import { Hero } from "../../components/react/Hero";
-import { FeatureGrid } from "../../components/react/FeatureGrid";
 import { Stats } from "../../components/react/Stats";
 import { StatsChart } from "../../components/react/StatsChart";
-import { CTA } from "../../components/react/CTA";
 import { PlaylistCarousel } from "../../components/react/PlaylistCarousel";
-import { NetworkMap } from "../../components/react/NetworkMap";
 import { getAllSpecies } from "../../data/species";
 import { translations, LANGUAGES } from "../../i18n/data";
 import logoIiap from "../../assets/logo_iiap.png";
@@ -23,25 +20,18 @@ const { lang } = Astro.params;
 const content = translations[lang as keyof typeof translations];
 const { species: allSpecies } = await getAllSpecies();
 
+// Shuffle species so "Especies de la colección" shows a random subset
+const randomSpecies = [...allSpecies].sort(() => 0.5 - Math.random());
+
 // Fetch real stats from Supabase
-import { getRealStats, getSpeciesByClass } from "../../data/stats";
+import { getRealStats } from "../../data/stats";
 const realStats = await getRealStats();
-const speciesByClass = await getSpeciesByClass();
 
 // Update content with real values
 const statsContent = {
     s1: { ...content.stats.s1, count: realStats.recordings.toString() },
     s2: { ...content.stats.s2, count: realStats.species.toString() },
     s3: { ...content.stats.s3, count: realStats.families.toString() },
-};
-
-const speciesContent = {
-    ...content.species,
-    items: speciesByClass.map((s) => ({
-        title: s[`title_${lang as "es" | "en" | "pt"}`],
-        icon: s.icon,
-        count: `${s.count} ${lang === "es" ? "Especies" : lang === "en" ? "Species" : "Espécies"}`,
-    })),
 };
 ---
 
@@ -54,7 +44,8 @@ const speciesContent = {
     />
     <main>
         <Hero client:load content={content.hero} lang={lang as string} />
-        {/* Audio Archive Section */}
+        
+        {/* Audio Archive Section - Últimas Colecciones */}
         <section
             id="library"
             class="py-20 bg-white dark:bg-[#0c141d] scroll-mt-20"
@@ -73,10 +64,21 @@ const speciesContent = {
 
         <Stats client:visible content={statsContent} />
 
-        <NetworkMap client:visible />
-
-        <FeatureGrid client:visible data={content.features} />
-        <CTA content={content.cta} />
+        {/* Especies de la colección */}
+        <section
+            id="species"
+            class="py-20 bg-gray-50 dark:bg-[#04070a] scroll-mt-20 border-y border-gray-100 dark:border-gray-800"
+        >
+            <div class="w-full container mx-auto px-6 mb-12">
+                <PlaylistCarousel
+                    client:load
+                    allSpecies={randomSpecies}
+                    lang={lang as "es" | "en" | "pt"}
+                    title={lang === 'es' ? 'Especies de la Colección' : lang === 'pt' ? 'Espécies da Coleção' : 'Collection Species'}
+                    linkToFilter={true}
+                />
+            </div>
+        </section>
     </main>
     <Footer content={content.footer} logoSrc={logoIiap.src} />
 </Layout>

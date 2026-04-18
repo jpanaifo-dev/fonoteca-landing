@@ -7,6 +7,7 @@ interface SpeciesCardProps {
     species: Species;
     viewMode?: 'grid' | 'list';
     lang: string;
+    linkToFilter?: boolean;
 }
 
 // Sub-component for media display (images/iframes)
@@ -59,9 +60,10 @@ const MediaViewer: React.FC<{
     );
 };
 
-export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'grid', lang }) => {
+export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'grid', lang, linkToFilter = false }) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const coverImage = species.mainImage || '/images/logo-mini.webp';
+    const detailLink = linkToFilter ? `/${lang}/species?q=${encodeURIComponent(species.scientificName)}` : `/${lang}/species/${species.id}`;
 
     const categoryTitles: Record<string, string> = {
         Amphibians: lang === 'es' ? 'Anfibios' : lang === 'pt' ? 'Anfíbios' : 'Amphibians',
@@ -130,7 +132,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
                             <Play className="w-4 h-4 fill-current" />
                         </button>
                     )}
-                    <a href={`/${lang}/species/${species.id}`} className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-accent-green transition-all">
+                    <a href={detailLink} className="p-2 rounded-xl bg-gray-50 dark:bg-gray-800 text-gray-400 hover:text-accent-green transition-all">
                         <Info className="w-4 h-4" />
                     </a>
                 </div>
@@ -184,7 +186,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({ species, viewMode = 'g
                         <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
                         <span className="text-[10px] font-bold tracking-tight truncate uppercase">{species.location}</span>
                     </div>
-                    <a href={`/${lang}/species/${species.id}`} className="text-[10px] font-black uppercase tracking-widest text-accent-green hover:text-accent-green/80 flex items-center gap-1.5 transition-colors">
+                    <a href={detailLink} className="text-[10px] font-black uppercase tracking-widest text-accent-green hover:text-accent-green/80 flex items-center gap-1.5 transition-colors">
                         {lang === 'es' ? 'Detalles' : lang === 'pt' ? 'Detalhes' : 'Details'}
                         <ArrowRight className="w-3.5 h-3.5" />
                     </a>
