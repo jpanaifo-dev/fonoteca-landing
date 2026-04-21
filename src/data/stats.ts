@@ -35,8 +35,6 @@ export async function getRealStats() {
             };
         }
 
-        console.log("Stats successfully fetched from Supabase:", { recordingsCount, speciesCount, familiesCount });
-
         return {
             recordings: recordingsCount || 0,
             species: speciesCount || 0,
