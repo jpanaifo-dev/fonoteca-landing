@@ -3,7 +3,9 @@ import Layout from "../../layouts/Layout.astro";
 import { Header } from "../../components/react/Header";
 import { Footer } from "../../components/react/Footer";
 import { PageBanner } from "../../components/react/PageBanner";
+import { StatsExplorer } from "../../components/react/StatsExplorer";
 import { translations, LANGUAGES } from "../../i18n/data";
+import { getRealStats, getSpeciesByClass } from "../../data/stats";
 import logoIiap from "../../assets/logo_iiap.png";
 import { landingImages } from "../../config/landingImages";
 
@@ -15,6 +17,17 @@ export function getStaticPaths() {
 
 const { lang } = Astro.params;
 const content = translations[lang as keyof typeof translations];
+
+// Fetch real data for stats
+const realStats = await getRealStats();
+const speciesByClassData = await getSpeciesByClass();
+
+const statsData = {
+    totalRecordings: realStats.recordings,
+    totalSpecies: realStats.species,
+    totalFamilies: realStats.families,
+    speciesByClass: speciesByClassData
+};
 ---
 
 <Layout
@@ -28,37 +41,14 @@ const content = translations[lang as keyof typeof translations];
         logoSrc={logoIiap.src}
         lang={lang}
     />
-    <main>
+    <main class="bg-white dark:bg-[#0c141d]">
         <PageBanner
             title={content.nav.stats}
-            subtitle="Datos de nuestra colección"
+            subtitle={lang === 'es' ? 'Datos y métricas de nuestra colección bioacústica' : lang === 'pt' ? 'Dados e métricas de nossa coleção bioacústica' : 'Data and metrics from our bioacoustic collection'}
             image={landingImages.pageBanner.default}
         />
-        <section class="py-24 bg-light-bg">
-            <div class="container mx-auto px-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Placeholder Stats */}
-                    <div class="bg-white p-8 rounded-3xl shadow-sm text-center">
-                        <h3 class="text-4xl font-bold text-accent-green mb-2">
-                            1,240
-                        </h3>
-                        <p class="text-gray-600">Archivos de Audio</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-3xl shadow-sm text-center">
-                        <h3 class="text-4xl font-bold text-accent-green mb-2">
-                            320
-                        </h3>
-                        <p class="text-gray-600">Especies Registradas</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-3xl shadow-sm text-center">
-                        <h3 class="text-4xl font-bold text-accent-green mb-2">
-                            15
-                        </h3>
-                        <p class="text-gray-600">Proyectos Activos</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        
+        <StatsExplorer client:load data={statsData} lang={lang as string} translations={content.stats} chartTranslations={content.chart} />
     </main>
     <Footer content={content.footer} logoSrc={logoIiap.src} />
 </Layout>

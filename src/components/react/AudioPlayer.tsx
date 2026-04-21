@@ -1,301 +1,245 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import WaveSurfer from 'wavesurfer.js';
-import Spectrogram from 'wavesurfer.js/dist/plugins/spectrogram.js';
-import Timeline from 'wavesurfer.js/dist/plugins/timeline.js';
-import Hover from 'wavesurfer.js/dist/plugins/hover.js';
+import Spectrogram from 'wavesurfer.js/dist/plugins/spectrogram.esm.js';
+import Timeline from 'wavesurfer.js/dist/plugins/timeline.esm.js';
+import Hover from 'wavesurfer.js/dist/plugins/hover.esm.js';
+import { X, Music, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
 
 interface AudioPlayerProps {
     audioUrl: string;
     title?: string;
     artist?: string;
     description?: string;
-    spectrogramImage?: string; // Kept for backward compatibility if pre-rendered is needed
+    spectrogramImage?: string;
+    spectrogramImages?: string[];
     autoplay?: boolean;
+    onClose?: () => void;
     onFinish?: () => void;
     isModalContainer?: boolean;
-    onClose?: () => void;
     onNext?: () => void;
     onPrev?: () => void;
     hasNext?: boolean;
     hasPrev?: boolean;
+    layoutMode?: 'direct' | 'expandable';
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({ 
     audioUrl, 
     title, 
     artist, 
-    description, 
-    spectrogramImage, 
-    autoplay, 
-    onFinish,
-    isModalContainer,
+    description,
+    spectrogramImage,
+    spectrogramImages = [],
+    autoplay = false,
     onClose,
+    onFinish,
+    isModalContainer = false,
     onNext,
     onPrev,
     hasNext,
-    hasPrev
+    hasPrev,
+    layoutMode = 'direct'
 }) => {
-    // Refs for DOM elements
+    const [isExpanded, setIsExpanded] = useState(layoutMode === 'direct');
+    
+    console.log("🔊 AudioPlayer: Rendering with audioUrl:", audioUrl, { isExpanded, layoutMode });
     const waveformRef = useRef<HTMLDivElement>(null);
     const spectrogramRef = useRef<HTMLDivElement>(null);
     const timelineRef = useRef<HTMLDivElement>(null);
-    
-    // WaveSurfer instance
     const wavesurferRef = useRef<WaveSurfer | null>(null);
-
-    // State
+    
     const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTime, setCurrentTime] = useState('0:00');
     const [duration, setDuration] = useState('0:00');
+    const [currentTime, setCurrentTime] = useState('0:00');
     const [isReady, setIsReady] = useState(false);
-    const [volume, setVolume] = useState(1);
-    const [zoom, setZoom] = useState(1); // Min 1, Max 100
+    const [zoom, setZoom] = useState(1);
+    const [volume, setVolume] = useState(0.8);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-    const [isModalView, setIsModalView] = useState(isModalContainer || false);
-    const [isFullScreen, setIsFullScreen] = useState(false);
-
-    useEffect(() => {
-        setIsModalView(isModalContainer || false);
-    }, [isModalContainer]);
-
-    const handleClose = () => {
-        if (isModalContainer && onClose) {
-            onClose();
-        } else {
-            setIsModalView(false);
-            setIsFullScreen(false);
+    const allImages = useMemo(() => {
+        const imgs = [...spectrogramImages];
+        if (spectrogramImage && !imgs.includes(spectrogramImage)) {
+            imgs.unshift(spectrogramImage);
         }
-    };
+        return imgs.filter(Boolean);
+    }, [spectrogramImage, spectrogramImages]);
 
     const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        const ms = Math.floor((seconds % 1) * 10);
-        return `${mins}:${secs.toString().padStart(2, '0')}.${ms}`;
+        const minutes = Math.floor(seconds / 60);
+        const secondsRemaining = Math.floor(seconds % 60);
+        return `${minutes}:${secondsRemaining.toString().padStart(2, '0')}`;
+    };
+
+    const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % allImages.length);
+    const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length);
+
+    const handleClose = () => {
+        if (onClose) onClose();
     };
 
     useEffect(() => {
         if (!waveformRef.current || !spectrogramRef.current || !timelineRef.current) return;
 
-        // Limpiar instancia previa si existe
-        if (wavesurferRef.current) {
-            wavesurferRef.current.destroy();
-        }
-
-        // Crear instancia de WaveSurfer con Plugins para Análisis Científico
         const ws = WaveSurfer.create({
             container: waveformRef.current,
-            waveColor: '#4a5568',
-            progressColor: '#1db954',
+            waveColor: '#4f4f4f',
+            progressColor: '#45a45e',
             cursorColor: '#ffffff',
-            cursorWidth: 2,
+            height: 40,
             barWidth: 2,
-            barGap: 1,
-            barRadius: 2,
-            height: 60,
+            barGap: 3,
             normalize: true,
-            minPxPerSec: 50, // Permite zoom granular
             plugins: [
                 Spectrogram.create({
                     container: spectrogramRef.current,
                     labels: true,
-                    labelsBackground: 'transparent',
-                    labelsColor: '#9ca3af',
+                    height: 180,
                     splitChannels: false,
                 }),
                 Timeline.create({
                     container: timelineRef.current,
-                    height: 24,
-                    timeInterval: 0.5,
-                    primaryLabelInterval: 5,
-                    style: {
-                        fontSize: '10px',
-                        color: '#6b7280',
-                    }
                 }),
                 Hover.create({
-                    lineColor: 'rgba(255, 255, 255, 0.5)',
-                    lineWidth: 1,
-                    labelBackground: 'rgba(0, 0, 0, 0.75)',
+                    lineColor: '#ff0000',
+                    lineWidth: 2,
+                    labelBackground: '#555',
                     labelColor: '#fff',
                     labelSize: '11px',
                 }),
-            ]
+            ],
         });
 
         wavesurferRef.current = ws;
 
-        // Cargar audio
         ws.load(audioUrl);
 
-        // Eventos
         ws.on('ready', () => {
             setIsReady(true);
             setDuration(formatTime(ws.getDuration()));
-            ws.setVolume(volume);
-            if (autoplay) {
-                ws.play();
-            }
+            if (autoplay) ws.play();
         });
 
         ws.on('audioprocess', () => {
             setCurrentTime(formatTime(ws.getCurrentTime()));
         });
 
-        ws.on('seeking', () => {
-            setCurrentTime(formatTime(ws.getCurrentTime()));
-        });
-
         ws.on('play', () => setIsPlaying(true));
         ws.on('pause', () => setIsPlaying(false));
+        
         ws.on('finish', () => {
             setIsPlaying(false);
-            if (onFinish) {
-                onFinish();
-            }
+            if (onFinish) onFinish();
         });
 
-        return () => {
-            ws.destroy();
-        };
+        return () => ws.destroy();
     }, [audioUrl]);
 
-    // Ocasionalmente WaveSurfer requiere actualizar su layour al cambiar isModalView
-    useEffect(() => {
-        const ws = wavesurferRef.current;
-        if (ws) {
-            // Un pequeño retraso permite que la transición CSS termine antes de redibujar
-            setTimeout(() => {
-                if (waveformRef.current) {
-                     window.dispatchEvent(new Event('resize'));
-                }
-            }, 300);
-        }
-    }, [isModalView, isFullScreen]);
+    const togglePlay = () => wavesurferRef.current?.playPause();
 
-    // Handle Play/Pause
-    const togglePlay = () => {
-        if (wavesurferRef.current) {
-            wavesurferRef.current.playPause();
-        }
-    };
-
-    // Handle Zoom
     const handleZoom = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newZoom = Number(e.target.value);
         setZoom(newZoom);
-        if (wavesurferRef.current) {
-            wavesurferRef.current.zoom(newZoom * 50); // Múltiplo para mejor pxPerSec
-        }
+        wavesurferRef.current?.zoom(newZoom * 50);
     };
 
-    // Handle Volume
     const handleVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVol = Number(e.target.value);
         setVolume(newVol);
-        if (wavesurferRef.current) {
-            wavesurferRef.current.setVolume(newVol);
-        }
+        wavesurferRef.current?.setVolume(newVol);
     };
 
-    const containerClasses = isModalView 
-        ? `fixed z-[200] flex flex-col bg-[#121212] shadow-[0_0_50px_rgba(0,0,0,0.5)] transition-all overflow-hidden ${isFullScreen ? 'inset-0 w-full h-full rounded-none' : 'inset-0 w-[95vw] h-[95vh] md:w-[85vw] md:h-[85vh] m-auto rounded-xl border border-gray-800'}`
-        : `w-full bg-[#121212] flex flex-col rounded-xl overflow-hidden border border-gray-800 shadow-2xl font-sans relative`;
+    // Style logic
+    const isFullScreen = isExpanded || isModalContainer;
+    
+    const containerClasses = `bg-[#121212] flex flex-col rounded-xl overflow-hidden border border-gray-800 shadow-2xl font-sans transition-all duration-300 ${
+        isFullScreen 
+        ? 'fixed inset-0 z-[250] w-[95vw] h-[95vh] m-auto md:w-[90vw] md:h-[90vh]' 
+        : 'w-full relative min-h-[500px]'
+    }`;
 
     return (
         <>
-            {isModalView && <div className="fixed inset-0 z-[190] bg-black/95 backdrop-blur-md pointer-events-auto" onClick={handleClose}></div>}
+            {isFullScreen && <div className="fixed inset-0 z-[240] bg-black/95 backdrop-blur-md" onClick={() => layoutMode === 'expandable' ? setIsExpanded(false) : handleClose()}></div>}
             
             <div className={containerClasses}>
-                {/* Cabecera Técnica */}
+                {/* Technical Header */}
                 <div className="bg-[#1a1a1a] px-4 sm:px-6 py-3 border-b border-gray-800 flex justify-between items-center sm:min-h-[64px] flex-shrink-0">
                     <div className="flex items-center gap-3 overflow-hidden">
-                        {/* Controles Navigacion opcionales para Modal */}
                         {(onPrev || onNext) && (
                             <div className="flex items-center flex-shrink-0">
-                                <button onClick={onPrev} disabled={!hasPrev} className={`p-1.5 rounded-full transition-colors ${!hasPrev ? 'text-gray-700 cursor-not-allowed opacity-50' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`} title="Anterior">
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                                <button onClick={onPrev} disabled={!hasPrev} className={`p-1.5 rounded-full transition-colors ${!hasPrev ? 'text-gray-700 cursor-not-allowed opacity-50' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>
+                                    <ChevronLeft className="w-5 h-5" />
                                 </button>
-                                <button onClick={onNext} disabled={!hasNext} className={`p-1.5 rounded-full transition-colors ${!hasNext ? 'text-gray-700 cursor-not-allowed opacity-50' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`} title="Siguiente">
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                                <button onClick={onNext} disabled={!hasNext} className={`p-1.5 rounded-full transition-colors ${!hasNext ? 'text-gray-700 cursor-not-allowed opacity-50' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>
+                                    <ChevronRight className="w-5 h-5" />
                                 </button>
-                                <div className="w-px h-5 bg-gray-700 mx-2 hidden sm:block"></div>
                             </div>
                         )}
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-accent-green hidden sm:block flex-shrink-0">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-                        </svg>
                         <div className="truncate">
                             <h4 className="text-gray-200 font-bold text-sm tracking-wide truncate">{title || 'Análisis Espectral'}</h4>
                             <p className="text-gray-500 text-xs truncate">{artist}</p>
                         </div>
                     </div>
-
-                    <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                        {!isReady && (
-                            <span className="text-accent-green text-xs animate-pulse flex items-center gap-2 mr-2">
-                                <svg className="animate-spin h-3 w-3 text-accent-green" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                <span className="hidden sm:inline">Procesando...</span>
-                            </span>
+                    <div className="flex items-center gap-2">
+                        {!isFullScreen ? (
+                            <button 
+                                onClick={() => setIsExpanded(true)} 
+                                className="p-2.5 rounded-xl bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 transition-all flex items-center gap-2"
+                                title="Expandir a Pantalla Completa"
+                            >
+                                <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">Modo Análisis</span>
+                                <Maximize2 className="w-4 h-4" />
+                            </button>
+                        ) : (
+                            layoutMode === 'expandable' && (
+                                <button 
+                                    onClick={() => setIsExpanded(false)} 
+                                    className="p-2 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-colors"
+                                    title="Contraer"
+                                >
+                                    <Minimize2 className="w-5 h-5" />
+                                </button>
+                            )
                         )}
                         
-                        {isModalView ? (
-                            <>
-                                <button onClick={() => setIsFullScreen(!isFullScreen)} className="text-gray-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-gray-800" title={isFullScreen ? "Reducir" : "Pantalla Completa"}>
-                                    {isFullScreen ? (
-                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5M15 15l5.25 5.25" /></svg>
-                                    ) : (
-                                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25H15m5.25 0v-4.5m0 4.5L15 15" /></svg>
-                                    )}
-                                </button>
-                                <button onClick={handleClose} className="text-gray-400 hover:text-white hover:bg-red-500/20 transition-colors p-1.5 rounded-lg" title="Cerrar">
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                                </button>
-                            </>
-                        ) : (
-                            <button onClick={() => setIsModalView(true)} className="text-gray-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-gray-800 flex items-center justify-center" title="Expandir Interfaz Acústica">
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25H15m5.25 0v-4.5m0 4.5L15 15" /></svg>
+                        {onClose && (
+                            <button onClick={handleClose} className="p-2 hover:bg-white/10 rounded-full text-white/70 hover:text-white transition-colors">
+                                <X className="w-5 h-5" />
                             </button>
                         )}
                     </div>
                 </div>
 
-                {/* Ventana de Visualización Gráfica */}
-                <div className={`relative w-full bg-black group p-[1px] flex flex-col ${isModalView ? 'flex-1 overflow-hidden' : ''}`}>
-                    {/* Optional Static Spectrogram Image */}
-                    {spectrogramImage && (
-                        <div className="w-full bg-black relative flex-shrink-0 border-b border-gray-900 group-hover:opacity-90 transition-opacity">
-                            <img 
-                                src={spectrogramImage} 
-                                alt="Espectrograma estático" 
-                                className="w-full h-auto max-h-[300px] object-contain mx-auto"
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).style.display = 'none';
-                                }}
-                            />
-                            <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-md px-2 py-1 rounded text-[10px] text-gray-400 uppercase tracking-tighter border border-white/10">
-                                Captura Original
+                {/* Viewport Area */}
+                <div className="relative w-full bg-black group p-4 flex flex-col flex-1 overflow-hidden">
+                    {/* Spectrogram Navigation */}
+                    <div className="w-full h-48 md:h-64 bg-black/40 rounded-2xl overflow-hidden mb-6 relative group/img">
+                        {allImages.length > 0 ? (
+                            <>
+                                <img src={allImages[currentImageIndex]} alt="Spectrogram" className="w-full h-full object-contain" />
+                                {allImages.length > 1 && (
+                                    <>
+                                        <button onClick={prevImage} className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover/img:opacity-100 transition-opacity"><ChevronLeft className="w-6 h-6" /></button>
+                                        <button onClick={nextImage} className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover/img:opacity-100 transition-opacity"><ChevronRight className="w-6 h-6" /></button>
+                                        <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-[10px] text-white font-bold tracking-widest uppercase">{currentImageIndex + 1} / {allImages.length}</div>
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-white/20">
+                                <Music className="w-12 h-12 mb-2" />
+                                <span className="text-xs font-medium uppercase tracking-widest">No Spectrogram</span>
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
 
-                    {/* 1. Timeline Top */}
                     <div ref={timelineRef} className="w-full bg-[#181818] flex-shrink-0" />
-                    
-                    {/* 2. Spectrogram (Ecolocalización, Frecuencias Altas) */}
-                    <div 
-                        ref={spectrogramRef} 
-                        className={`w-full relative overflow-hidden flex-1`}
-                        style={{ minHeight: isModalView ? '150px' : '200px' }}
-                    />
-
-                    {/* 3. Waveform Clásico */}
+                    <div ref={spectrogramRef} className="w-full relative overflow-hidden flex-1" style={{ minHeight: '150px' }} />
                     <div ref={waveformRef} className="w-full relative bg-[#111111] overflow-hidden border-t border-gray-900 flex-shrink-0" />
                 </div>
 
-                {/* Controles del Reproductor (Estilo Consola Profesional) */}
+                {/* Controls Area (Console Style) */}
                 <div className="bg-[#181818] p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-800 flex-shrink-0">
-                    {/* Play/Pause & Time */}
                     <div className="flex items-center gap-6 w-full sm:w-auto">
                         <button
                             onClick={togglePlay}
@@ -303,11 +247,11 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                             className="w-12 h-12 flex-shrink-0 bg-accent-green text-black rounded-full flex items-center justify-center hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100 shadow-lg shadow-accent-green/10"
                         >
                             {isPlaying ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6">
                                     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                                 </svg>
                             ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-5 h-5 ml-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 ml-1">
                                     <path d="M8 5v14l11-7z" />
                                 </svg>
                             )}
@@ -320,13 +264,11 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                         </div>
                     </div>
 
-                    {/* Herramientas (Zoom & Vol) */}
+                    {/* Tools Area (Zoom & Volume) */}
                     <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto mt-2 sm:mt-0 bg-[#121212] px-4 py-2 rounded-lg border border-gray-800/60">
-                        {/* Zoom Control */}
-                        <div className="flex items-center gap-2" title="Zoom del Espectrograma">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-gray-500">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM13.5 10.5h-6" />
-                            </svg>
+                        {/* Zoom */}
+                        <div className="flex items-center gap-2" title="Zoom Espectrograma">
+                            <span className="text-[10px] text-gray-500 font-bold uppercase tracking-widest mr-1">Zoom</span>
                             <input
                                 type="range"
                                 min="1"
@@ -336,16 +278,13 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                                 onChange={handleZoom}
                                 className="w-20 md:w-24 h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-accent-green"
                             />
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-gray-500">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607zM10.5 7.5v6m3-3h-6" />
-                            </svg>
                         </div>
 
                         <div className="w-px h-6 bg-gray-800 hidden sm:block"></div>
 
-                        {/* Volume Control */}
+                        {/* Volume */}
                         <div className="flex items-center gap-2" title="Volumen">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-gray-400">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-gray-400">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
                             </svg>
                             <input
@@ -360,11 +299,11 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
                         </div>
                     </div>
                 </div>
-                
-                {description && !isModalView && (
-                    <div className="px-6 py-3 bg-[#111] border-t border-gray-900 text-xs text-gray-500 flex-shrink-0">
-                        <span className="font-semibold text-gray-400 mr-2">CONTEXTO:</span>
-                        {description}
+
+                {description && (
+                    <div className="px-6 py-3 bg-[#111] border-t border-gray-900 text-[10px] text-gray-500 flex-shrink-0 flex items-center gap-2">
+                        <span className="font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">Nota:</span>
+                        <span className="truncate">{description}</span>
                     </div>
                 )}
             </div>

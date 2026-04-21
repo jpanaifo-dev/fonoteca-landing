@@ -7,6 +7,7 @@ interface AudioTrack {
     url: string;
     image?: string;
     spectrogram?: string;
+    images?: string[]; // Added image list
 }
 
 export const PersistentPlayer = () => {
@@ -25,17 +26,20 @@ export const PersistentPlayer = () => {
         // Listen for custom events to play audio
         const handlePlayAudio = (event: CustomEvent<AudioTrack>) => {
             const newTrack = event.detail;
-            console.log("📥 PersistentPlayer: Received 'play-audio' event", newTrack);
+            console.log("📥 PersistentPlayer Received 'play-audio' event:", newTrack);
             setIsVisible(true);
-            playOnLoad.current = true; // User interaction always implies play
+            playOnLoad.current = true;
             setTrack(newTrack);
             setTrackKey(`${newTrack.url}-${Date.now()}`);
         };
 
         const handlePauseAudio = () => {
+            console.log("⏸️ PersistentPlayer: Received pause event");
+            // Logic if needed
         };
 
         const handleRewindAudio = () => {
+             console.log("⏪ PersistentPlayer: Received rewind event");
         };
 
         // Listen for playlist initialization
@@ -59,17 +63,17 @@ export const PersistentPlayer = () => {
             }
         };
 
-        window.addEventListener('play-audio' as any, handlePlayAudio);
-        window.addEventListener('pause-audio' as any, handlePauseAudio);
-        window.addEventListener('rewind-audio' as any, handleRewindAudio);
-        window.addEventListener('set-playlist' as any, handleSetPlaylist);
+        window.addEventListener('play-audio' as any, handlePlayAudio as any);
+        window.addEventListener('pause-audio' as any, handlePauseAudio as any);
+        window.addEventListener('rewind-audio' as any, handleRewindAudio as any);
+        window.addEventListener('set-playlist' as any, handleSetPlaylist as any);
         return () => {
-            window.removeEventListener('play-audio' as any, handlePlayAudio);
-            window.removeEventListener('pause-audio' as any, handlePauseAudio);
-            window.removeEventListener('rewind-audio' as any, handleRewindAudio);
-            window.removeEventListener('set-playlist' as any, handleSetPlaylist);
+            window.removeEventListener('play-audio' as any, handlePlayAudio as any);
+            window.removeEventListener('pause-audio' as any, handlePauseAudio as any);
+            window.removeEventListener('rewind-audio' as any, handleRewindAudio as any);
+            window.removeEventListener('set-playlist' as any, handleSetPlaylist as any);
         };
-    }, [track]);
+    }, []); // Empty dependency array for stability
 
     useEffect(() => {
         if (track && playlist.length > 0) {
@@ -120,23 +124,31 @@ export const PersistentPlayer = () => {
         }
     };
 
-    if (!track || !isVisible) return null;
+    if (!track || !isVisible) {
+        console.log("🛑 PersistentPlayer: NOT rendering (track/visibility condition not met)", { track: !!track, isVisible });
+        return null;
+    }
 
+    console.log("✅ PersistentPlayer: RENDERING", track.title);
     return (
-        <AudioPlayer
-            key={trackKey || track.url}
-            audioUrl={track.url}
-            title={track.title}
-            artist={track.artist}
-            spectrogramImage={track.spectrogram || track.image}
-            autoplay={playOnLoad.current}
-            onFinish={playNext}
-            isModalContainer={true}
-            onNext={playNext}
-            onPrev={playPrev}
-            hasNext={currentIndex < playlist.length - 1}
-            hasPrev={currentIndex > 0}
-            onClose={() => setIsVisible(false)}
-        />
+        <div className="relative z-[200]">
+            <AudioPlayer
+                key={trackKey || track.url}
+                audioUrl={track.url}
+                title={track.title}
+                artist={track.artist}
+                spectrogramImage={track.spectrogram || track.image}
+                spectrogramImages={track.images}
+                autoplay={playOnLoad.current}
+                onFinish={playNext}
+                isModalContainer={true}
+                onNext={playNext}
+                onPrev={playPrev}
+                hasNext={currentIndex < playlist.length - 1}
+                hasPrev={currentIndex > 0}
+                onClose={() => setIsVisible(false)}
+                layoutMode="direct"
+            />
+        </div>
     );
 };

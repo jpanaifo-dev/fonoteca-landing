@@ -62,12 +62,18 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                     // Trigger the playlist event for the persistent player
                     if (data.audios && data.audios.length > 0) {
                         const commonName = data[`commonName_${currentLang}` as keyof Species] as string;
+                        const allMediaImages = [
+                            ...(data.galleryImages?.map(img => img.url) || []),
+                            ...(data.spectrograms?.map(img => img.url) || [])
+                        ].filter(Boolean);
+
                         const playlist = data.audios.map((audio) => ({
                             title: audio.title || "Canto",
                             artist: commonName,
                             url: audio.url,
                             image: data.mainImage || "/images/logo-mini.webp",
                             spectrogram: audio.spectrogramImage ?? undefined,
+                            images: allMediaImages
                         }));
 
                         const playlistData = {
@@ -197,13 +203,10 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
 
                         {/* Title & Scientific Information */}
                         <div className="flex-1 text-center md:text-left space-y-4">
-                            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black text-gray-900 leading-tight">
-                                {commonName}
+                            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-serif italic text-gray-900 leading-tight">
+                                {species.scientificName}
                             </h1>
                             <div className="space-y-1">
-                                <h2 className="text-2xl lg:text-3xl font-serif italic text-gray-700">
-                                    {species.scientificName}
-                                </h2>
                                 <p className="text-sm font-bold text-accent-green uppercase tracking-widest">
                                     {species.family} ({species.order})
                                 </p>
@@ -247,8 +250,8 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                     <aside className="lg:w-64 shrink-0 lg:sticky lg:top-24 mt-2">
                         <div className="space-y-6">
                             {/* Back to list Link */}
-                            <a 
-                                href={`/${lang}/species`} 
+                            <a
+                                href={`/${lang}/species`}
                                 className="inline-flex items-center gap-2 text-[10px] font-black tracking-widest text-accent-green hover:text-accent-green-dark transition-colors mb-4 group px-2"
                             >
                                 <ChevronRight size={14} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
@@ -376,6 +379,8 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                                                 artist={commonName}
                                                 description={audio.description ?? undefined}
                                                 spectrogramImage={audio.spectrogramImage ?? undefined}
+                                                spectrogramImages={species.galleryImages?.map(img => img.url).concat(species.spectrograms?.map(img => img.url) || [])}
+                                                layoutMode="expandable"
                                             />
                                         )}
                                     </div>
@@ -391,7 +396,7 @@ export const SpeciesDetailClient: React.FC<Props> = ({ id, lang }) => {
                                         <hr className="flex-1 border-gray-100" />
                                     </div>
                                     <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100">
-                                        <SpeciesGallery images={species.spectrograms.map(img => img.url)} />
+                                        <SpeciesGallery images={species.spectrograms.map(img => img.url)} contain />
                                     </div>
                                 </div>
                             )}
